@@ -2,9 +2,8 @@
 
 namespace FL\QBJSParser\Serializer;
 
-use FL\QBJSParser\Exception\Serializer\JsonDeserializerInvalidConditionException;
 use FL\QBJSParser\Exception\Serializer\JsonDeserializerInvalidJsonException;
-use FL\QBJSParser\Exception\Serializer\JsonDeserializerMissingConditionException;
+use FL\QBJSParser\Exception\Serializer\JsonDeserializerConditionException;
 use FL\QBJSParser\Exception\Serializer\JsonDeserializerRuleKeyException;
 use FL\QBJSParser\Model\Rule;
 use FL\QBJSParser\Model\RuleGroup;
@@ -33,7 +32,7 @@ class JsonDeserializer implements DeserializerInterface
     private function deserializeRuleGroup(array $decodedRuleGroup) : RuleGroupInterface
     {
         if (!array_key_exists('condition', $decodedRuleGroup)) {
-            throw new JsonDeserializerMissingConditionException('Missing condition in RuleGroup');
+            throw new JsonDeserializerConditionException('Missing condition in RuleGroup');
         }
 
         $deserializedRuleGroup = new RuleGroup($decodedRuleGroup['condition']);
