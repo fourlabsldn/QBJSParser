@@ -1,15 +1,15 @@
 # Doctrine Custom Parsers
 
 #### What are they?
-- Doctrine Custom Parsers are extended classes of `FL\QBJSParser\AbstractDoctrineParser`.
-- Doctrine Custom Parsers, parse a `FL\QBJSParser\Model\RuleGroup` into a `FL\QBJSParser\Parsed\Doctrine\ParsedRuleGroup`.
-- A `ParsedRuleGroup` has two properties, `$dqlString` and `$parameters`. 
+- Doctrine Custom Parsers implement `FL\QBJSParser\ParserInterface` and can extend `FL\QBJSParser\Doctrine\AbstractDoctrineParser`.
+- Doctrine Custom Parsers parse `FL\QBJSParser\Model\RuleGroup` into a `FL\QBJSParser\Parsed\Doctrine\ParsedRuleGroup`.
+- A `ParsedRuleGroup` has two properties accessible via getters: `$dqlString` and `$parameters`. 
 - Use the `ParsedRuleGroup` to create a Doctrine Query with `Doctrine\ORM\EntityManager::createQuery($dql)` and `Doctrine\ORM\Query::setParameters($parameters)`
 
 #### Usage
 - Each Doctrine entity will need a corresponding Doctrine Custom Parser.
-- Your Doctrine Custom Parser should call `parent::construct($classname)` with the class name of its corresponding Doctrine entity.
-- Your Doctrine Custom Parser should override, `parent::map_QueryBuilderFields_ToEntityProperties` according to the properties, you wish to enable searching for, in your entity.
+- Your Doctrine Custom Parser should call `parent::construct($className)` with the class name of its corresponding Doctrine entity.
+- Your Doctrine Custom Parser should override `parent::map_QueryBuilderFields_ToEntityProperties` according to the properties you wish to enable searching for in your entity.
 
 ## Example
 
@@ -91,8 +91,9 @@ Finally, assuming you have an `$entityManager`, and a  valid `$jsonString` creat
 
 namespace YourNamespace\YourApp\Controller;
 
+use Doctrine\ORM\EntityManagerInterface;
 use FL\QBJSParser\Serializer\JsonDeserializer;
-use YourNamespace\YourApp\QBJSParsers\ProductParser;
+use YourNamespace\YourApp\QBJSParser\ProductParser;
 
 //...
     $jsonDeserializer = new JsonDeserializer();
@@ -101,8 +102,10 @@ use YourNamespace\YourApp\QBJSParsers\ProductParser;
     $deserializedRuleGroup = $jsonDeserializer->deserialize($jsonString);
     $parsedRuleGroup = $parser->parse($deserializedRuleGroup);
     
+    /** @var EntityManagerInterface $entityManager */
     $query = $entityManager->createQuery($parsedRuleGroup->getDqlString());
     $query->setParameters($parsedRuleGroup->getParameters());
     $results = $query->execute();
 //... 
 ```
+
