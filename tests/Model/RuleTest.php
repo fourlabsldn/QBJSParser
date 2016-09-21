@@ -49,10 +49,10 @@ class RuleTest extends \PHPUnit_Framework_TestCase
             ['type' => 'boolean', 'operator' => 'is_null', 'value' => null],
             ['type' => 'boolean', 'operator' => 'is_not_null', 'value' => null],
 
-            ['type' => 'datetime', 'operator' => 'equal', 'value' => new \DateTime()],
-            ['type' => 'datetime', 'operator' => 'not_equal', 'value' => new \DateTime()],
-            ['type' => 'datetime', 'operator' => 'greater', 'value' => new \DateTime()],
-            ['type' => 'datetime', 'operator' => 'in', 'value' => [new \DateTime(), new \DateTime("+2 hours")]],
+            ['type' => 'datetime', 'operator' => 'equal', 'value' => new \DateTimeImmutable()],
+            ['type' => 'datetime', 'operator' => 'not_equal', 'value' => new \DateTimeImmutable()],
+            ['type' => 'datetime', 'operator' => 'greater', 'value' => new \DateTimeImmutable()],
+            ['type' => 'datetime', 'operator' => 'in', 'value' => [new \DateTimeImmutable(), new \DateTimeImmutable("+2 hours")]],
         ];
         $this->samplesInvalidCombinations = [
             ['type' => 'string', 'operator' => 'equals', 'value' => 'string is stringy'], // OPERATOR cannot be 'equals' (must be 'equal')
@@ -79,13 +79,13 @@ class RuleTest extends \PHPUnit_Framework_TestCase
             ['type' => 'boolean', 'operator' => 'equal', 'value' => []], // OPERATOR 'equal' cannot have VALUETYPE 'array'
             ['type' => 'boolean', 'operator' => 'equal', 'value' => '3'], // TYPE 'boolean' cannot have VALUETYPE 'string'
 
-            ['type' => 'datetime', 'operator' => 'not_begins_with', 'value' => new \DateTime()], // TYPE 'datetime' cannot correspond to OPERATOR 'string'
+            ['type' => 'datetime', 'operator' => 'not_begins_with', 'value' => new \DateTimeImmutable()], // TYPE 'datetime' cannot correspond to OPERATOR 'string'
             ['type' => 'datetime', 'operator' => 'greater', 'value' => 3], // TYPE 'datetime' cannot correspond to VALUETYPE 'integer'
             ['type' => 'datetime', 'operator' => 'less_or_equal', 'value' => '123312313'], // TYPE 'datetime' cannot correspond to VALUETYPE 'string'
-            ['type' => 'datetime', 'operator' => 'is_null', 'value' =>  new \DateTime()], // OPERATOR 'is_null' must correspond to VALUETYPE 'NULL'
-            ['type' => 'datetime', 'operator' => 'in', 'value' =>  new \DateTime()], // OPERATOR 'in' must have VALUETYPE 'array'
+            ['type' => 'datetime', 'operator' => 'is_null', 'value' =>  new \DateTimeImmutable()], // OPERATOR 'is_null' must correspond to VALUETYPE 'NULL'
+            ['type' => 'datetime', 'operator' => 'in', 'value' =>  new \DateTimeImmutable()], // OPERATOR 'in' must have VALUETYPE 'array'
             ['type' => 'datetime', 'operator' => 'in', 'value' =>  [1,2,3]], // OPERATOR 'in' must have VALUETYPE 'array' AND all values of the 'array' must be '\Datetime::class'
-            ['type' => 'datetime', 'operator' => 'in', 'value' =>  [new \DateTime(),2,3]], // OPERATOR 'in' must have VALUETYPE 'array' AND all values of the 'array' must be '\Datetime::class'
+            ['type' => 'datetime', 'operator' => 'in', 'value' =>  [new \DateTimeImmutable(),2,3]], // OPERATOR 'in' must have VALUETYPE 'array' AND all values of the 'array' must be '\Datetime::class'
         ];
     }
 

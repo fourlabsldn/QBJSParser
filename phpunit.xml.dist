@@ -12,6 +12,7 @@
     <testsuites>
         <testsuite name="QBJSParser Test Suite">
             <directory>./tests/</directory>
+            <exclude>./tests/Util</exclude>
         </testsuite>
     </testsuites>
 </phpunit>

@@ -7,7 +7,10 @@ use FL\QBJSParser\Exception\Parser\Doctrine\MapFunctionException;
 use FL\QBJSParser\Model\Rule;
 use FL\QBJSParser\Model\RuleGroup;
 use FL\QBJSParser\Model\RuleGroupInterface;
-use FL\QBJSParser\Parser\Doctrine\AbstractDoctrineParser;
+use FL\QBJSParser\Tests\Util\MockBadEntity;
+use FL\QBJSParser\Tests\Util\MockBadEntity2;
+use FL\QBJSParser\Tests\Util\MockDoctrineParser;
+use FL\QBJSParser\Tests\Util\MockEntity;
 
 class AbstractDoctrineParserTest extends \PHPUnit_Framework_TestCase
 {
@@ -116,7 +119,7 @@ class AbstractDoctrineParserTest extends \PHPUnit_Framework_TestCase
     public function testMockBadEntity2()
     {
         $this->assertMapFunctionException(function () {
-            new MockDoctrineParser(MockBadEntity::class);
+            new MockDoctrineParser(MockBadEntity2::class);
         });
     }
 
@@ -157,56 +160,6 @@ class AbstractDoctrineParserTest extends \PHPUnit_Framework_TestCase
     }
 }
 
-class MockDoctrineParser extends AbstractDoctrineParser
-{
-    /**
-     * @return array
-     */
-    protected function map_QueryBuilderFields_ToEntityProperties() : array
-    {
-        return [
-            'id' => 'id',
-            'price' => 'price',
-            'name' => 'name',
-        ];
-    }
-}
 
-class MockEntity
-{
-    private $id;
-    private $price;
-    private $name;
-    public function getId()
-    {
-        return $this->id;
-    }
-    public function getPrice()
-    {
-        return $this->price;
-    }
-    public function getName()
-    {
-        return $this->name;
-    }
-}
 
-class MockBadEntity
-{
-    // private $id;
-    // private $price;
-}
 
-class MockBadEntity2
-{
-    private $id;
-    private $price;
-    private function getId()
-    {
-        return $this->id;
-    }
-    private function getPrice()
-    {
-        return $this->price;
-    }
-}

@@ -31,7 +31,7 @@ class RuleGroupParsedTest extends \PHPUnit_Framework_TestCase
             // number of parameters doesn't match
             ['dqlString' => 'SELECT object FROM SomeNamespace/SomeClass object WHERE object.id IS NULL', 'parameters' => [1]],
             // number of parameters doesn't match
-            ['dqlString' => 'SELECT object FROM SomeNamespace/SomeClass object WHERE object.id IS NULL', 'parameters' => [new \DateTime()]],
+            ['dqlString' => 'SELECT object FROM SomeNamespace/SomeClass object WHERE object.id IS NULL', 'parameters' => [new \DateTimeImmutable()]],
             // number of parameters doesn't match
             ['dqlString' => 'SELECT object FROM SomeNamespace/SomeClass object WHERE object.id BETWEEN ?0 AND ?1', 'parameters' => [3, 2, 5]],
             // two parameters given, expected one array

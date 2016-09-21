@@ -6,6 +6,8 @@ use FL\QBJSParser\Model\Rule;
 use FL\QBJSParser\Model\RuleGroup;
 use FL\QBJSParser\Model\RuleGroupInterface;
 use FL\QBJSParser\Serializer\JsonDeserializer;
+use FL\QBJSParser\Tests\Util\MockDoctrineParser;
+use FL\QBJSParser\Tests\Util\MockEntity;
 
 class JsonDeserializerTest extends \PHPUnit_Framework_TestCase
 {
@@ -73,6 +75,35 @@ class JsonDeserializerTest extends \PHPUnit_Framework_TestCase
         $jsonDeserializer = new JsonDeserializer();
         $deserializedRuleGroup = $jsonDeserializer->deserialize($this->inputJsonString);
         $this->assertRuleGroupsAreEqual($deserializedRuleGroup, $this->expectedOutputRuleGroup);
+    }
+
+    /**
+     * @test
+     */
+    public function testParsing()
+    {
+        $ruleGroupA = new RuleGroup(RuleGroupInterface::MODE_AND);
+        $ruleGroupA_RuleA = new Rule('price', 'price', 'double', 'less', 10.25);
+        $ruleGroupA_RuleB = new Rule('price', 'price', 'double', 'in', [10.25, 3.23, 5.22]);
+        $ruleGroupA_RuleB = new Rule('date', 'date', 'datetime', 'in', [new \DateTimeImmutable("now")]);
+        $ruleGroupA->addRule($ruleGroupA_RuleA);
+        $ruleGroupA->addRule($ruleGroupA_RuleB);
+
+        $jsonString =
+            '{' .
+                '"condition":"AND",'.
+                '"rules":[' .
+                    '{"id":"price","field":"price","type":"double","input":"text","operator":"less","value":"10.25"},' .
+                    '{"id":"price","field":"price","type":"double","input":"text","operator":"in","value":["10.25", "3.23", "5.22"]}' .
+                ']' .
+            '}';
+
+        $jsonDeserializer = new JsonDeserializer();
+        $deserializedRuleGroup = $jsonDeserializer->deserialize($jsonString);
+
+        $mockDoctrineParser = new MockDoctrineParser(MockEntity::class);
+        $mockDoctrineParser->parse($deserializedRuleGroup);
+        $this->assertRuleGroupsAreEqual($deserializedRuleGroup, $ruleGroupA);
     }
 
     /**
