@@ -17,7 +17,7 @@ class RuleGroup implements RuleGroupInterface
     private $ruleGroups;
 
     /**
-     * @var int
+     * @var string
      */
     private $mode;
 
@@ -93,9 +93,9 @@ class RuleGroup implements RuleGroupInterface
     }
 
     /**
-     * @return int
+     * @return string
      */
-    public function getMode(): int
+    public function getMode(): string
     {
         return $this->mode;
     }

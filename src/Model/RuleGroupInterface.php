@@ -12,8 +12,8 @@ interface RuleGroupInterface
     const MODE_OR = 'OR';
 
     const DEFINED_MODES = [
-        MODE_AND,
-        MODE_OR,
+        self::MODE_AND,
+        self::MODE_OR,
     ];
 
     /**
