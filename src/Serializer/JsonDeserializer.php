@@ -40,7 +40,6 @@ class JsonDeserializer implements DeserializerInterface
         foreach ($decodedRuleGroup['rules'] as $ruleOrGroup) {
             if (array_key_exists('condition', $ruleOrGroup)) {
                 $deserializedRuleGroup->addRuleGroup($this->deserializeRuleGroup($ruleOrGroup));
-
             } elseif (array_key_exists('id', $ruleOrGroup)) {
                 $deserializedRuleGroup->addRule($this->deserializeRule($ruleOrGroup));
             }
