@@ -19,7 +19,30 @@ Parse JSON coming from [jQuery QueryBuilder](http://querybuilder.js.org/), such 
 ```
 
 ## Installation
-- `composer require`
+- While we set up packagist, use the repository directly in composer. Add the following to your composer.json
+```json
+    "repositories": [
+        {
+            "type":"package",
+            "package": {
+                "name": "FL/QBJSParser",
+                "version":"0.1.1",
+                "source": {
+                    "url": "https://github.com/fourlabsldn/QBJSParser.git",
+                    "type": "git",
+                    "reference":"master"
+                },
+                "autoload": {
+                    "psr-4": { "FL\\QBJSParser\\": "src" }
+                }
+            }
+        }
+    ],
+    "require": {
+        "FL/QBJSParser": "^0.1.1",
+    },
+```
+- And then run `composer require FL/QBJSParser` 
 
 ## Quick Tour
 
