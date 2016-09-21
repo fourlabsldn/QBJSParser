@@ -1,5 +1,7 @@
 # Query Builder JS Parser
 
+[![Build Status](https://travis-ci.org/fourlabsldn/QBJSParser.svg?branch=master)](https://travis-ci.org/fourlabsldn/QBJSParser)
+
 Parse JSON coming from [jQuery QueryBuilder](http://querybuilder.js.org/), such as
 
 ```json
