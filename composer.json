@@ -2,7 +2,6 @@
   "name": "FL/QBJSParser",
   "version": "0.1.1",
   "description": "Parse JSON coming from jQuery QueryBuilder, into database queries.",
-  "support": "https://github.com/fourlabsldn/QBJSParser/issues",
   "license": "MIT",
   "homepage": "https://github.com/fourlabsldn/QBJSParser",
   "keywords": [
