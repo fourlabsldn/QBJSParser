@@ -1,6 +1,6 @@
 {
   "name": "fourlabs/qbjs-parser",
-  "version": "1.0.0-alpha",
+  "version": "1.0",
   "description": "Parse JSON coming from jQuery QueryBuilder, into database queries.",
   "license": "MIT",
   "homepage": "https://github.com/fourlabsldn/QBJSParser",

@@ -22,8 +22,8 @@ class JsonDeserializer implements DeserializerInterface
         if (is_null($decodedRuleGroup) || !is_array($decodedRuleGroup)) {
             throw new JsonDeserializerInvalidJsonException();
         }
-        $deserializedRuleGroup = $this->deserializeRuleGroup($decodedRuleGroup);
-        return $deserializedRuleGroup;
+
+        return $this->deserializeRuleGroup($decodedRuleGroup);
     }
 
     /**
@@ -48,25 +48,15 @@ class JsonDeserializer implements DeserializerInterface
                 break;
         }
 
-        $decodedRulesAndRuleGroups = $decodedRuleGroup['rules'];
-        $decodedRuleGroups = [];
-        $decodedRules = [];
-
-        foreach ($decodedRulesAndRuleGroups as $ruleOrGroup) {
-            if (isset($ruleOrGroup['condition'])) {
-                $decodedRuleGroups[] = $ruleOrGroup;
-            } elseif (isset($ruleOrGroup['id'])) {
-                $decodedRules[] = $ruleOrGroup;
-            }
-        }
-
         $deserializedRuleGroup = new RuleGroup($mode);
 
-        foreach ($decodedRuleGroups as $decodedRuleGroup) {
-            $deserializedRuleGroup->addRuleGroup($this->deserializeRuleGroup($decodedRuleGroup));
-        }
-        foreach ($decodedRules as $decodedRule) {
-            $deserializedRuleGroup->addRule($this->deserializeRule($decodedRule));
+        foreach ($decodedRuleGroup['rules'] as $ruleOrGroup) {
+            if (isset($ruleOrGroup['condition'])) {
+                $deserializedRuleGroup->addRuleGroup($this->deserializeRuleGroup($ruleOrGroup));
+
+            } elseif (isset($ruleOrGroup['id'])) {
+                $deserializedRuleGroup->addRule($this->deserializeRule($ruleOrGroup));
+            }
         }
 
         return $deserializedRuleGroup;
