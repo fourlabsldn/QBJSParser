@@ -31,9 +31,15 @@ abstract class AbstractDoctrineParser implements ParserInterface
     protected $parameters = [];
 
     /**
-     * @param string $className
+     * @var array
      */
-    public function __construct(string $className)
+    protected $queryBuilderFieldsToEntityProperties = ['id'=>'id'];
+
+    /**
+     * @param string $className
+     * @param array $queryBuilderFieldsToEntityProperties
+     */
+    public function __construct(string $className, array $queryBuilderFieldsToEntityProperties = ['id'=>'id'])
     {
         if (!class_exists($className)) {
             throw new InvalidClassNameException(sprintf(
@@ -42,9 +48,9 @@ abstract class AbstractDoctrineParser implements ParserInterface
                 $className
             ));
         }
-
+        $this->queryBuilderFieldsToEntityProperties = $queryBuilderFieldsToEntityProperties;
         $this->className = $className;
-        $this->validateMapFunction();
+        $this->validateQueryBuilderFieldsToEntityProperties();
     }
 
     /**
@@ -116,9 +122,9 @@ abstract class AbstractDoctrineParser implements ParserInterface
         $this->dqlString .= $prepend ?? '';
 
         $queryBuilderField = $rule->getField();
-        $safeField = $this->queryBuilderField_ToSafeField($queryBuilderField);
+        $safeField = $this->queryBuilderFieldToEntityProperty($queryBuilderField);
         $queryBuilderOperator = $rule->getOperator();
-        $doctrineOperator = $this->queryBuilderOperator_ToDoctrineOperator($queryBuilderOperator);
+        $doctrineOperator = $this->queryBuilderOperatorToDoctrineOperator($queryBuilderOperator);
         $value = $rule->getValue();
 
         $parameterCount = count($this->parameters);
@@ -184,7 +190,7 @@ abstract class AbstractDoctrineParser implements ParserInterface
      * @param string $queryBuilderOperator
      * @return string
      */
-    final private function queryBuilderOperator_ToDoctrineOperator(string $queryBuilderOperator) : string
+    final private function queryBuilderOperatorToDoctrineOperator(string $queryBuilderOperator) : string
     {
         $dictionary = [
             'equal' => '=',
@@ -219,43 +225,31 @@ abstract class AbstractDoctrineParser implements ParserInterface
      * @param string $queryBuilderField
      * @return string
      */
-    final private function queryBuilderField_ToSafeField(string $queryBuilderField) : string
+    final private function queryBuilderFieldToEntityProperty(string $queryBuilderField) : string
     {
-        $dictionary = $this->map_QueryBuilderFields_ToEntityProperties();
+        $dictionary = $this->queryBuilderFieldsToEntityProperties;
 
-        if (!array($dictionary[$queryBuilderField])) {
-            throw new InvalidFieldException();
+        if (!array_key_exists($queryBuilderField, $dictionary)) {
+            throw new InvalidFieldException($queryBuilderField);
         }
 
         return $dictionary[$queryBuilderField];
     }
 
     /**
-     * @return array
-     */
-    protected function map_QueryBuilderFields_ToEntityProperties() : array
-    {
-        $dictionary = [
-            'id' => 'id',
-        ];
-
-        return $dictionary;
-    }
-
-    /**
      * @link http://symfony.com/doc/current/components/property_info.html#components-property-info-extractors
      * @throws MapFunctionException
      */
-    final private function validateMapFunction()
+    final private function validateQueryBuilderFieldsToEntityProperties()
     {
         $propertyInfo = new PropertyInfoExtractor([new ReflectionExtractor()]);
         $properties = $propertyInfo->getProperties($this->className);
 
-        foreach ($this->map_QueryBuilderFields_ToEntityProperties() as $queryBuilderField => $entityField) {
-            if (!in_array($entityField, $properties)) {
+        foreach ($this->queryBuilderFieldsToEntityProperties as $queryBuilderField => $entityProperty) {
+            if (!in_array($entityProperty, $properties)) {
                 throw new MapFunctionException(sprintf(
                     'Property %s is not accessible in %s.',
-                    $entityField,
+                    $entityProperty,
                     $this->className
                 ));
             }

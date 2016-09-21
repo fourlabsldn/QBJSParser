@@ -12,19 +12,19 @@ class MockDoctrineParser extends AbstractDoctrineParser
      */
     public function __construct(string $className)
     {
-        parent::__construct($className);
-    }
-
-    /**
-     * @return array
-     */
-    protected function map_QueryBuilderFields_ToEntityProperties() : array
-    {
-        return [
+        /**
+         * Will work fine when used with
+         * @see MockEntity
+         *
+         * Will trigger errors when used with
+         * @see MockBadEntity
+         * @see MockBadEntity2
+         */
+        parent::__construct($className,[
             'id' => 'id',
             'price' => 'price',
             'name' => 'name',
             'date' => 'date',
-        ];
+        ]);
     }
 }
