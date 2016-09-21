@@ -55,7 +55,7 @@ class JsonDeserializer implements DeserializerInterface
      * @return RuleInterface
      * @throws \Exception
      */
-    private function deserializeRule(array $decodedRule) : RuleInterface
+    private function deserializeRule(array $decodedRule): RuleInterface
     {
         $missingKey = (
             (!array_key_exists('id', $decodedRule)) ||
@@ -65,9 +65,8 @@ class JsonDeserializer implements DeserializerInterface
             (!array_key_exists('value', $decodedRule))
         );
         if ($missingKey) {
-            $keysGiven = array_keys($decodedRule);
-            $keysGiven = implode(", ", $keysGiven);
-            throw new JsonDeserializerRuleKeyException('Keys Given: ' . $keysGiven . '. Expecting id, field, type, operator, value');
+            $keysGiven = implode(', ', array_keys($decodedRule));
+            throw new JsonDeserializerRuleKeyException('Keys given: ' . $keysGiven . '. Expected id, field, type, operator, value');
         }
 
         $id = $decodedRule['id'];
@@ -98,29 +97,20 @@ class JsonDeserializer implements DeserializerInterface
         if (is_null($value) || $value === 'null' || $value === 'NULL') {
             return null; // nulls shouldn't be converted
         }
+
         switch ($type) { /** @see Rule::$type */
             case 'string':
-                $value = strval($value);
-                break;
+                return strval($value);
             case 'integer':
-                $value = intval($value);
-                break;
+                return intval($value);
             case 'double':
-                $value = doubleval($value);
-                break;
+                return doubleval($value);
             case 'date':
-                $value = new \DateTime($value);
-                break;
             case 'time':
-                $value = new \DateTime($value);
-                break;
             case 'datetime':
-                $value = new \DateTime($value);
-                break;
+                return new \DateTimeImmutable($value);
             case 'boolean':
-                $value = boolval($value);
-                break;
+                return boolval($value);
         }
-        return $value;
     }
 }
