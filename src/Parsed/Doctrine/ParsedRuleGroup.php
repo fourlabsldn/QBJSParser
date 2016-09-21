@@ -38,7 +38,12 @@ class ParsedRuleGroup
         $boundParametersCount = count($this->parameters);
 
         if ($dqlParametersCount !== $boundParametersCount) {
-            throw new ParsedRuleGroupConstructionException($dqlString . ' has ' . $boundParametersCount . ' parameters. Expected: ' . $dqlParametersCount);
+            throw new ParsedRuleGroupConstructionException(sprintf(
+                '%s has %u parameters. Expected %u.',
+                $dqlString,
+                $boundParametersCount,
+                $dqlParametersCount
+            ));
         }
     }
 

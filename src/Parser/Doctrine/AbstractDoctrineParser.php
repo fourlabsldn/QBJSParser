@@ -23,22 +23,27 @@ abstract class AbstractDoctrineParser implements ParserInterface
     /**
      * @var string
      */
-    protected $dqlString;
+    protected $dqlString = '';
 
     /**
      * @var array
      */
-    protected $parameters;
+    protected $parameters = [];
 
     /**
      * @param string $className
      */
     public function __construct(string $className)
     {
+        if (!class_exists($className)) {
+            throw new InvalidClassNameException(sprintf(
+                'Expected valid class name in %s. %s was given, and it is not a valid class name.',
+                static::class,
+                $className
+            ));
+        }
+
         $this->className = $className;
-        $this->dqlString = '';
-        $this->parameters = [];
-        $this->validateClassName();
         $this->validateMapFunction();
     }
 
@@ -119,17 +124,17 @@ abstract class AbstractDoctrineParser implements ParserInterface
         $parameterCount = count($this->parameters);
 
         if ($this->queryBuilderOperator_UsesValue($queryBuilderOperator)) {
-            $this->dqlString .=   ' object.' . $safeField . ' ' . $doctrineOperator . ' ?' . $parameterCount . ' ';
+            $this->dqlString .= ' object.' . $safeField . ' ' . $doctrineOperator . ' ?' . $parameterCount . ' ';
             $this->parameters[$parameterCount] = $value;
         } elseif ($this->queryBuilderOperator_UsesArray($queryBuilderOperator)) {
-            $this->dqlString .=   ' object.' . $safeField . ' ' . $doctrineOperator . ' (?'. $parameterCount . ') ';
+            $this->dqlString .= ' object.' . $safeField . ' ' . $doctrineOperator . ' (?'. $parameterCount . ') ';
             $this->parameters[$parameterCount] = $value;
         } elseif ($this->queryBuilderOperator_UsesArrayOfTwo($queryBuilderOperator)) {
-            $this->dqlString .=   ' object.' . $safeField . ' ' . $doctrineOperator . ' ?'. $parameterCount . ' AND ?'. ($parameterCount + 1) . ' ';
+            $this->dqlString .= ' object.' . $safeField . ' ' . $doctrineOperator . ' ?'. $parameterCount . ' AND ?'. ($parameterCount + 1) . ' ';
             $this->parameters[$parameterCount] = $value[0];
             $this->parameters[$parameterCount+1] = $value[1];
         } elseif ($this->queryBuilderOperator_UsesNull($queryBuilderOperator)) {
-            $this->dqlString .=   ' object.' . $safeField . ' ' . $doctrineOperator . ' ';
+            $this->dqlString .= ' object.' . $safeField . ' ' . $doctrineOperator . ' ';
         }
 
         $this->dqlString .= $append ?? '';
@@ -233,17 +238,8 @@ abstract class AbstractDoctrineParser implements ParserInterface
         $dictionary = [
             'id' => 'id',
         ];
-        return $dictionary;
-    }
 
-    /**
-     * @throws InvalidClassNameException
-     */
-    final private function validateClassName()
-    {
-        if (!class_exists($this->className)) {
-            throw new InvalidClassNameException('Expected valid class name in ' . static::class . '. ' .$this->className . ' was given, and it is not a valid class name.');
-        }
+        return $dictionary;
     }
 
     /**
@@ -252,18 +248,16 @@ abstract class AbstractDoctrineParser implements ParserInterface
      */
     final private function validateMapFunction()
     {
-        $reflectionExtractor = new ReflectionExtractor();
-        $listExtractors = array($reflectionExtractor);
-
-        $propertyInfo = new PropertyInfoExtractor(
-            $listExtractors
-        );
+        $propertyInfo = new PropertyInfoExtractor([new ReflectionExtractor()]);
         $properties = $propertyInfo->getProperties($this->className);
 
         foreach ($this->map_QueryBuilderFields_ToEntityProperties() as $queryBuilderField => $entityField) {
             if (!in_array($entityField, $properties)) {
-                throw new MapFunctionException(static::class . ' has an invalid map_QueryBuilderFields_ToEntityProperties() function. '.
-                    'The property ' . $entityField . ' is not accessible in ' . $this->className . '.');
+                throw new MapFunctionException(sprintf(
+                    'Property %s is not accessible in %s.',
+                    $entityField,
+                    $this->className
+                ));
             }
         }
     }
