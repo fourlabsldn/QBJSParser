@@ -23,22 +23,27 @@ abstract class AbstractDoctrineParser implements ParserInterface
     /**
      * @var string
      */
-    protected $dqlString;
+    protected $dqlString = '';
 
     /**
      * @var array
      */
-    protected $parameters;
+    protected $parameters = [];
 
     /**
      * @param string $className
      */
     public function __construct(string $className)
     {
+        if (!class_exists($className)) {
+            throw new InvalidClassNameException(sprintf(
+                'Expected valid class name in %s. %s was given, and it is not a valid class name.',
+                static::class,
+                $className
+            ));
+        }
+
         $this->className = $className;
-        $this->dqlString = '';
-        $this->parameters = [];
-        $this->validateClassName();
         $this->validateMapFunction();
     }
 
@@ -234,16 +239,6 @@ abstract class AbstractDoctrineParser implements ParserInterface
             'id' => 'id',
         ];
         return $dictionary;
-    }
-
-    /**
-     * @throws InvalidClassNameException
-     */
-    final private function validateClassName()
-    {
-        if (!class_exists($this->className)) {
-            throw new InvalidClassNameException('Expected valid class name in ' . static::class . '. ' .$this->className . ' was given, and it is not a valid class name.');
-        }
     }
 
     /**
