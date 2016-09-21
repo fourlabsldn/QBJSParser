@@ -145,14 +145,7 @@ class Rule implements RuleInterface
         $this->type = $type;
         $this->operator = $operator;
         $this->value = $value;
-        $this->validateConstruction();
-    }
 
-    /**
-     * @throws RuleConstructionException
-     */
-    private function validateConstruction()
-    {
         $this->validate_Type_Operator();
         $this->validate_Type_ValueType();
         $this->validate_Operator_ValueType();
@@ -167,7 +160,11 @@ class Rule implements RuleInterface
     private function validate_Type_Operator()
     {
         if (! in_array($this->operator, self::TYPES_OPERATORS[$this->type])) {
-            throw new RuleConstructionException("Invalid Type/Operator Combination \nType: {$this->type} \nOperator: {$this->operator}");
+            throw new RuleConstructionException(sprintf(
+                "Invalid Type/Operator Combination\nType: %s\nOperator: %s",
+                $this->type,
+                $this->operator
+            ));
         }
     }
 
@@ -177,8 +174,12 @@ class Rule implements RuleInterface
     private function validate_Type_ValueType()
     {
         $valueType = $this->valueType($this->value);
-        if (! in_array($valueType, self::TYPES_VALUETYPES[$this->type])) {
-            throw new RuleConstructionException("Invalid Type/ValueType Combination \nType: {$this->type} \nValue: {$valueType}");
+        if (!in_array($valueType, self::TYPES_VALUETYPES[$this->type])) {
+            throw new RuleConstructionException(sprintf(
+                "Invalid Type/ValueType Combination\nType: %s\nValue: %s",
+                $this->type,
+                $valueType
+            ));
         }
     }
 
@@ -188,9 +189,12 @@ class Rule implements RuleInterface
     private function validate_Operator_ValueType()
     {
         $valueType = $this->valueType($this->value);
-
-        if (! in_array($valueType, self::OPERATORS_VALUETYPES[$this->operator])) {
-            throw new RuleConstructionException("Invalid Operator/ValueType Combination \nOperator: {$this->operator} \nValue: {$valueType}");
+        if (!in_array($valueType, self::OPERATORS_VALUETYPES[$this->operator])) {
+            throw new RuleConstructionException(sprintf(
+                "Invalid Operator/ValueType Combination\nOperator: %s\nValue: %s",
+                $this->operator,
+                $valueType
+            ));
         }
     }
 
@@ -202,18 +206,22 @@ class Rule implements RuleInterface
      */
     private function validate_ValueIsArray()
     {
-        if ($this->valueType($this->value) === 'array') {
-            $elements = $this->value;
+        if ($this->valueType($this->value) !== 'array') {
+            return;
+        }
 
-            foreach ($elements as $element) {
-                $elementValueType = $this->valueType($element);
-                $allowedValueTypes = array_filter(self::TYPES_VALUETYPES[$this->type], function ($allowedValueType, $key) {
-                    return $allowedValueType !== 'array';
-                }, ARRAY_FILTER_USE_BOTH);
+        foreach ($this->value as $element) {
+            $elementValueType = $this->valueType($element);
+            $allowedValueTypes = array_filter(self::TYPES_VALUETYPES[$this->type], function ($allowedValueType) {
+                return $allowedValueType !== 'array';
+            }, ARRAY_FILTER_USE_BOTH);
 
-                if (! in_array($elementValueType, $allowedValueTypes)) {
-                    throw new RuleConstructionException("Invalid Operator/ValueElementsType \nOperator: {$this->operator} \nElementValueType: {$elementValueType}");
-                }
+            if (!in_array($elementValueType, $allowedValueTypes)) {
+                throw new RuleConstructionException(sprintf(
+                    "Invalid Operator/ValueElementsType\nOperator: %s\nElementValueType: %s",
+                    $this->operator,
+                    $elementValueType
+                ));
             }
         }
     }
@@ -228,12 +236,20 @@ class Rule implements RuleInterface
          * Don't throw an exception if the valueType is not an array,
          * @see Rule::validate_Operator_ValueType() is in charge of that
          */
-        if ($this->operator === 'between' && $this->valueType($this->value) === 'array') {
-            $valueCount = count($this->value);
-            if ($valueCount !== 2) {
-                throw new RuleConstructionException("Invalid Operator/ValueCount Combination \nOperator: {$this->operator} \nValueCount: {$valueCount}");
-            }
+        if ($this->operator !== 'between' || $this->valueType($this->value) !== 'array') {
+            return;
         }
+
+        $valueCount = count($this->value);
+        if ($valueCount === 2) {
+            return;
+        }
+
+        throw new RuleConstructionException(sprintf(
+            "Invalid Operator/ValueCount Combination \nOperator: %s\nValueCount: %u",
+            $this->operator,
+            $valueCount
+        ));
     }
 
     /**
@@ -291,8 +307,8 @@ class Rule implements RuleInterface
         $valueType = gettype($value);
         if (gettype($value) === 'object') {
             return get_class($value);
-        } else {
-            return $valueType;
         }
+
+        return $valueType;
     }
 }
