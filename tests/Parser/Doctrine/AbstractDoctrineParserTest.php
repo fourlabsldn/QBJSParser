@@ -159,7 +159,3 @@ class AbstractDoctrineParserTest extends \PHPUnit_Framework_TestCase
         $this->fail('Expected ' . InvalidClassNameException::class);
     }
 }
-
-
-
-
