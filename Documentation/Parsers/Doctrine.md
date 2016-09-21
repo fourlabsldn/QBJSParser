@@ -1,15 +1,16 @@
-# Doctrine Custom Parsers
+# Doctrine Custom Parser
 
-#### What are they?
-- Doctrine Custom Parsers implement `FL\QBJSParser\ParserInterface` and can extend `FL\QBJSParser\Doctrine\AbstractDoctrineParser`.
-- Doctrine Custom Parsers parse `FL\QBJSParser\Model\RuleGroup` into a `FL\QBJSParser\Parsed\Doctrine\ParsedRuleGroup`.
+#### What is it?
+- A Doctrine Custom Parser implements `FL\QBJSParser\ParserInterface` and extends `FL\QBJSParser\Doctrine\AbstractDoctrineParser`.
+- A Doctrine Custom Parser parses `FL\QBJSParser\Model\RuleGroup` into a `FL\QBJSParser\Parsed\Doctrine\ParsedRuleGroup`.
 - A `ParsedRuleGroup` has two properties accessible via getters: `$dqlString` and `$parameters`. 
 - Use the `ParsedRuleGroup` to create a Doctrine Query with `Doctrine\ORM\EntityManager::createQuery($dql)` and `Doctrine\ORM\Query::setParameters($parameters)`
 
 #### Usage
-- Each Doctrine entity will need a corresponding Doctrine Custom Parser.
-- Your Doctrine Custom Parser should call `parent::construct($className)` with the class name of its corresponding Doctrine entity.
-- Your Doctrine Custom Parser should override `parent::map_QueryBuilderFields_ToEntityProperties` according to the properties you wish to enable searching for in your entity.
+- Create one `DoctrineCustomParser` by extending `FL\QBJSParser\Doctrine\AbstractDoctrineParser`.
+- When you are parsing a `$jsonString` for a particular Doctrine Entity, create an instance of `DoctrineCustomParser`
+    - Your instance should call `parent::__construct` with the class name of its corresponding Doctrine entity.
+    - Your instance should call `parent::__construct` with an array `$queryBuilderFieldsToEntityProperties` according to the properties you wish to enable searching for, in your entity.
 
 ## Example
 
@@ -57,28 +58,15 @@ Create a corresponding Doctrine Custom Parser class such as this one,
 ```php
 <?php
 
-namespace YourNamespace\YourApp\QBJSParsers;
+namespace YourNamespace\YourApp\QBJSParser;
 
-use YourNamespace\YourApp\Entity\Product;
 use FL\QBJSParser\Parser\Doctrine\AbstractDoctrineParser;
 
-class ProductParser extends AbstractDoctrineParser
+class DoctrineCustomParser extends AbstractDoctrineParser
 {
-    public function __construct()
+    public function __construct(string $className, array $queryBuilderFieldsToEntityProperties)
     {
-        parent::__construct(Product::class);
-    }
-
-    /**
-     * @return array
-     */
-    protected function map_QueryBuilderFields_ToEntityProperties() : array
-    {
-        // only allow searches by id and price
-        return [
-            'id' => 'id',
-            'price' => 'price',
-        ];
+        parent::__construct($className, $queryBuilderFieldsToEntityProperties);
     }
 }
 ```
@@ -93,11 +81,16 @@ namespace YourNamespace\YourApp\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
 use FL\QBJSParser\Serializer\JsonDeserializer;
-use YourNamespace\YourApp\QBJSParser\ProductParser;
+use YourNamespace\YourApp\QBJSParser\DoctrineCustomParser;
+use YourNamespace\YourApp\Entity\Product;
 
 //...
     $jsonDeserializer = new JsonDeserializer();
-    $parser = new ProductParser();
+    $parser = new DoctrineCustomParser(Product::class, [
+        'id'=>'id',
+        'name'=>'name',
+        'price'=>'price',
+    ]);
     
     $deserializedRuleGroup = $jsonDeserializer->deserialize($jsonString);
     $parsedRuleGroup = $parser->parse($deserializedRuleGroup);

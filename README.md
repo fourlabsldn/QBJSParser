@@ -33,7 +33,7 @@ Parse JSON coming from [jQuery QueryBuilder](http://querybuilder.js.org/), such 
 - Abstract Parsers live at `FL\QBJSParser\Parser`, extend these into custom parsers, as explained below.
 
 ## Creating Custom Parsers
-- [**Doctrine Custom Parsers**](Documentation/Parsers/Doctrine.md)
+- [**Doctrine Custom Parser**](Documentation/Parsers/Doctrine.md)
 
 
 ## Tests
