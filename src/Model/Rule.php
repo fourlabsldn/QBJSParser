@@ -57,7 +57,7 @@ class Rule implements RuleInterface
         'integer' => ['integer', 'array', 'NULL'],
         'double' => ['double', 'array', 'NULL'],
         'boolean' => ['boolean', 'NULL'],
-        'datetime' => [\DateTime::class, 'array', 'NULL'],
+        'datetime' => [\DateTimeImmutable::class, 'array', 'NULL'],
     ];
 
     /**
@@ -74,15 +74,15 @@ class Rule implements RuleInterface
      * @var array
      */
     const OPERATORS_VALUETYPES = [
-        'equal' => ['string', 'integer', 'double', 'boolean', \DateTime::class],
-        'not_equal' => ['string', 'integer', 'double', 'boolean', \DateTime::class],
+        'equal' => ['string', 'integer', 'double', 'boolean', \DateTimeImmutable::class],
+        'not_equal' => ['string', 'integer', 'double', 'boolean', \DateTimeImmutable::class],
         'in' => ['array'],
         'not_in' => ['array'],
         'between' => ['array'],
-        'less' => ['integer', 'double', \DateTime::class],
-        'less_or_equal' => ['integer', 'double', \DateTime::class],
-        'greater' => ['integer', 'double', \DateTime::class],
-        'greater_or_equal' => ['integer', 'double', \DateTime::class],
+        'less' => ['integer', 'double', \DateTimeImmutable::class],
+        'less_or_equal' => ['integer', 'double', \DateTimeImmutable::class],
+        'greater' => ['integer', 'double', \DateTimeImmutable::class],
+        'greater_or_equal' => ['integer', 'double', \DateTimeImmutable::class],
         'begins_with' => ['string'],
         'not_begins_with' => ['string'],
         'contains' => ['string'],

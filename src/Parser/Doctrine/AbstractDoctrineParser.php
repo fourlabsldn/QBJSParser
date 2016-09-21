@@ -223,7 +223,7 @@ abstract class AbstractDoctrineParser implements ParserInterface
     {
         $dictionary = $this->map_QueryBuilderFields_ToEntityProperties();
 
-        if (!isset($dictionary[$queryBuilderField])) {
+        if (!array($dictionary[$queryBuilderField])) {
             throw new InvalidFieldException();
         }
 

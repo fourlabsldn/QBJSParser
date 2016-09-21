@@ -24,6 +24,7 @@ class MockDoctrineParser extends AbstractDoctrineParser
             'id' => 'id',
             'price' => 'price',
             'name' => 'name',
+            'date' => 'date',
         ];
     }
 }

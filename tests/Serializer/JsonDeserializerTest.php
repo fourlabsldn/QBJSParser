@@ -84,7 +84,6 @@ class JsonDeserializerTest extends \PHPUnit_Framework_TestCase
     {
         $ruleGroupA = new RuleGroup(RuleGroupInterface::MODE_AND);
         $ruleGroupA_RuleA = new Rule('price', 'price', 'double', 'less', 10.25);
-        $ruleGroupA_RuleB = new Rule('price', 'price', 'double', 'in', [10.25, 3.23, 5.22]);
         $ruleGroupA_RuleB = new Rule('date', 'date', 'datetime', 'in', [new \DateTimeImmutable("now")]);
         $ruleGroupA->addRule($ruleGroupA_RuleA);
         $ruleGroupA->addRule($ruleGroupA_RuleB);
@@ -94,7 +93,7 @@ class JsonDeserializerTest extends \PHPUnit_Framework_TestCase
                 '"condition":"AND",'.
                 '"rules":[' .
                     '{"id":"price","field":"price","type":"double","input":"text","operator":"less","value":"10.25"},' .
-                    '{"id":"price","field":"price","type":"double","input":"text","operator":"in","value":["10.25", "3.23", "5.22"]}' .
+                    '{"id":"date","field":"date","type":"datetime","input":"text","operator":"in","value":["now"]}' .
                 ']' .
             '}';
 
