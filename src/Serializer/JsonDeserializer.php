@@ -19,7 +19,7 @@ class JsonDeserializer implements DeserializerInterface
     public function deserialize(string $string) : RuleGroupInterface
     {
         $decodedRuleGroup = json_decode($string, true);
-        if(is_null($decodedRuleGroup) || !is_array($decodedRuleGroup)){
+        if (is_null($decodedRuleGroup) || !is_array($decodedRuleGroup)) {
             throw new JsonDeserializerInvalidJsonException();
         }
         $deserializedRuleGroup = $this->deserializeRuleGroup($decodedRuleGroup);
@@ -98,13 +98,12 @@ class JsonDeserializer implements DeserializerInterface
         $operator = $decodedRule['operator'];
         $value = $decodedRule['value'];
 
-        if(!is_array($value)){
+        if (!is_array($value)) {
             $value = $this->convertValueAccordingToType($type, $value);
             return new Rule($id, $field, $type, $operator, $value);
-        }
-        else{
+        } else {
             $valuesArray = $value;
-            foreach($valuesArray as $key => $value){
+            foreach ($valuesArray as $key => $value) {
                 $valuesArray[$key] = $this->convertValueAccordingToType($type, $value);
             }
             return new Rule($id, $field, $type, $operator, $valuesArray);
@@ -118,7 +117,7 @@ class JsonDeserializer implements DeserializerInterface
      */
     private function convertValueAccordingToType(string $type, $value)
     {
-        if(is_null($value) || $value === 'null' || $value === 'NULL'){
+        if (is_null($value) || $value === 'null' || $value === 'NULL') {
             return null; // nulls shouldn't be converted
         }
         switch ($type) { /** @see Rule::$type */
@@ -146,5 +145,4 @@ class JsonDeserializer implements DeserializerInterface
         }
         return $value;
     }
-
 }

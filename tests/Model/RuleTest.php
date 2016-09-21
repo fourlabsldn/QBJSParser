@@ -135,10 +135,10 @@ class RuleTest extends \PHPUnit_Framework_TestCase
 
         $appendToErrorSummary = '';
         $errorValue = $combination['value'];
-        if(
-            ( !is_array( $errorValue ) ) &&
-            ( ( !is_object( $errorValue ) && settype( $errorValue, 'string' ) !== false ) ||
-                ( is_object( $errorValue ) && method_exists( $errorValue, '__toString' ) ) )
+        if (
+            (!is_array($errorValue)) &&
+            ((!is_object($errorValue) && settype($errorValue, 'string') !== false) ||
+                (is_object($errorValue) && method_exists($errorValue, '__toString')))
         ) {
             $appendToErrorSummary = ' AND value: ' . strval($errorValue);
         }

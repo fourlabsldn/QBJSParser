@@ -2,7 +2,6 @@
 
 namespace FL\QBJSParser\Exception\Serializer;
 
-class JsonDeserializerMissingConditionException extends \DomainException
+class JsonDeserializerConditionException extends \DomainException
 {
-
 }

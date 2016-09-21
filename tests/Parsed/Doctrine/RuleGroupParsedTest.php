@@ -5,7 +5,7 @@ namespace FL\QBJSParser\Tests\Parsed\Doctrine;
 use FL\QBJSParser\Parsed\Doctrine\ParsedRuleGroup;
 use FL\QBJSParser\Exception\Parsed\Doctrine\ParsedRuleGroupConstructionException;
 
-class ParsedRuleGroupTest extends \PHPUnit_Framework_TestCase
+class RuleGroupParsedTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var array
@@ -65,7 +65,6 @@ class ParsedRuleGroupTest extends \PHPUnit_Framework_TestCase
             $this->assertParsedRuleGroupConstructionException(function () use ($dqlString, $parameters) {
                 new ParsedRuleGroup($dqlString, $parameters);
             }, $invalid_Dql_Parameter['dqlString']);
-
         }
     }
 

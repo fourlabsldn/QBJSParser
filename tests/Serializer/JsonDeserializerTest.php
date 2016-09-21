@@ -86,22 +86,22 @@ class JsonDeserializerTest extends \PHPUnit_Framework_TestCase
          */
         $ruleGroups_inRuleGroupA = [];
         $ruleGroups_inRuleGroupB = [];
-        foreach($ruleGroupA->getRuleGroups() as $ruleGroup){
+        foreach ($ruleGroupA->getRuleGroups() as $ruleGroup) {
             $ruleGroups_inRuleGroupA[] = $ruleGroup;
         }
-        foreach($ruleGroupB->getRuleGroups() as $ruleGroup){
+        foreach ($ruleGroupB->getRuleGroups() as $ruleGroup) {
             $ruleGroups_inRuleGroupB[] = $ruleGroup;
         }
 
-        foreach($ruleGroups_inRuleGroupA as $key => $ruleGroup){
+        foreach ($ruleGroups_inRuleGroupA as $key => $ruleGroup) {
             /** @var RuleGroupInterface $ruleGroup */
-            if(!isset($ruleGroups_inRuleGroupB[$key])){
+            if (!isset($ruleGroups_inRuleGroupB[$key])) {
                 $this->fail('Number of RuleGroups not matching');
             }
             $this->assertRuleGroupsAreEqual($ruleGroup, $ruleGroups_inRuleGroupB[$key]);
         }
-        foreach($ruleGroups_inRuleGroupB as $key => $ruleGroup){ // do both, in case $ruleGroups_inRuleGroupB has more ruleGroups than $ruleGroups_inRuleGroupA
-            if(!isset($ruleGroups_inRuleGroupA[$key])){
+        foreach ($ruleGroups_inRuleGroupB as $key => $ruleGroup) { // do both, in case $ruleGroups_inRuleGroupB has more ruleGroups than $ruleGroups_inRuleGroupA
+            if (!isset($ruleGroups_inRuleGroupA[$key])) {
                 $this->fail('Number of RuleGroups not matching');
             }
             $this->assertRuleGroupsAreEqual($ruleGroup, $ruleGroups_inRuleGroupA[$key]);
@@ -112,21 +112,21 @@ class JsonDeserializerTest extends \PHPUnit_Framework_TestCase
          */
         $rules_inRuleGroupA = [];
         $rules_inRuleGroupB = [];
-        foreach($ruleGroupA->getRules() as $rule){
+        foreach ($ruleGroupA->getRules() as $rule) {
             $rules_inRuleGroupA[] = $rule;
         }
-        foreach($ruleGroupB->getRules() as $rule){
+        foreach ($ruleGroupB->getRules() as $rule) {
             $rules_inRuleGroupB[] = $rule;
         }
 
-        foreach($rules_inRuleGroupA as $key => $rule){
-            if(!isset($rules_inRuleGroupB[$key])){
+        foreach ($rules_inRuleGroupA as $key => $rule) {
+            if (!isset($rules_inRuleGroupB[$key])) {
                 $this->fail('Number of Rules not matching');
             }
             $this->assertEquals($rule, $rules_inRuleGroupB[$key]);
         }
-        foreach($rules_inRuleGroupB as $key => $rule){ // do both, in case $rules_inRuleGroupB has more rules than $rules_inRuleGroupA
-            if(!isset($rules_inRuleGroupA[$key])){
+        foreach ($rules_inRuleGroupB as $key => $rule) { // do both, in case $rules_inRuleGroupB has more rules than $rules_inRuleGroupA
+            if (!isset($rules_inRuleGroupA[$key])) {
                 $this->fail('Number of Rules not matching');
             }
             $this->assertEquals($rule, $rules_inRuleGroupA[$key]);
