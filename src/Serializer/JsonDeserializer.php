@@ -110,6 +110,8 @@ class JsonDeserializer implements DeserializerInterface
                 return new \DateTimeImmutable($value);
             case 'boolean':
                 return boolval($value);
+            default:
+                return $value;
         }
     }
 }
