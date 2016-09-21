@@ -54,3 +54,17 @@ Parse JSON coming from [jQuery QueryBuilder](http://querybuilder.js.org/), such 
 - [**Doctrine Custom Parsers**](Documentation/Parsers/Doctrine.md)
 
 
+## Tests
+
+To run the test suite, you need [composer](http://getcomposer.org).
+
+```bash
+    $ composer install
+    $ phpunit
+```
+
+## License
+
+QBJSParser is licensed under the MIT license.
+
+
