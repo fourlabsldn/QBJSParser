@@ -22,15 +22,17 @@ class RuleGroup implements RuleGroupInterface
     private $mode;
 
     /**
-     * @param int $mode
+     * @param string $mode
      */
-    public function __construct(int $mode)
+    public function __construct(string $mode)
     {
         $this->rules = new \SplObjectStorage();
         $this->ruleGroups = new \SplObjectStorage();
-        if (!in_array($mode, [static::MODE_AND, static::MODE_OR])) {
+
+        if (!in_array($mode, static::DEFINED_MODES)) {
             throw new RuleGroupConstructionException();
         }
+
         $this->mode = $mode;
     }
 

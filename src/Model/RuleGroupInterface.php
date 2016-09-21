@@ -7,8 +7,14 @@ interface RuleGroupInterface
     /**
      * @link http://stackoverflow.com/questions/5350672/pros-and-cons-of-interface-constants#5354044
      */
-    const MODE_AND = 0;
-    const MODE_OR = 1;
+    const MODE_AND = 'AND';
+
+    const MODE_OR = 'OR';
+
+    const DEFINED_MODES = [
+        MODE_AND,
+        MODE_OR,
+    ];
 
     /**
      * @return \SplObjectStorage|RuleInterface[]
@@ -46,7 +52,7 @@ interface RuleGroupInterface
     public function removeRuleGroup(RuleGroupInterface $ruleGroup) : RuleGroupInterface;
 
     /**
-     * @return int
+     * @return string
      */
-    public function getMode() : int;
+    public function getMode(): string;
 }

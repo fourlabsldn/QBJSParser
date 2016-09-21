@@ -32,29 +32,17 @@ class JsonDeserializer implements DeserializerInterface
      */
     private function deserializeRuleGroup(array $decodedRuleGroup) : RuleGroupInterface
     {
-        if (!isset($decodedRuleGroup['condition'])) {
+        if (!array_key_exists('condition', $decodedRuleGroup)) {
             throw new JsonDeserializerMissingConditionException('Missing condition in RuleGroup');
         }
 
-        switch ($decodedRuleGroup['condition']) {
-            case 'AND':
-                $mode = RuleGroupInterface::MODE_AND;
-                break;
-            case 'OR':
-                $mode = RuleGroupInterface::MODE_OR;
-                break;
-            default:
-                throw new JsonDeserializerInvalidConditionException('Invalid condition ' . $decodedRuleGroup['condition'] . ' in RuleGroup');
-                break;
-        }
-
-        $deserializedRuleGroup = new RuleGroup($mode);
+        $deserializedRuleGroup = new RuleGroup($decodedRuleGroup['condition']);
 
         foreach ($decodedRuleGroup['rules'] as $ruleOrGroup) {
-            if (isset($ruleOrGroup['condition'])) {
+            if (array_key_exists('condition', $ruleOrGroup)) {
                 $deserializedRuleGroup->addRuleGroup($this->deserializeRuleGroup($ruleOrGroup));
 
-            } elseif (isset($ruleOrGroup['id'])) {
+            } elseif (array_key_exists('id', $ruleOrGroup)) {
                 $deserializedRuleGroup->addRule($this->deserializeRule($ruleOrGroup));
             }
         }
