@@ -55,7 +55,7 @@ class DoctrineParser implements ParserInterface
 
     /**
      * @inheritdoc
-     * @return array
+     * @return RuleGroupInterface
      */
     final public function parse(RuleGroupInterface $ruleGroup) : ParsedRuleGroup
     {
