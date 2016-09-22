@@ -30,10 +30,10 @@ Parse JSON coming from [jQuery QueryBuilder](http://querybuilder.js.org/), such 
 
 - `FL\QBJSParser\Serializer\JsonDeserializer::deserialize()` deserializes a JSON string into an instance of `FL\QBJSParser\Model\RuleGroup`
 - This `RuleGroup` object can then be parsed into something your ORM/ODM can use, to create a query.
-- Abstract Parsers live at `FL\QBJSParser\Parser`, extend these into custom parsers, as explained below.
+- Parsers live at `FL\QBJSParser\Parser`.
 
-## Creating Custom Parsers
-- [**Doctrine Custom Parser**](Documentation/Parsers/Doctrine.md)
+## Available Parsers
+- [**Doctrine Parser**](Documentation/Parsers/Doctrine.md)
 
 
 ## Tests

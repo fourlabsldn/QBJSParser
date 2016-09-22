@@ -7,10 +7,11 @@ use FL\QBJSParser\Exception\Parser\Doctrine\MapFunctionException;
 use FL\QBJSParser\Model\Rule;
 use FL\QBJSParser\Model\RuleGroup;
 use FL\QBJSParser\Model\RuleGroupInterface;
-use FL\QBJSParser\Tests\Util\MockBadEntity;
-use FL\QBJSParser\Tests\Util\MockBadEntity2;
-use FL\QBJSParser\Tests\Util\MockDoctrineParser;
+use FL\QBJSParser\Parser\Doctrine\DoctrineParser;
+use FL\QBJSParser\Tests\Util\MockBadEntity2DoctrineParser;
+use FL\QBJSParser\Tests\Util\MockBadEntityDoctrineParser;
 use FL\QBJSParser\Tests\Util\MockEntity;
+use FL\QBJSParser\Tests\Util\MockEntityDoctrineParser;
 
 class DoctrineParserTest extends \PHPUnit_Framework_TestCase
 {
@@ -82,7 +83,7 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
      */
     public function testMockEntity_ParseCases()
     {
-        $parser = new MockDoctrineParser(MockEntity::class);
+        $parser = new MockEntityDoctrineParser();
 
         foreach ($this->mockEntity_ParseCases as $case) {
             $parsed = $parser->parse($case['rulegroup']);
@@ -98,18 +99,10 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function testMockEntity()
-    {
-        new MockDoctrineParser(MockEntity::class); // testing there's no exception
-    }
-
-    /**
-     * @test
-     */
     public function testMockBadEntity()
     {
         $this->assertMapFunctionException(function () {
-            new MockDoctrineParser(MockBadEntity::class);
+            new MockBadEntityDoctrineParser();
         });
     }
 
@@ -119,7 +112,7 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
     public function testMockBadEntity2()
     {
         $this->assertMapFunctionException(function () {
-            new MockDoctrineParser(MockBadEntity2::class);
+            new MockBadEntity2DoctrineParser();
         });
     }
 
@@ -129,7 +122,7 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
     public function testNonExistentClass()
     {
         $this->assertInvalidClassNameException(function () {
-            new MockDoctrineParser('This_Really_Long_Class_Name_With_Invalid_Characters_@#_IS_NOT_A_CLASS');
+            new DoctrineParser('This_Really_Long_Class_Name_With_Invalid_Characters_@#_IS_NOT_A_CLASS');
         });
     }
 

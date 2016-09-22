@@ -6,8 +6,7 @@ use FL\QBJSParser\Model\Rule;
 use FL\QBJSParser\Model\RuleGroup;
 use FL\QBJSParser\Model\RuleGroupInterface;
 use FL\QBJSParser\Serializer\JsonDeserializer;
-use FL\QBJSParser\Tests\Util\MockDoctrineParser;
-use FL\QBJSParser\Tests\Util\MockEntity;
+use FL\QBJSParser\Tests\Util\MockEntityDoctrineParser;
 
 class JsonDeserializerTest extends \PHPUnit_Framework_TestCase
 {
@@ -100,7 +99,7 @@ class JsonDeserializerTest extends \PHPUnit_Framework_TestCase
         $jsonDeserializer = new JsonDeserializer();
         $deserializedRuleGroup = $jsonDeserializer->deserialize($jsonString);
 
-        $mockDoctrineParser = new MockDoctrineParser(MockEntity::class);
+        $mockDoctrineParser = new MockEntityDoctrineParser();
         $mockDoctrineParser->parse($deserializedRuleGroup);
         $this->assertRuleGroupsAreEqual($deserializedRuleGroup, $ruleGroupA);
     }
