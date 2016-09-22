@@ -3,7 +3,7 @@
 namespace FL\QBJSParser\Tests\Parser\Doctrine;
 
 use FL\QBJSParser\Exception\Parser\Doctrine\InvalidClassNameException;
-use FL\QBJSParser\Exception\Parser\Doctrine\MapFunctionException;
+use FL\QBJSParser\Exception\Parser\Doctrine\FieldMappingException;
 use FL\QBJSParser\Model\Rule;
 use FL\QBJSParser\Model\RuleGroup;
 use FL\QBJSParser\Model\RuleGroupInterface;
@@ -133,10 +133,10 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
     {
         try {
             $function();
-        } catch (MapFunctionException $e) {
+        } catch (FieldMappingException $e) {
             return;
         }
-        $this->fail('Expected ' . MapFunctionException::class);
+        $this->fail('Expected ' . FieldMappingException::class);
     }
 
     /**

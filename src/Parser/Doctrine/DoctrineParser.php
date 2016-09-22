@@ -5,7 +5,7 @@ namespace FL\QBJSParser\Parser\Doctrine;
 use FL\QBJSParser\Exception\Parser\Doctrine\InvalidClassNameException;
 use FL\QBJSParser\Exception\Parser\Doctrine\InvalidFieldException;
 use FL\QBJSParser\Exception\Parser\Doctrine\InvalidOperatorException;
-use FL\QBJSParser\Exception\Parser\Doctrine\MapFunctionException;
+use FL\QBJSParser\Exception\Parser\Doctrine\FieldMappingException;
 use FL\QBJSParser\Model\RuleGroupInterface;
 use FL\QBJSParser\Model\RuleInterface;
 use FL\QBJSParser\Parsed\Doctrine\ParsedRuleGroup;
@@ -238,7 +238,7 @@ class DoctrineParser implements ParserInterface
 
     /**
      * @link http://symfony.com/doc/current/components/property_info.html#components-property-info-extractors
-     * @throws MapFunctionException
+     * @throws FieldMappingException
      */
     final private function validateQueryBuilderFieldsToEntityProperties()
     {
@@ -247,7 +247,7 @@ class DoctrineParser implements ParserInterface
 
         foreach ($this->queryBuilderFieldsToEntityProperties as $queryBuilderField => $entityProperty) {
             if (!in_array($entityProperty, $properties)) {
-                throw new MapFunctionException(sprintf(
+                throw new FieldMappingException(sprintf(
                     'Property %s is not accessible in %s.',
                     $entityProperty,
                     $this->className

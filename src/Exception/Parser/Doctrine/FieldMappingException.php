@@ -2,6 +2,6 @@
 
 namespace FL\QBJSParser\Exception\Parser\Doctrine;
 
-class MapFunctionException extends \DomainException
+class FieldMappingException extends \DomainException
 {
 }
