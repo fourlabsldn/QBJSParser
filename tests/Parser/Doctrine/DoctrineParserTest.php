@@ -12,7 +12,7 @@ use FL\QBJSParser\Tests\Util\MockBadEntity2;
 use FL\QBJSParser\Tests\Util\MockDoctrineParser;
 use FL\QBJSParser\Tests\Util\MockEntity;
 
-class AbstractDoctrineParserTest extends \PHPUnit_Framework_TestCase
+class DoctrineParserTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var array

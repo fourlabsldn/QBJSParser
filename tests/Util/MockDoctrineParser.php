@@ -2,9 +2,9 @@
 
 namespace FL\QBJSParser\Tests\Util;
 
-use FL\QBJSParser\Parser\Doctrine\AbstractDoctrineParser;
+use FL\QBJSParser\Parser\Doctrine\DoctrineParser;
 
-class MockDoctrineParser extends AbstractDoctrineParser
+class MockDoctrineParser extends DoctrineParser
 {
     /**
      * MockDoctrineParser constructor.

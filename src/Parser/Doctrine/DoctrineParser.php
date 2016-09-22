@@ -13,27 +13,27 @@ use FL\QBJSParser\Parser\ParserInterface;
 use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
 use Symfony\Component\PropertyInfo\PropertyInfoExtractor;
 
-abstract class AbstractDoctrineParser implements ParserInterface
+class DoctrineParser implements ParserInterface
 {
     /**
      * @var string
      */
-    protected $className;
+    private $className;
 
     /**
      * @var string
      */
-    protected $dqlString = '';
+    private $dqlString = '';
 
     /**
      * @var array
      */
-    protected $parameters = [];
+    private $parameters = [];
 
     /**
      * @var array
      */
-    protected $queryBuilderFieldsToEntityProperties = ['id'=>'id'];
+    private $queryBuilderFieldsToEntityProperties = ['id'=>'id'];
 
     /**
      * @param string $className
