@@ -20,6 +20,6 @@ abstract class SelectPartialParser
             $selectString .= ', ' . SelectPartialParser::OBJECT_WORD .'_' . str_replace('.', '_', $queryBuilderPrefix);
         }
 
-        return $selectString;
+        return $selectString . ' ';
     }
 }
