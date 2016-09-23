@@ -9,14 +9,14 @@ abstract class SelectPartialParser
     final private function __construct(){}
 
     /**
-     * @param array $queryBuilderPrefixesToAssociationClasses
+     * @param array $queryBuilderFieldPrefixesToAssociationClasses
      * @return string
      */
-    final public static function parse(array $queryBuilderPrefixesToAssociationClasses = []): string
+    final public static function parse(array $queryBuilderFieldPrefixesToAssociationClasses = []): string
     {
         $selectString = 'SELECT ' . static::OBJECT_WORD;
 
-        foreach($queryBuilderPrefixesToAssociationClasses as $queryBuilderPrefix => $associationClass){
+        foreach($queryBuilderFieldPrefixesToAssociationClasses as $queryBuilderPrefix => $associationClass){
             $selectString .= ', ' . SelectPartialParser::OBJECT_WORD .'_' . str_replace('.', '_', $queryBuilderPrefix);
         }
 

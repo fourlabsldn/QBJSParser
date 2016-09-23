@@ -7,13 +7,13 @@ abstract class JoinPartialParser
     final private function __construct(){}
 
     /**
-     * @param array $queryBuilderPrefixesToAssociationClasses
+     * @param array $queryBuilderFieldPrefixesToAssociationClasses
      * @return string
      */
-    final public static function parse(array $queryBuilderPrefixesToAssociationClasses) : string
+    final public static function parse(array $queryBuilderFieldPrefixesToAssociationClasses) : string
     {
         $joinString = '';
-        foreach($queryBuilderPrefixesToAssociationClasses as $queryBuilderPrefix => $associationClass){
+        foreach($queryBuilderFieldPrefixesToAssociationClasses as $queryBuilderPrefix => $associationClass){
             $joinPart = ' '. SelectPartialParser::OBJECT_WORD . '_' .$queryBuilderPrefix .' ';
             $joinString .= ' JOIN '  . static::replaceAllDotsExceptLast($joinPart) . ' ' . static::replaceAllDots($joinPart) . ' ';
         }

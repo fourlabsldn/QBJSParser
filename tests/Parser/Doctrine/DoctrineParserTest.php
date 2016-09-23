@@ -122,7 +122,7 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
     public function testNonExistentClass()
     {
         $this->assertInvalidClassNameException(function () {
-            new DoctrineParser('This_Really_Long_Class_Name_With_Invalid_Characters_@#_IS_NOT_A_CLASS');
+            new DoctrineParser('This_Really_Long_Class_Name_With_Invalid_Characters_@#_IS_NOT_A_CLASS', [], []);
         });
     }
 
