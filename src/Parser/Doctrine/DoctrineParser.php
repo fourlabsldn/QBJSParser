@@ -137,8 +137,10 @@ class DoctrineParser implements ParserInterface
     final private function validateFieldPrefix(string $fieldPrefix){
         if(!array_key_exists($fieldPrefix, $this->queryBuilderFieldPrefixesToAssociationClasses)){
             throw new MissingAssociationClassException(sprintf(
-                'Missing association class for queryBuilderField %s, prefix %s, property %s',
-                $fieldPrefix
+                'Missing association class for queryBuilderFieldPrefix %s, at class %s, for parser %s',
+                $fieldPrefix,
+                $this->className,
+                static::class
             ));
         }
     }

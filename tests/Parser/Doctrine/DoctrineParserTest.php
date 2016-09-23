@@ -101,7 +101,7 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
      */
     public function testMockBadEntity()
     {
-        $this->assertMapFunctionException(function () {
+        $this->assertFieldMappingException(function () {
             new MockBadEntityDoctrineParser();
         });
     }
@@ -111,7 +111,7 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
      */
     public function testMockBadEntity2()
     {
-        $this->assertMapFunctionException(function () {
+        $this->assertFieldMappingException(function () {
             new MockBadEntity2DoctrineParser();
         });
     }
@@ -129,7 +129,7 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
     /**
      * @param \Closure $function
      */
-    private function assertMapFunctionException(\Closure $function)
+    private function assertFieldMappingException(\Closure $function)
     {
         try {
             $function();
