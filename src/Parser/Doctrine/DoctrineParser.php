@@ -3,11 +3,8 @@
 namespace FL\QBJSParser\Parser\Doctrine;
 
 use FL\QBJSParser\Exception\Parser\Doctrine\InvalidClassNameException;
-use FL\QBJSParser\Exception\Parser\Doctrine\InvalidFieldException;
-use FL\QBJSParser\Exception\Parser\Doctrine\InvalidOperatorException;
 use FL\QBJSParser\Exception\Parser\Doctrine\FieldMappingException;
 use FL\QBJSParser\Model\RuleGroupInterface;
-use FL\QBJSParser\Model\RuleInterface;
 use FL\QBJSParser\Parsed\Doctrine\ParsedRuleGroup;
 use FL\QBJSParser\Parser\ParserInterface;
 use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
@@ -21,36 +18,40 @@ class DoctrineParser implements ParserInterface
     private $className;
 
     /**
-     * @var string
+     * @var array
      */
-    private $dqlString = '';
+    private $queryBuilderFieldsToProperties;
 
     /**
      * @var array
      */
-    private $parameters = [];
-
-    /**
-     * @var array
-     */
-    private $queryBuilderFieldsToEntityProperties = ['id'=>'id'];
+    private $queryBuilderPrefixesToAssociationClasses;
 
     /**
      * @param string $className
-     * @param array $queryBuilderFieldsToEntityProperties
+     * @param array $queryBuilderFieldsToProperties
+     * E.g. [
+     *      'id' => 'id',
+     *      'labels.id' => 'labels.id',
+     *      'labels.name' => 'labels.name',
+     *      'labels.authors.id'=> 'labels.authors.id',
+     *      'authors.id' => 'authors.id',
+     * ]
+     * @param array $queryBuilderPrefixesToAssociationClasses [
+     *      'labels' => Label::class,
+     *      'labels.authors' => Label::class,
+     * ]
      */
-    public function __construct(string $className, array $queryBuilderFieldsToEntityProperties = ['id'=>'id'])
-    {
-        if (!class_exists($className)) {
-            throw new InvalidClassNameException(sprintf(
-                'Expected valid class name in %s. %s was given, and it is not a valid class name.',
-                static::class,
-                $className
-            ));
-        }
-        $this->queryBuilderFieldsToEntityProperties = $queryBuilderFieldsToEntityProperties;
+    public function __construct(
+        string $className,
+        array $queryBuilderFieldsToProperties,
+        array $queryBuilderPrefixesToAssociationClasses
+    ) {
         $this->className = $className;
-        $this->validateQueryBuilderFieldsToEntityProperties();
+        $this->queryBuilderFieldsToProperties = $queryBuilderFieldsToProperties;
+        $this->queryBuilderPrefixesToAssociationClasses = $queryBuilderPrefixesToAssociationClasses;
+        $this->validateBaseProperties();
+        $this->validateAssociationClasses();
     }
 
     /**
@@ -59,200 +60,65 @@ class DoctrineParser implements ParserInterface
      */
     final public function parse(RuleGroupInterface $ruleGroup) : ParsedRuleGroup
     {
-        $this->dqlString = 'SELECT object FROM ' . $this->className . ' object ';
-        $this->parameters = [];
+        $selectString = SelectPartialParser::parse($this->queryBuilderPrefixesToAssociationClasses);
+        $fromString = FromPartialParser::parse($this->className);
+        $joinString = JoinPartialParser::parse($this->queryBuilderPrefixesToAssociationClasses);
 
-        // populate $this->dqlString and $this->parameters
-        $this->parseRuleGroup($ruleGroup, ' WHERE (', ') ');
+        $whereParser = new WherePartialParser($this->queryBuilderFieldsToProperties);
+        $whereParsedRuleGroup = $whereParser->parse($ruleGroup);
+        $whereString = $whereParsedRuleGroup->getDqlString();
+        $parameters = $whereParsedRuleGroup->getParameters();
 
-        // remove double whitespaces from $this->dqlString
-        $dqlString = preg_replace('/\s+/', ' ', $this->dqlString);
-
-        return new ParsedRuleGroup($dqlString, $this->parameters);
+        $dqlString = $selectString . $fromString . $joinString . $whereString;
+        return new ParsedRuleGroup(preg_replace('/\s+/', ' ', $dqlString), $parameters); // preg_replace -> no more than one space
     }
 
     /**
-     * @param RuleGroupInterface $ruleGroup
-     * @param string|null $prepend
-     * @param string|null $append
-     * @return void
+     * @param string $className
+     * @link http://symfony.com/doc/current/components/property_info.html#components-property-info-extractors
+     * @throws InvalidClassNameException
      */
-    final private function parseRuleGroup(RuleGroupInterface $ruleGroup, string $prepend = null, string $append = null)
+    final private function validateClass(string $className)
     {
-        $this->dqlString .= $prepend ?? '';
-        $iteration = 0;
-
-        if ($ruleGroup->getMode() === RuleGroupInterface::MODE_AND) {
-            $andOr = ' AND ';
-        } else {
-            $andOr = ' OR ';
+        if (!class_exists($className)) {
+            throw new InvalidClassNameException(sprintf(
+                'Expected valid class name in %s. %s was given, and it is not a valid class name.',
+                static::class,
+                $className
+            ));
         }
-
-        foreach ($ruleGroup->getRules() as $rule) {
-            if ($iteration === 0) {
-                $this->parseRule($rule, ' ', ' ');
-            } else {
-                $this->parseRule($rule, ' ' . $andOr .' ', ' ');
-            }
-            $iteration ++;
-        }
-
-        foreach ($ruleGroup->getRuleGroups() as $ruleGroup) {
-            if ($iteration === 0) {
-                $this->parseRuleGroup($ruleGroup, ' ( ', ' ) ');
-            } else {
-                $this->parseRuleGroup($ruleGroup, ' ' . $andOr . ' ( ', ' ) ');
-            }
-            $iteration ++;
-        }
-
-        $this->dqlString .= $append ?? '';
-
-        return;
     }
 
     /**
-     * @param RuleInterface $rule
-     * @param string|null $prepend
-     * @param string|null $append
-     * @return void
-     */
-    final private function parseRule(RuleInterface $rule, string $prepend = null, string $append = null)
-    {
-        $this->dqlString .= $prepend ?? '';
-
-        $queryBuilderField = $rule->getField();
-        $safeField = $this->queryBuilderFieldToEntityProperty($queryBuilderField);
-        $queryBuilderOperator = $rule->getOperator();
-        $doctrineOperator = $this->queryBuilderOperatorToDoctrineOperator($queryBuilderOperator);
-        $value = $rule->getValue();
-
-        $parameterCount = count($this->parameters);
-
-        if ($this->queryBuilderOperator_UsesValue($queryBuilderOperator)) {
-            $this->dqlString .= ' object.' . $safeField . ' ' . $doctrineOperator . ' ?' . $parameterCount . ' ';
-            $this->parameters[$parameterCount] = $value;
-        } elseif ($this->queryBuilderOperator_UsesArray($queryBuilderOperator)) {
-            $this->dqlString .= ' object.' . $safeField . ' ' . $doctrineOperator . ' (?'. $parameterCount . ') ';
-            $this->parameters[$parameterCount] = $value;
-        } elseif ($this->queryBuilderOperator_UsesArrayOfTwo($queryBuilderOperator)) {
-            $this->dqlString .= ' object.' . $safeField . ' ' . $doctrineOperator . ' ?'. $parameterCount . ' AND ?'. ($parameterCount + 1) . ' ';
-            $this->parameters[$parameterCount] = $value[0];
-            $this->parameters[$parameterCount+1] = $value[1];
-        } elseif ($this->queryBuilderOperator_UsesNull($queryBuilderOperator)) {
-            $this->dqlString .= ' object.' . $safeField . ' ' . $doctrineOperator . ' ';
-        }
-
-        $this->dqlString .= $append ?? '';
-        return;
-    }
-
-    /**
-     * @param string $operator
-     * @return bool
-     */
-    final private function queryBuilderOperator_UsesValue(string $operator) : bool
-    {
-        return in_array($operator, [
-            'equal', 'not_equal', 'less', 'less_or_equal', 'greater', 'greater_or_equal',
-            'begins_with', 'not_begins_with', 'contains', 'not_contains', 'ends_with', 'not_ends_with',
-        ]);
-    }
-
-    /**
-     * @param string $operator
-     * @return bool
-     */
-    final private function queryBuilderOperator_UsesArray(string $operator) : bool
-    {
-        return in_array($operator, ['in', 'not_in']);
-    }
-
-    /**
-     * @param string $operator
-     * @return bool
-     */
-    final private function queryBuilderOperator_UsesArrayOfTwo(string $operator) : bool
-    {
-        return in_array($operator, ['between']);
-    }
-
-    /**
-     * @param string $operator
-     * @return bool
-     */
-    final private function queryBuilderOperator_UsesNull(string $operator) : bool
-    {
-        return in_array($operator, ['is_empty', 'is_not_empty', 'is_null', 'is_not_null']);
-    }
-
-    /**
-     * @param string $queryBuilderOperator
-     * @return string
-     */
-    final private function queryBuilderOperatorToDoctrineOperator(string $queryBuilderOperator) : string
-    {
-        $dictionary = [
-            'equal' => '=',
-            'not_equal' => '!=',
-            'in' => 'IN',
-            'not_in' => 'NOT IN',
-            'between' => 'BETWEEN',
-            'less' => '<',
-            'less_or_equal' => '<=',
-            'greater' => '>',
-            'greater_or_equal' => '>=',
-            'begins_with' => '%LIKE',
-            'not_begins_with' => '%NOT_LIKE',
-            'contains' => '%LIKE%',
-            'not_contains' => '%NOT LIKE%',
-            'ends_with' => 'LIKE%',
-            'not_ends_with' => 'NOT LIKE%',
-            'is_empty' => 'IS EMPTY',
-            'is_not_empty' => 'IS NOT EMPTY',
-            'is_null' => 'IS NULL',
-            'is_not_null'=> 'IS NOT NULL',
-        ];
-
-        if (!isset($dictionary[$queryBuilderOperator])) {
-            throw new InvalidOperatorException();
-        }
-
-        return $dictionary[$queryBuilderOperator];
-    }
-
-    /**
-     * @param string $queryBuilderField
-     * @return string
-     */
-    final private function queryBuilderFieldToEntityProperty(string $queryBuilderField) : string
-    {
-        $dictionary = $this->queryBuilderFieldsToEntityProperties;
-
-        if (!array_key_exists($queryBuilderField, $dictionary)) {
-            throw new InvalidFieldException($queryBuilderField);
-        }
-
-        return $dictionary[$queryBuilderField];
-    }
-
-    /**
+     * @param string $className
+     * @param string[] $classProperties
      * @link http://symfony.com/doc/current/components/property_info.html#components-property-info-extractors
      * @throws FieldMappingException
      */
-    final private function validateQueryBuilderFieldsToEntityProperties()
+    final private function validateClassHasProperties(string $className, array $classProperties)
     {
         $propertyInfo = new PropertyInfoExtractor([new ReflectionExtractor()]);
-        $properties = $propertyInfo->getProperties($this->className);
+        $properties = $propertyInfo->getProperties($className);
 
-        foreach ($this->queryBuilderFieldsToEntityProperties as $queryBuilderField => $entityProperty) {
-            if (!in_array($entityProperty, $properties)) {
+        foreach ($classProperties as $classProperty) {
+            if (!in_array($classProperty, $properties)) {
                 throw new FieldMappingException(sprintf(
                     'Property %s is not accessible in %s.',
-                    $entityProperty,
+                    $classProperty,
                     $this->className
                 ));
             }
         }
     }
+
+    final private function validateBaseProperties()
+    {
+
+    }
+
+    final private function validateAssociationClasses()
+    {
+    }
+
+
 }

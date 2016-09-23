@@ -13,6 +13,6 @@ class MockBadEntityDoctrineParser extends DoctrineParser
             'price' => 'price',
             'name' => 'name',
             'date' => 'date',
-        ]);
+        ], []);
     }
 }

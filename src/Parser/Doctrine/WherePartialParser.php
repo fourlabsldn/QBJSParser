@@ -8,29 +8,31 @@ use FL\QBJSParser\Model\RuleGroupInterface;
 use FL\QBJSParser\Model\RuleInterface;
 use FL\QBJSParser\Parsed\Doctrine\ParsedRuleGroup;
 
-class WhereParser
+final class WherePartialParser
 {
     /**
      * @var string
      */
-    private $dqlPartialWhereString = '';
+    private $dqlPartialWhereString;
 
     /**
      * @var array
      */
-    private $parameters = [];
+    private $parameters;
 
     /**
      * @var array
      */
-    private $queryBuilderFieldsToEntityProperties = ['id'=>'id'];
+    private $queryBuilderFieldsToWhereAlias;
 
     /**
-     * @param array $queryBuilderFieldsToEntityProperties
+     * @param array $queryBuilderFieldsToProperties
      */
-    public function __construct(array $queryBuilderFieldsToEntityProperties = ['id'=>'id'])
+    public function __construct(array $queryBuilderFieldsToProperties)
     {
-        $this->queryBuilderFieldsToEntityProperties = $queryBuilderFieldsToEntityProperties;
+        foreach($queryBuilderFieldsToProperties as $queryBuilderField => $property){
+            $this->queryBuilderFieldsToWhereAlias[$queryBuilderField] =  $this->replaceAllDotsExceptLast(SelectPartialParser::OBJECT_WORD . '.' . $property);
+        }
     }
 
     /**
@@ -44,10 +46,7 @@ class WhereParser
         // populate $this->dqlPartialWhereString and $this->parameters
         $this->parseRuleGroup($ruleGroup, ' WHERE ( ', ' ) ');
 
-        // remove double whitespaces from $this->dqlPartialWhereString
-        $dqlString = preg_replace('/\s+/', ' ', $this->dqlPartialWhereString);
-
-        return new ParsedRuleGroup($dqlString, $this->parameters);
+        return new ParsedRuleGroup($this->dqlPartialWhereString, $this->parameters);
     }
 
     /**
@@ -101,7 +100,7 @@ class WhereParser
         $this->dqlPartialWhereString .= $prepend ?? '';
 
         $queryBuilderField = $rule->getField();
-        $safeField = $this->queryBuilderFieldToEntityProperty($queryBuilderField);
+        $safeField = $this->queryBuilderFieldToWhereAlias($queryBuilderField);
         $queryBuilderOperator = $rule->getOperator();
         $doctrineOperator = $this->queryBuilderOperatorToDoctrineOperator($queryBuilderOperator);
         $value = $rule->getValue();
@@ -109,17 +108,17 @@ class WhereParser
         $parameterCount = count($this->parameters);
 
         if ($this->queryBuilderOperator_UsesValue($queryBuilderOperator)) {
-            $this->dqlPartialWhereString .= ' object.' . $safeField . ' ' . $doctrineOperator . ' ?' . $parameterCount . ' ';
+            $this->dqlPartialWhereString .= $safeField . ' ' . $doctrineOperator . ' ?' . $parameterCount . ' ';
             $this->parameters[$parameterCount] = $value;
         } elseif ($this->queryBuilderOperator_UsesArray($queryBuilderOperator)) {
-            $this->dqlPartialWhereString .= ' object.' . $safeField . ' ' . $doctrineOperator . ' (?'. $parameterCount . ') ';
+            $this->dqlPartialWhereString .= $safeField . ' ' . $doctrineOperator . ' (?'. $parameterCount . ') ';
             $this->parameters[$parameterCount] = $value;
         } elseif ($this->queryBuilderOperator_UsesArrayOfTwo($queryBuilderOperator)) {
-            $this->dqlPartialWhereString .= ' object.' . $safeField . ' ' . $doctrineOperator . ' ?'. $parameterCount . ' AND ?'. ($parameterCount + 1) . ' ';
+            $this->dqlPartialWhereString .= $safeField . ' ' . $doctrineOperator . ' ?'. $parameterCount . ' AND ?'. ($parameterCount + 1) . ' ';
             $this->parameters[$parameterCount] = $value[0];
             $this->parameters[$parameterCount+1] = $value[1];
         } elseif ($this->queryBuilderOperator_UsesNull($queryBuilderOperator)) {
-            $this->dqlPartialWhereString .= ' object.' . $safeField . ' ' . $doctrineOperator . ' ';
+            $this->dqlPartialWhereString .=  $safeField . ' ' . $doctrineOperator . ' ';
         }
 
         $this->dqlPartialWhereString .= $append ?? '';
@@ -204,14 +203,28 @@ class WhereParser
      * @param string $queryBuilderField
      * @return string
      */
-    final private function queryBuilderFieldToEntityProperty(string $queryBuilderField) : string
+    final private function queryBuilderFieldToWhereAlias(string $queryBuilderField) : string
     {
-        $dictionary = $this->queryBuilderFieldsToEntityProperties;
+        $dictionary = $this->queryBuilderFieldsToWhereAlias;
 
         if (!array_key_exists($queryBuilderField, $dictionary)) {
             throw new InvalidFieldException($queryBuilderField);
         }
 
         return $dictionary[$queryBuilderField];
+    }
+
+    /**
+     * @param string $string
+     * @return string
+     */
+    final private function replaceAllDotsExceptLast(string $string) : string
+    {
+        $countDots = substr_count($string, '.');
+        $dotsMinusOne = $countDots - 1;
+        if($countDots >= 2){
+            $string =  str_replace(".","_",$string, $dotsMinusOne);
+        }
+        return $string;
     }
 }
