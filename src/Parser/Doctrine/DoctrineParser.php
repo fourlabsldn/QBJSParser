@@ -4,6 +4,7 @@ namespace FL\QBJSParser\Parser\Doctrine;
 
 use FL\QBJSParser\Exception\Parser\Doctrine\InvalidClassNameException;
 use FL\QBJSParser\Exception\Parser\Doctrine\FieldMappingException;
+use FL\QBJSParser\Exception\Parser\Doctrine\MissingAssociationClassException;
 use FL\QBJSParser\Model\RuleGroupInterface;
 use FL\QBJSParser\Parsed\Doctrine\ParsedRuleGroup;
 use FL\QBJSParser\Parser\ParserInterface;
@@ -71,7 +72,7 @@ class DoctrineParser implements ParserInterface
     }
 
     /**
-     * @throws InvalidClassNameException|FieldMappingException|\Exception
+     * @throws InvalidClassNameException|FieldMappingException|MissingAssociationClassException
      */
     final private function validate()
     {
@@ -131,11 +132,11 @@ class DoctrineParser implements ParserInterface
 
     /**
      * @param string $fieldPrefix
-     * @throws \Exception
+     * @throws MissingAssociationClassException
      */
     final private function validateFieldPrefix(string $fieldPrefix){
         if(!array_key_exists($fieldPrefix, $this->queryBuilderFieldPrefixesToAssociationClasses)){
-            throw new \Exception(sprintf(
+            throw new MissingAssociationClassException(sprintf(
                 'Missing association class for queryBuilderField %s, prefix %s, property %s',
                 $fieldPrefix
             ));
