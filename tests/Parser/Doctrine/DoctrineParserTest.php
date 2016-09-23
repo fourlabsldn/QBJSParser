@@ -111,8 +111,8 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
             $dqlString = $parsed->getDqlString();
             $parameters = $parsed->getParameters();
 
-            $this->assertEquals($dqlString, $case['expectedDqlString']);
-            $this->assertEquals($parameters, $case['expectedParameters']);
+            $this->assertEquals($case['expectedDqlString'], $dqlString);
+            $this->assertEquals($case['expectedParameters'], $parameters);
         }
     }
 
@@ -129,8 +129,8 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
             $dqlString = $parsed->getDqlString();
             $parameters = $parsed->getParameters();
 
-            $this->assertEquals($dqlString, $case['expectedDqlString']);
-            $this->assertEquals($parameters, $case['expectedParameters']);
+            $this->assertEquals($case['expectedDqlString'], $dqlString);
+            $this->assertEquals($case['expectedParameters'], $parameters);
         }
     }
 

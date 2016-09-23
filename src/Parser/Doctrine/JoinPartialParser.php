@@ -28,9 +28,13 @@ abstract class JoinPartialParser
     final private static function replaceAllDotsExceptLast(string $string) : string
     {
         $countDots = substr_count($string, '.');
-        $dotsMinusOne = $countDots - 1;
         if($countDots >= 2){
-            $string =  str_replace(".","_",$string, $dotsMinusOne);
+            $stringArray  = explode ('.', $string);
+            $string = '';
+            for($i = 0; $i < $countDots - 1; $i++){
+                $string .= $stringArray[$i] . '_';
+            }
+            $string .= $stringArray[$countDots - 1] . '.' . $stringArray[$countDots];
         }
 
         return $string;
