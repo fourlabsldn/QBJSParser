@@ -14,7 +14,7 @@ abstract class JoinPartialParser
     {
         $joinString = '';
         foreach($queryBuilderFieldPrefixesToAssociationClasses as $queryBuilderPrefix => $associationClass){
-            $joinPart = ' '. SelectPartialParser::OBJECT_WORD . '_' .$queryBuilderPrefix .' ';
+            $joinPart = ' '. SelectPartialParser::OBJECT_WORD . '.' .$queryBuilderPrefix .' ';
             $joinString .= ' JOIN '  . static::replaceAllDotsExceptLast($joinPart) . ' ' . static::replaceAllDots($joinPart) . ' ';
         }
 
@@ -32,6 +32,7 @@ abstract class JoinPartialParser
         if($countDots >= 2){
             $string =  str_replace(".","_",$string, $dotsMinusOne);
         }
+
         return $string;
     }
 

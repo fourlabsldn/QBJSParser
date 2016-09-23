@@ -4,7 +4,7 @@ namespace FL\QBJSParser\Tests\Util;
 
 use FL\QBJSParser\Parser\Doctrine\DoctrineParser;
 
-class MockEntityDoctrineParser2 extends DoctrineParser
+class MockEntityWithAssociationDoctrineParser extends DoctrineParser
 {
     public function __construct()
     {

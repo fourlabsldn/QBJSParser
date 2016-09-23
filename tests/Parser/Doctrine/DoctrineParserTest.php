@@ -12,6 +12,7 @@ use FL\QBJSParser\Tests\Util\MockBadEntity2DoctrineParser;
 use FL\QBJSParser\Tests\Util\MockBadEntityDoctrineParser;
 use FL\QBJSParser\Tests\Util\MockEntity;
 use FL\QBJSParser\Tests\Util\MockEntityDoctrineParser;
+use FL\QBJSParser\Tests\Util\MockEntityWithAssociationDoctrineParser;
 
 class DoctrineParserTest extends \PHPUnit_Framework_TestCase
 {
@@ -19,6 +20,11 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
      * @var array
      */
     private $mockEntity_ParseCases = [];
+
+    /**
+     * @var array
+     */
+    private $mockEntity_WithAssociation_ParseCases = [];
 
     public function setUp()
     {
@@ -76,6 +82,20 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
             'expectedDqlString'=>'SELECT object FROM ' . MockEntity::class . ' object WHERE ( object.price IS NOT NULL AND object.name = ?0 AND ( object.price > ?1 OR object.price <= ?2 ) ) ',
             'expectedParameters' => ['hello', 0.3, 22.0],
         ];
+
+        $ruleGroupA = new RuleGroup(RuleGroupInterface::MODE_AND);
+        $ruleGroupA_RuleA = new Rule('rule_id', 'price', 'double', 'is_not_null', null);
+        $ruleGroupA_RuleB = new Rule('rule_id', 'associationEntities.id', 'string', 'equal', 'hello');
+        $ruleGroupA
+            ->addRule($ruleGroupA_RuleA)
+            ->addRule($ruleGroupA_RuleB)
+        ;
+
+        $this->mockEntity_WithAssociation_ParseCases[] = [
+            'rulegroup' => $ruleGroupA,
+            'expectedDqlString'=>'SELECT object, object_associationEntities FROM ' . MockEntity::class . ' object JOIN object.associationEntities object_associationEntities WHERE ( object.price IS NOT NULL AND object_associationEntities_id = ?0 ) ',
+            'expectedParameters' => ['hello'],
+        ];
     }
 
     /**
@@ -86,6 +106,24 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
         $parser = new MockEntityDoctrineParser();
 
         foreach ($this->mockEntity_ParseCases as $case) {
+            $parsed = $parser->parse($case['rulegroup']);
+
+            $dqlString = $parsed->getDqlString();
+            $parameters = $parsed->getParameters();
+
+            $this->assertEquals($dqlString, $case['expectedDqlString']);
+            $this->assertEquals($parameters, $case['expectedParameters']);
+        }
+    }
+
+    /**
+     * @test
+     */
+    public function testMockEntity_WithAssociation_ParseCases()
+    {
+        $parser = new MockEntityWithAssociationDoctrineParser();
+
+        foreach ($this->mockEntity_WithAssociation_ParseCases as $case) {
             $parsed = $parser->parse($case['rulegroup']);
 
             $dqlString = $parsed->getDqlString();
