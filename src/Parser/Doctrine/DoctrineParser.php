@@ -142,7 +142,7 @@ class DoctrineParser implements ParserInterface
             throw new FieldMappingException(sprintf(
                 'Property %s is not accessible in %s.',
                 $classProperty,
-                $this->className
+                $className
             ));
         }
     }
