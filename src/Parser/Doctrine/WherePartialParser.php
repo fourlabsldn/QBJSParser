@@ -8,45 +8,44 @@ use FL\QBJSParser\Model\RuleGroupInterface;
 use FL\QBJSParser\Model\RuleInterface;
 use FL\QBJSParser\Parsed\Doctrine\ParsedRuleGroup;
 
-final class WherePartialParser
+abstract class WherePartialParser
 {
     /**
      * @var string
      */
-    private $dqlPartialWhereString;
+    private static $dqlPartialWhereString;
 
     /**
      * @var array
      */
-    private $parameters;
+    private static $parameters;
 
     /**
      * @var array
      */
-    private $queryBuilderFieldsToWhereAlias;
+    private static $queryBuilderFieldsToWhereAlias;
+
+    final private function __construct()
+    {}
 
     /**
      * @param array $queryBuilderFieldsToProperties
+     * @param RuleGroupInterface $ruleGroup
+     * @return ParsedRuleGroup
      */
-    public function __construct(array $queryBuilderFieldsToProperties)
+    final public static function parse(array $queryBuilderFieldsToProperties, RuleGroupInterface $ruleGroup) : ParsedRuleGroup
     {
         foreach($queryBuilderFieldsToProperties as $queryBuilderField => $property){
-            $this->queryBuilderFieldsToWhereAlias[$queryBuilderField] =  $this->replaceAllDotsExceptLast(SelectPartialParser::OBJECT_WORD . '.' . $property);
+            static::$queryBuilderFieldsToWhereAlias[$queryBuilderField] =  static::replaceAllDotsExceptLast(SelectPartialParser::OBJECT_WORD . '.' . $property);
         }
-    }
 
-    /**
-     * @inheritdoc
-     * @return RuleGroupInterface
-     */
-    final public function parse(RuleGroupInterface $ruleGroup) : ParsedRuleGroup
-    {
-        $this->parameters = [];
+        static::$parameters = [];
+        static::$dqlPartialWhereString = '';
 
-        // populate $this->dqlPartialWhereString and $this->parameters
-        $this->parseRuleGroup($ruleGroup, ' WHERE ( ', ' ) ');
+        // populate static::$dqlPartialWhereString and static::$parameters
+        static::parseRuleGroup($ruleGroup, ' WHERE ( ', ' ) ');
 
-        return new ParsedRuleGroup($this->dqlPartialWhereString, $this->parameters);
+        return new ParsedRuleGroup(static::$dqlPartialWhereString, static::$parameters);
     }
 
     /**
@@ -55,9 +54,9 @@ final class WherePartialParser
      * @param string|null $append
      * @return void
      */
-    final private function parseRuleGroup(RuleGroupInterface $ruleGroup, string $prepend = null, string $append = null)
+    final private static function parseRuleGroup(RuleGroupInterface $ruleGroup, string $prepend = null, string $append = null)
     {
-        $this->dqlPartialWhereString .= $prepend ?? '';
+        static::$dqlPartialWhereString .= $prepend ?? '';
         $iteration = 0;
 
         if ($ruleGroup->getMode() === RuleGroupInterface::MODE_AND) {
@@ -68,23 +67,23 @@ final class WherePartialParser
 
         foreach ($ruleGroup->getRules() as $rule) {
             if ($iteration === 0) {
-                $this->parseRule($rule, ' ', ' ');
+                static::parseRule($rule, ' ', ' ');
             } else {
-                $this->parseRule($rule, ' ' . $andOr .' ', ' ');
+                static::parseRule($rule, ' ' . $andOr .' ', ' ');
             }
             $iteration ++;
         }
 
         foreach ($ruleGroup->getRuleGroups() as $ruleGroup) {
             if ($iteration === 0) {
-                $this->parseRuleGroup($ruleGroup, ' ( ', ' ) ');
+                static::parseRuleGroup($ruleGroup, ' ( ', ' ) ');
             } else {
-                $this->parseRuleGroup($ruleGroup, ' ' . $andOr . ' ( ', ' ) ');
+                static::parseRuleGroup($ruleGroup, ' ' . $andOr . ' ( ', ' ) ');
             }
             $iteration ++;
         }
 
-        $this->dqlPartialWhereString .= $append ?? '';
+        static::$dqlPartialWhereString .= $append ?? '';
 
         return;
     }
@@ -95,33 +94,33 @@ final class WherePartialParser
      * @param string|null $append
      * @return void
      */
-    final private function parseRule(RuleInterface $rule, string $prepend = null, string $append = null)
+    final private static function parseRule(RuleInterface $rule, string $prepend = null, string $append = null)
     {
-        $this->dqlPartialWhereString .= $prepend ?? '';
+        static::$dqlPartialWhereString .= $prepend ?? '';
 
         $queryBuilderField = $rule->getField();
-        $safeField = $this->queryBuilderFieldToWhereAlias($queryBuilderField);
+        $safeField = static::queryBuilderFieldToWhereAlias($queryBuilderField);
         $queryBuilderOperator = $rule->getOperator();
-        $doctrineOperator = $this->queryBuilderOperatorToDoctrineOperator($queryBuilderOperator);
+        $doctrineOperator = static::queryBuilderOperatorToDoctrineOperator($queryBuilderOperator);
         $value = $rule->getValue();
 
-        $parameterCount = count($this->parameters);
+        $parameterCount = count(static::$parameters);
 
-        if ($this->queryBuilderOperator_UsesValue($queryBuilderOperator)) {
-            $this->dqlPartialWhereString .= $safeField . ' ' . $doctrineOperator . ' ?' . $parameterCount . ' ';
-            $this->parameters[$parameterCount] = $value;
-        } elseif ($this->queryBuilderOperator_UsesArray($queryBuilderOperator)) {
-            $this->dqlPartialWhereString .= $safeField . ' ' . $doctrineOperator . ' (?'. $parameterCount . ') ';
-            $this->parameters[$parameterCount] = $value;
-        } elseif ($this->queryBuilderOperator_UsesArrayOfTwo($queryBuilderOperator)) {
-            $this->dqlPartialWhereString .= $safeField . ' ' . $doctrineOperator . ' ?'. $parameterCount . ' AND ?'. ($parameterCount + 1) . ' ';
-            $this->parameters[$parameterCount] = $value[0];
-            $this->parameters[$parameterCount+1] = $value[1];
-        } elseif ($this->queryBuilderOperator_UsesNull($queryBuilderOperator)) {
-            $this->dqlPartialWhereString .=  $safeField . ' ' . $doctrineOperator . ' ';
+        if (static::queryBuilderOperator_UsesValue($queryBuilderOperator)) {
+            static::$dqlPartialWhereString .= $safeField . ' ' . $doctrineOperator . ' ?' . $parameterCount . ' ';
+            static::$parameters[$parameterCount] = $value;
+        } elseif (static::queryBuilderOperator_UsesArray($queryBuilderOperator)) {
+            static::$dqlPartialWhereString .= $safeField . ' ' . $doctrineOperator . ' (?'. $parameterCount . ') ';
+            static::$parameters[$parameterCount] = $value;
+        } elseif (static::queryBuilderOperator_UsesArrayOfTwo($queryBuilderOperator)) {
+            static::$dqlPartialWhereString .= $safeField . ' ' . $doctrineOperator . ' ?'. $parameterCount . ' AND ?'. ($parameterCount + 1) . ' ';
+            static::$parameters[$parameterCount] = $value[0];
+            static::$parameters[$parameterCount+1] = $value[1];
+        } elseif (static::queryBuilderOperator_UsesNull($queryBuilderOperator)) {
+            static::$dqlPartialWhereString .=  $safeField . ' ' . $doctrineOperator . ' ';
         }
 
-        $this->dqlPartialWhereString .= $append ?? '';
+        static::$dqlPartialWhereString .= $append ?? '';
         return;
     }
 
@@ -129,7 +128,7 @@ final class WherePartialParser
      * @param string $operator
      * @return bool
      */
-    final private function queryBuilderOperator_UsesValue(string $operator) : bool
+    final private static function queryBuilderOperator_UsesValue(string $operator) : bool
     {
         return in_array($operator, [
             'equal', 'not_equal', 'less', 'less_or_equal', 'greater', 'greater_or_equal',
@@ -141,7 +140,7 @@ final class WherePartialParser
      * @param string $operator
      * @return bool
      */
-    final private function queryBuilderOperator_UsesArray(string $operator) : bool
+    final private static function queryBuilderOperator_UsesArray(string $operator) : bool
     {
         return in_array($operator, ['in', 'not_in']);
     }
@@ -150,7 +149,7 @@ final class WherePartialParser
      * @param string $operator
      * @return bool
      */
-    final private function queryBuilderOperator_UsesArrayOfTwo(string $operator) : bool
+    final private static function queryBuilderOperator_UsesArrayOfTwo(string $operator) : bool
     {
         return in_array($operator, ['between']);
     }
@@ -159,7 +158,7 @@ final class WherePartialParser
      * @param string $operator
      * @return bool
      */
-    final private function queryBuilderOperator_UsesNull(string $operator) : bool
+    final private static function queryBuilderOperator_UsesNull(string $operator) : bool
     {
         return in_array($operator, ['is_empty', 'is_not_empty', 'is_null', 'is_not_null']);
     }
@@ -168,7 +167,7 @@ final class WherePartialParser
      * @param string $queryBuilderOperator
      * @return string
      */
-    final private function queryBuilderOperatorToDoctrineOperator(string $queryBuilderOperator) : string
+    final private static function queryBuilderOperatorToDoctrineOperator(string $queryBuilderOperator) : string
     {
         $dictionary = [
             'equal' => '=',
@@ -203,9 +202,9 @@ final class WherePartialParser
      * @param string $queryBuilderField
      * @return string
      */
-    final private function queryBuilderFieldToWhereAlias(string $queryBuilderField) : string
+    final private static function queryBuilderFieldToWhereAlias(string $queryBuilderField) : string
     {
-        $dictionary = $this->queryBuilderFieldsToWhereAlias;
+        $dictionary = static::$queryBuilderFieldsToWhereAlias;
 
         if (!array_key_exists($queryBuilderField, $dictionary)) {
             throw new InvalidFieldException($queryBuilderField);
@@ -218,7 +217,7 @@ final class WherePartialParser
      * @param string $string
      * @return string
      */
-    final private function replaceAllDotsExceptLast(string $string) : string
+    final private static function replaceAllDotsExceptLast(string $string) : string
     {
         $countDots = substr_count($string, '.');
         $dotsMinusOne = $countDots - 1;

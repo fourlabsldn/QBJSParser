@@ -62,8 +62,7 @@ class DoctrineParser implements ParserInterface
         $fromString = FromPartialParser::parse($this->className);
         $joinString = JoinPartialParser::parse($this->queryBuilderFieldPrefixesToAssociationClasses);
 
-        $whereParser = new WherePartialParser($this->queryBuilderFieldsToProperties);
-        $whereParsedRuleGroup = $whereParser->parse($ruleGroup);
+        $whereParsedRuleGroup = WherePartialParser::parse($this->queryBuilderFieldsToProperties, $ruleGroup);
         $whereString = $whereParsedRuleGroup->getDqlString();
         $parameters = $whereParsedRuleGroup->getParameters();
 
