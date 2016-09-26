@@ -84,15 +84,22 @@ class JsonDeserializerTest extends \PHPUnit_Framework_TestCase
         $ruleGroupA = new RuleGroup(RuleGroupInterface::MODE_AND);
         $ruleGroupA_RuleA = new Rule('price', 'price', 'double', 'less', 10.25);
         $ruleGroupA_RuleB = new Rule('date', 'date', 'datetime', 'in', [new \DateTimeImmutable("now")]);
+        $ruleGroupA_RuleC = new Rule('date', 'date', 'datetime', 'in', [new \DateTimeImmutable("now")]);
+        $ruleGroupA_RuleD = new Rule('date', 'date', 'datetime', 'not_in', [new \DateTimeImmutable("now")]);
         $ruleGroupA->addRule($ruleGroupA_RuleA);
         $ruleGroupA->addRule($ruleGroupA_RuleB);
+        $ruleGroupA->addRule($ruleGroupA_RuleC);
+        $ruleGroupA->addRule($ruleGroupA_RuleD);
 
         $jsonString =
             '{' .
                 '"condition":"AND",'.
                 '"rules":[' .
                     '{"id":"price","field":"price","type":"double","input":"text","operator":"less","value":"10.25"},' .
-                    '{"id":"date","field":"date","type":"datetime","input":"text","operator":"in","value":["now"]}' .
+                    '{"id":"date","field":"date","type":"datetime","input":"text","operator":"in","value":["now"]},' .
+                    // operators in and not_in require an array, the next two lines test that single values are converted to an array
+                    '{"id":"date","field":"date","type":"datetime","input":"text","operator":"in","value":"now"},' .
+                    '{"id":"date","field":"date","type":"datetime","input":"text","operator":"not_in","value":"now"}' .
                 ']' .
             '}';
 

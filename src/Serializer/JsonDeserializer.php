@@ -73,6 +73,11 @@ class JsonDeserializer implements DeserializerInterface
         $operator = $decodedRule['operator'];
         $value = $decodedRule['value'];
 
+        // operators in and not_in require an array, the next two lines ensure that single values are converted to an array
+        if(in_array($operator, ['in', 'not_in']) && !is_array($value)){
+            $value = [$value];
+        }
+
         if (!is_array($value)) {
             $value = $this->convertValueAccordingToType($type, $value);
             return new Rule($id, $field, $type, $operator, $value);
