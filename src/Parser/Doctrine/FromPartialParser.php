@@ -4,7 +4,9 @@ namespace FL\QBJSParser\Parser\Doctrine;
 
 abstract class FromPartialParser
 {
-    final private function __construct(){}
+    final private function __construct()
+    {
+    }
 
     /**
      * @param string $className

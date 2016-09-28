@@ -46,7 +46,8 @@ class DoctrineParser implements ParserInterface
      *      'author' => Address::class,
      * ]
      */
-    public function __construct(string $className, array $queryBuilderFieldsToProperties, array $queryBuilderFieldPrefixesToAssociationClasses) {
+    public function __construct(string $className, array $queryBuilderFieldsToProperties, array $queryBuilderFieldPrefixesToAssociationClasses)
+    {
         $this->className = $className;
         $this->queryBuilderFieldsToProperties = $queryBuilderFieldsToProperties;
         $this->queryBuilderFieldPrefixesToAssociationClasses = $queryBuilderFieldPrefixesToAssociationClasses;
@@ -79,7 +80,7 @@ class DoctrineParser implements ParserInterface
         $this->validateClass($this->className);
 
         // check $queryBuilderFieldsToProperties
-        foreach($this->queryBuilderFieldsToProperties as $queryBuilderField => $property){
+        foreach ($this->queryBuilderFieldsToProperties as $queryBuilderField => $property) {
             $suffixPattern = '/\.((?!\.).)+$/';
             $suffixMatches = [];
             $doesFieldHaveSuffix = preg_match($suffixPattern, $queryBuilderField, $suffixMatches);
@@ -96,7 +97,7 @@ class DoctrineParser implements ParserInterface
         }
 
         // validate queryBuilderFieldPrefixesToAssociationClasses
-        foreach($this->queryBuilderFieldPrefixesToAssociationClasses as $fieldPrefix => $associationClass){
+        foreach ($this->queryBuilderFieldPrefixesToAssociationClasses as $fieldPrefix => $associationClass) {
             $suffixPattern = '/\.((?!\.).)+$/';
             $suffixMatches = [];
             $doesFieldPrefixHaveSuffix = preg_match($suffixPattern, $fieldPrefix, $suffixMatches);
@@ -151,8 +152,9 @@ class DoctrineParser implements ParserInterface
      * @param string $fieldPrefix
      * @throws MissingAssociationClassException
      */
-    final private function validateFieldPrefixIsInAssociations(string $fieldPrefix){
-        if(!array_key_exists($fieldPrefix, $this->queryBuilderFieldPrefixesToAssociationClasses)){
+    final private function validateFieldPrefixIsInAssociations(string $fieldPrefix)
+    {
+        if (!array_key_exists($fieldPrefix, $this->queryBuilderFieldPrefixesToAssociationClasses)) {
             throw new MissingAssociationClassException(sprintf(
                 'Missing association class for queryBuilderFieldPrefix %s, at class %s, for parser %s',
                 $fieldPrefix,

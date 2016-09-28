@@ -26,7 +26,8 @@ abstract class WherePartialParser
     private static $queryBuilderFieldsToWhereAlias;
 
     final private function __construct()
-    {}
+    {
+    }
 
     /**
      * @param array $queryBuilderFieldsToProperties
@@ -35,7 +36,7 @@ abstract class WherePartialParser
      */
     final public static function parse(array $queryBuilderFieldsToProperties, RuleGroupInterface $ruleGroup) : ParsedRuleGroup
     {
-        foreach($queryBuilderFieldsToProperties as $queryBuilderField => $property){
+        foreach ($queryBuilderFieldsToProperties as $queryBuilderField => $property) {
             static::$queryBuilderFieldsToWhereAlias[$queryBuilderField] =  static::replaceAllDotsExceptLast(SelectPartialParser::OBJECT_WORD . '.' . $property);
         }
 
@@ -206,8 +207,8 @@ abstract class WherePartialParser
      */
     final private static function transformValueAccordingToQueryBuilderOperator(string $queryBuilderOperator, $value)
     {
-        if(is_string($value)){
-            switch($queryBuilderOperator){
+        if (is_string($value)) {
+            switch ($queryBuilderOperator) {
                 case 'begins_with':
                 case 'not_begins_with':
                     return $value . '%' ;
@@ -244,10 +245,10 @@ abstract class WherePartialParser
     final private static function replaceAllDotsExceptLast(string $string) : string
     {
         $countDots = substr_count($string, '.');
-        if($countDots >= 2){
-            $stringArray  = explode ('.', $string);
+        if ($countDots >= 2) {
+            $stringArray  = explode('.', $string);
             $string = '';
-            for($i = 0; $i < $countDots - 1; $i++){
+            for ($i = 0; $i < $countDots - 1; $i++) {
                 $string .= $stringArray[$i] . '_';
             }
             $string .= $stringArray[$countDots - 1] . '.' . $stringArray[$countDots];

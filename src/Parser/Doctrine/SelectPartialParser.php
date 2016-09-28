@@ -6,7 +6,9 @@ abstract class SelectPartialParser
 {
     const OBJECT_WORD = 'object';
 
-    final private function __construct(){}
+    final private function __construct()
+    {
+    }
 
     /**
      * @param array $queryBuilderFieldPrefixesToAssociationClasses
@@ -16,7 +18,7 @@ abstract class SelectPartialParser
     {
         $selectString = 'SELECT ' . static::OBJECT_WORD;
 
-        foreach($queryBuilderFieldPrefixesToAssociationClasses as $queryBuilderPrefix => $associationClass){
+        foreach ($queryBuilderFieldPrefixesToAssociationClasses as $queryBuilderPrefix => $associationClass) {
             $selectString .= ', ' . SelectPartialParser::OBJECT_WORD .'_' . str_replace('.', '_', $queryBuilderPrefix);
         }
 
