@@ -48,13 +48,33 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
         $ruleGroupA = new RuleGroup(RuleGroupInterface::MODE_OR);
         $ruleGroupA_RuleA = new Rule('rule_id', 'price', 'double', 'is_not_null', null);
         $ruleGroupA_RuleB = new Rule('rule_id', 'name', 'string', 'equal', 'hello');
+        $ruleGroupA_RuleC = new Rule('rule_id', 'name', 'string', 'contains', 'world');
+        $ruleGroupA_RuleD = new Rule('rule_id', 'name', 'string', 'not_contains', 'world');
+        $ruleGroupA_RuleE = new Rule('rule_id', 'name', 'string', 'begins_with', 'world');
+        $ruleGroupA_RuleF = new Rule('rule_id', 'name', 'string', 'ends_with', 'world');
+        $ruleGroupA_RuleG = new Rule('rule_id', 'name', 'string', 'not_begins_with', 'world');
+        $ruleGroupA_RuleH = new Rule('rule_id', 'name', 'string', 'not_ends_with', 'world');
         $ruleGroupA->addRule($ruleGroupA_RuleA);
         $ruleGroupA->addRule($ruleGroupA_RuleB);
+        $ruleGroupA->addRule($ruleGroupA_RuleC);
+        $ruleGroupA->addRule($ruleGroupA_RuleD);
+        $ruleGroupA->addRule($ruleGroupA_RuleE);
+        $ruleGroupA->addRule($ruleGroupA_RuleF);
+        $ruleGroupA->addRule($ruleGroupA_RuleG);
+        $ruleGroupA->addRule($ruleGroupA_RuleH);
 
         $this->mockEntity_ParseCases[] = [
             'rulegroup' => $ruleGroupA,
-            'expectedDqlString'=>'SELECT object FROM ' . MockEntity::class . ' object WHERE ( object.price IS NOT NULL OR object.name = ?0 ) ',
-            'expectedParameters' => ['hello'],
+            'expectedDqlString'=>'SELECT object FROM ' . MockEntity::class . ' object WHERE ( object.price IS NOT NULL OR object.name = ?0 OR object.name LIKE ?1 OR object.name NOT LIKE ?2 OR object.name LIKE ?3 OR object.name LIKE ?4 OR object.name NOT_LIKE ?5 OR object.name NOT LIKE ?6 ) ',
+            'expectedParameters' => [
+                'hello',
+                '%world%',
+                '%world%',
+                '%world',
+                'world%',
+                '%world',
+                'world%',
+            ],
         ];
 
         /**

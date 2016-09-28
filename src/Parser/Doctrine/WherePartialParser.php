@@ -102,7 +102,7 @@ abstract class WherePartialParser
         $safeField = static::queryBuilderFieldToWhereAlias($queryBuilderField);
         $queryBuilderOperator = $rule->getOperator();
         $doctrineOperator = static::queryBuilderOperatorToDoctrineOperator($queryBuilderOperator);
-        $value = $rule->getValue();
+        $value = static::transformValueAccordingToQueryBuilderOperator($queryBuilderOperator, $rule->getValue());
 
         $parameterCount = count(static::$parameters);
 
@@ -179,12 +179,12 @@ abstract class WherePartialParser
             'less_or_equal' => '<=',
             'greater' => '>',
             'greater_or_equal' => '>=',
-            'begins_with' => '%LIKE',
-            'not_begins_with' => '%NOT_LIKE',
-            'contains' => '%LIKE%',
-            'not_contains' => '%NOT LIKE%',
-            'ends_with' => 'LIKE%',
-            'not_ends_with' => 'NOT LIKE%',
+            'begins_with' => 'LIKE',
+            'not_begins_with' => 'NOT_LIKE',
+            'contains' => 'LIKE',
+            'not_contains' => 'NOT LIKE',
+            'ends_with' => 'LIKE',
+            'not_ends_with' => 'NOT LIKE',
             'is_empty' => 'IS EMPTY',
             'is_not_empty' => 'IS NOT EMPTY',
             'is_null' => 'IS NULL',
@@ -196,6 +196,29 @@ abstract class WherePartialParser
         }
 
         return $dictionary[$queryBuilderOperator];
+    }
+
+    /**
+     * @param string $queryBuilderOperator
+     * @param mixed $value
+     * @return string
+     */
+    final private static function transformValueAccordingToQueryBuilderOperator(string $queryBuilderOperator, $value)
+    {
+        if(is_string($value)){
+            switch($queryBuilderOperator){
+                case 'begins_with':
+                case 'not_begins_with':
+                    return '%' . $value;
+                case 'contains':
+                case 'not_contains':
+                    return '%' . $value . '%';
+                case 'ends_with':
+                case 'not_ends_with':
+                    return $value . '%' ;
+            }
+        }
+        return $value;
     }
 
     /**
