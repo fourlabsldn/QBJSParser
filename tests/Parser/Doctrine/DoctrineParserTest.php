@@ -65,7 +65,7 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
 
         $this->mockEntity_ParseCases[] = [
             'rulegroup' => $ruleGroupA,
-            'expectedDqlString'=>'SELECT object FROM ' . MockEntity::class . ' object WHERE ( object.price IS NOT NULL OR object.name = ?0 OR object.name LIKE ?1 OR object.name NOT LIKE ?2 OR object.name LIKE ?3 OR object.name LIKE ?4 OR object.name NOT_LIKE ?5 OR object.name NOT LIKE ?6 ) ',
+            'expectedDqlString'=>'SELECT object FROM ' . MockEntity::class . ' object WHERE ( object.price IS NOT NULL OR object.name = ?0 OR object.name LIKE ?1 OR object.name NOT LIKE ?2 OR object.name LIKE ?3 OR object.name LIKE ?4 OR object.name NOT LIKE ?5 OR object.name NOT LIKE ?6 ) ',
             'expectedParameters' => [
                 'hello',
                 '%world%',

@@ -180,7 +180,7 @@ abstract class WherePartialParser
             'greater' => '>',
             'greater_or_equal' => '>=',
             'begins_with' => 'LIKE',
-            'not_begins_with' => 'NOT_LIKE',
+            'not_begins_with' => 'NOT LIKE',
             'contains' => 'LIKE',
             'not_contains' => 'NOT LIKE',
             'ends_with' => 'LIKE',
