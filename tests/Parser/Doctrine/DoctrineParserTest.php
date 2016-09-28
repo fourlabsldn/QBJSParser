@@ -70,10 +70,10 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
                 'hello',
                 '%world%',
                 '%world%',
-                '%world',
                 'world%',
                 '%world',
                 'world%',
+                '%world',
             ],
         ];
 

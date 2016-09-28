@@ -202,6 +202,7 @@ abstract class WherePartialParser
      * @param string $queryBuilderOperator
      * @param mixed $value
      * @return string
+     * @link http://doctrine.readthedocs.io/en/latest/en/manual/dql-doctrine-query-language.html#like-expressions
      */
     final private static function transformValueAccordingToQueryBuilderOperator(string $queryBuilderOperator, $value)
     {
@@ -209,13 +210,13 @@ abstract class WherePartialParser
             switch($queryBuilderOperator){
                 case 'begins_with':
                 case 'not_begins_with':
-                    return '%' . $value;
+                    return $value . '%' ;
                 case 'contains':
                 case 'not_contains':
                     return '%' . $value . '%';
                 case 'ends_with':
                 case 'not_ends_with':
-                    return $value . '%' ;
+                    return '%' . $value;
             }
         }
         return $value;
