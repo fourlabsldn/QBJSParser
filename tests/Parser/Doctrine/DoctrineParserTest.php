@@ -54,6 +54,8 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
         $ruleGroupA_RuleF = new Rule('rule_id', 'name', 'string', 'ends_with', 'world');
         $ruleGroupA_RuleG = new Rule('rule_id', 'name', 'string', 'not_begins_with', 'world');
         $ruleGroupA_RuleH = new Rule('rule_id', 'name', 'string', 'not_ends_with', 'world');
+        $ruleGroupA_RuleI = new Rule('rule_id', 'name', 'string', 'is_empty', null);
+        $ruleGroupA_RuleJ = new Rule('rule_id', 'name', 'string', 'is_not_empty', null);
         $ruleGroupA->addRule($ruleGroupA_RuleA);
         $ruleGroupA->addRule($ruleGroupA_RuleB);
         $ruleGroupA->addRule($ruleGroupA_RuleC);
@@ -62,10 +64,12 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
         $ruleGroupA->addRule($ruleGroupA_RuleF);
         $ruleGroupA->addRule($ruleGroupA_RuleG);
         $ruleGroupA->addRule($ruleGroupA_RuleH);
+        $ruleGroupA->addRule($ruleGroupA_RuleI);
+        $ruleGroupA->addRule($ruleGroupA_RuleJ);
 
         $this->mockEntity_ParseCases[] = [
             'rulegroup' => $ruleGroupA,
-            'expectedDqlString'=>'SELECT object FROM ' . MockEntity::class . ' object WHERE ( object.price IS NOT NULL OR object.name = ?0 OR object.name LIKE ?1 OR object.name NOT LIKE ?2 OR object.name LIKE ?3 OR object.name LIKE ?4 OR object.name NOT LIKE ?5 OR object.name NOT LIKE ?6 ) ',
+            'expectedDqlString'=>'SELECT object FROM ' . MockEntity::class . ' object WHERE ( object.price IS NOT NULL OR object.name = ?0 OR object.name LIKE ?1 OR object.name NOT LIKE ?2 OR object.name LIKE ?3 OR object.name LIKE ?4 OR object.name NOT LIKE ?5 OR object.name NOT LIKE ?6 OR object.name = \'\' OR object.name != \'\' ) ',
             'expectedParameters' => [
                 'hello',
                 '%world%',

@@ -185,9 +185,9 @@ abstract class WherePartialParser
             'not_contains' => 'NOT LIKE',
             'ends_with' => 'LIKE',
             'not_ends_with' => 'NOT LIKE',
-            'is_empty' => 'IS EMPTY',
-            'is_not_empty' => 'IS NOT EMPTY',
-            'is_null' => 'IS NULL',
+            // doctrine's 'IS EMPTY' and 'IS NOT EMPTY' is for collections, not strings
+            'is_empty' => '= \'\'',
+            'is_not_empty' => '!= \'\'', 'is_null' => 'IS NULL',
             'is_not_null'=> 'IS NOT NULL',
         ];
 
