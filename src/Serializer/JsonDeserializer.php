@@ -77,6 +77,12 @@ class JsonDeserializer implements DeserializerInterface
         if (in_array($operator, ['in', 'not_in']) && !is_array($value)) {
             $value = [$value];
         }
+        // some operators require a single value, the next two lines ensure that arrays are converted to a single value
+        if (in_array($operator, ['equal', 'not_equal', 'less', 'less_or_equal', 'greater', 'greater_or_equal', 'begins_with', 'not_begins_with', 'contains', 'ends_with', 'not_ends_with'])) {
+            if (is_array($value)) {
+                $value = array_values($value)[0];
+            }
+        }
 
         if (!is_array($value)) {
             $value = $this->convertValueAccordingToType($type, $value);
