@@ -37,6 +37,14 @@ class Rule implements RuleInterface
             'equal', 'not_equal', 'in', 'not_in', 'is_null', 'is_not_null',
             'less', 'less_or_equal', 'greater', 'greater_or_equal', 'between',
         ],
+        'date' => [
+            'equal', 'not_equal', 'in', 'not_in', 'is_null', 'is_not_null',
+            'less', 'less_or_equal', 'greater', 'greater_or_equal', 'between',
+        ],
+        'time' => [
+            'equal', 'not_equal', 'in', 'not_in', 'is_null', 'is_not_null',
+            'less', 'less_or_equal', 'greater', 'greater_or_equal', 'between',
+        ],
     ];
 
     /**
@@ -58,6 +66,8 @@ class Rule implements RuleInterface
         'double' => ['double', 'array', 'NULL'],
         'boolean' => ['boolean', 'NULL'],
         'datetime' => [\DateTimeImmutable::class, 'array', 'NULL'],
+        'date' => [\DateTimeImmutable::class, 'array', 'NULL'],
+        'time' => [\DateTimeImmutable::class, 'array', 'NULL'],
     ];
 
     /**
