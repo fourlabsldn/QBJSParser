@@ -17,7 +17,7 @@ abstract class JoinPartialParser
         $joinString = '';
         foreach ($queryBuilderFieldPrefixesToAssociationClasses as $queryBuilderPrefix => $associationClass) {
             $joinPart = ' '. SelectPartialParser::OBJECT_WORD . '.' .$queryBuilderPrefix .' ';
-            $joinString .= ' JOIN '  . static::replaceAllDotsExceptLast($joinPart) . ' ' . static::replaceAllDots($joinPart) . ' ';
+            $joinString .= ' LEFT JOIN '  . static::replaceAllDotsExceptLast($joinPart) . ' ' . static::replaceAllDots($joinPart) . ' ';
         }
 
         return $joinString;

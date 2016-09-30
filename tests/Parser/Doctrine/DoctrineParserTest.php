@@ -117,7 +117,7 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
 
         $this->mockEntity_WithAssociation_ParseCases[] = [
             'rulegroup' => $ruleGroupA,
-            'expectedDqlString'=>'SELECT object, object_associationEntities FROM ' . MockEntity::class . ' object JOIN object.associationEntities object_associationEntities WHERE ( object.price IS NOT NULL AND object_associationEntities.id = ?0 ) ',
+            'expectedDqlString'=>'SELECT object, object_associationEntities FROM ' . MockEntity::class . ' object LEFT JOIN object.associationEntities object_associationEntities WHERE ( object.price IS NOT NULL AND object_associationEntities.id = ?0 ) ',
             'expectedParameters' => ['hello'],
         ];
     }

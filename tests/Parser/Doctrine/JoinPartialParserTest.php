@@ -17,7 +17,7 @@ class JoinPartialParserTest extends \PHPUnit_Framework_TestCase
             'labels.specification' => 'Valid_Class_Is_Not_Checked',
         ];
         $parsed = JoinPartialParser::parse($queryBuilderFieldPrefixesToAssociationClasses);
-        $expected = ' JOIN  object.labels   object_labels   JOIN  object.specification   object_specification   JOIN  object_labels.specification   object_labels_specification  ';
+        $expected = ' LEFT JOIN  object.labels   object_labels   LEFT JOIN  object.specification   object_specification   LEFT JOIN  object_labels.specification   object_labels_specification  ';
 
         $this->assertEquals($expected, $parsed);
     }
