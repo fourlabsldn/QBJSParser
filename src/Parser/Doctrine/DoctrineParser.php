@@ -4,6 +4,7 @@ namespace FL\QBJSParser\Parser\Doctrine;
 
 use FL\QBJSParser\Exception\Parser\Doctrine\InvalidClassNameException;
 use FL\QBJSParser\Exception\Parser\Doctrine\FieldMappingException;
+use FL\QBJSParser\Exception\Parser\Doctrine\InvalidFieldException;
 use FL\QBJSParser\Exception\Parser\Doctrine\MissingAssociationClassException;
 use FL\QBJSParser\Model\RuleGroupInterface;
 use FL\QBJSParser\Parsed\Doctrine\ParsedRuleGroup;
@@ -104,6 +105,14 @@ class DoctrineParser implements ParserInterface
             if ($doesFieldPrefixHaveSuffix) { // $fieldPrefix is for an Association in an Association
                 $fieldPrefixPrefix =  preg_replace($suffixPattern, '', $fieldPrefix);
                 $fieldSuffix = str_replace('.', '', $suffixMatches[0]); // remove preceding dot
+                if(!array_key_exists($fieldPrefixPrefix, $this->queryBuilderFieldPrefixesToAssociationClasses)){
+                    throw new MissingAssociationClassException(sprintf(
+                        'Missing association class for queryBuilderFieldPrefix %s, at class %s, for parser %s',
+                        $fieldPrefixPrefix,
+                        $this->className,
+                        static::class
+                    ));
+                }
                 $classForThisPrefix = $this->queryBuilderFieldPrefixesToAssociationClasses[$fieldPrefixPrefix];
                 $this->validateClassHasProperty($classForThisPrefix, $fieldSuffix);
             } else { // $fieldPrefix an association for $this->className
