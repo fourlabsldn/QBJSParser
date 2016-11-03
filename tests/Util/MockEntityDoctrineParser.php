@@ -8,7 +8,7 @@ class MockEntityDoctrineParser extends DoctrineParser
 {
     public function __construct()
     {
-        parent::__construct(MockEntity::class,[
+        parent::__construct(MockEntity::class, [
             'id' => 'id',
             'price' => 'price',
             'name' => 'name',

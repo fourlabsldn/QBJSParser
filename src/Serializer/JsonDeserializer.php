@@ -13,7 +13,7 @@ use FL\QBJSParser\Model\RuleInterface;
 class JsonDeserializer implements DeserializerInterface
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function deserialize(string $string) : RuleGroupInterface
     {
@@ -27,6 +27,7 @@ class JsonDeserializer implements DeserializerInterface
 
     /**
      * @param array $decodedRuleGroup
+     *
      * @return RuleGroupInterface
      */
     private function deserializeRuleGroup(array $decodedRuleGroup) : RuleGroupInterface
@@ -50,7 +51,9 @@ class JsonDeserializer implements DeserializerInterface
 
     /**
      * @param array $decodedRule
+     *
      * @return RuleInterface
+     *
      * @throws \Exception
      */
     private function deserializeRule(array $decodedRule): RuleInterface
@@ -64,7 +67,7 @@ class JsonDeserializer implements DeserializerInterface
         );
         if ($missingKey) {
             $keysGiven = implode(', ', array_keys($decodedRule));
-            throw new JsonDeserializerRuleKeyException('Keys given: ' . $keysGiven . '. Expected id, field, type, operator, value');
+            throw new JsonDeserializerRuleKeyException('Keys given: '.$keysGiven.'. Expected id, field, type, operator, value');
         }
 
         $id = $decodedRule['id'];
@@ -86,34 +89,37 @@ class JsonDeserializer implements DeserializerInterface
 
         if (!is_array($value)) {
             $value = $this->convertValueAccordingToType($type, $value);
+
             return new Rule($id, $field, $type, $operator, $value);
         } else {
             $valuesArray = $value;
             foreach ($valuesArray as $key => $value) {
                 $valuesArray[$key] = $this->convertValueAccordingToType($type, $value);
             }
+
             return new Rule($id, $field, $type, $operator, $valuesArray);
         }
     }
 
     /**
      * @param string $type
-     * @param mixed $value
+     * @param mixed  $value
+     *
      * @return mixed
      */
     private function convertValueAccordingToType(string $type, $value)
     {
         if (is_null($value) || $value === 'null' || $value === 'NULL') {
-            return null; // nulls shouldn't be converted
+            return; // nulls shouldn't be converted
         }
 
-        switch ($type) { /** @see Rule::$type */
+        switch ($type) { /* @see Rule::$type */
             case 'string':
                 return strval($value);
             case 'integer':
                 return intval($value);
             case 'double':
-                return doubleval($value);
+                return floatval($value);
             case 'date':
             case 'time':
             case 'datetime':

@@ -37,7 +37,7 @@ class RuleGroup implements RuleGroupInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getRules()
     {
@@ -45,7 +45,7 @@ class RuleGroup implements RuleGroupInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function addRule(RuleInterface $rule): RuleGroupInterface
     {
@@ -55,7 +55,7 @@ class RuleGroup implements RuleGroupInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function removeRule(RuleInterface $rule): RuleGroupInterface
     {
@@ -65,7 +65,7 @@ class RuleGroup implements RuleGroupInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getRuleGroups()
     {
@@ -73,7 +73,7 @@ class RuleGroup implements RuleGroupInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function addRuleGroup(RuleGroupInterface $ruleGroup): RuleGroupInterface
     {
@@ -83,7 +83,7 @@ class RuleGroup implements RuleGroupInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function removeRuleGroup(RuleGroupInterface $ruleGroup): RuleGroupInterface
     {

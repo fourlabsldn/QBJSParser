@@ -14,10 +14,10 @@ class MockEntityWithAssociationDoctrineParser extends DoctrineParser
             'price' => 'price',
             'name' => 'name',
             'date' => 'date',
-            'associationEntities.id'=>'associationEntities.id',
+            'associationEntities.id' => 'associationEntities.id',
             ],
             [
-                'associationEntities'=> MockEntityAssociation::class,
+                'associationEntities' => MockEntityAssociation::class,
             ]
         );
     }
