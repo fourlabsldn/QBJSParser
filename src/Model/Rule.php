@@ -7,7 +7,8 @@ use FL\QBJSParser\Exception\Model\RuleConstructionException;
 class Rule implements RuleInterface
 {
     /**
-     * Valid combinations of a Type and an Operator
+     * Valid combinations of a Type and an Operator.
+     *
      * @see Rule::$type
      * @see Rule::$operator
      *
@@ -31,7 +32,7 @@ class Rule implements RuleInterface
             'less', 'less_or_equal', 'greater', 'greater_or_equal', 'between',
         ],
         'boolean' => [
-            'equal', 'not_equal', 'is_null', 'is_not_null'
+            'equal', 'not_equal', 'is_null', 'is_not_null',
         ],
         'datetime' => [
             'equal', 'not_equal', 'in', 'not_in', 'is_null', 'is_not_null',
@@ -48,7 +49,8 @@ class Rule implements RuleInterface
     ];
 
     /**
-     * Valid combinations of a Type and a Value's Type
+     * Valid combinations of a Type and a Value's Type.
+     *
      * @see Rule::$type
      * @see Rule::$value
      *
@@ -71,7 +73,8 @@ class Rule implements RuleInterface
     ];
 
     /**
-     * Valid combinations of an Operator and a Value's Type
+     * Valid combinations of an Operator and a Value's Type.
+     *
      * @see Rule::$operator
      * @see Rule::$value
      *
@@ -102,7 +105,7 @@ class Rule implements RuleInterface
         'is_empty' => ['NULL'],
         'is_not_empty' => ['NULL'],
         'is_null' => ['NULL'],
-        'is_not_null'=> ['NULL'],
+        'is_not_null' => ['NULL'],
     ];
 
     /**
@@ -119,7 +122,7 @@ class Rule implements RuleInterface
      * Possibilities for $type come from JSQueryBuilder types:
      * [
      *  'string', 'integer', 'double', 'date', 'time', 'datetime', 'boolean'
-     * ]
+     * ].
      *
      * @var string
      */
@@ -131,7 +134,7 @@ class Rule implements RuleInterface
      *  'equal', 'not_equal', 'in', 'not_in', 'less', 'less_or_equal', 'greater', 'greater_or_equal',
      *  'between', 'not_between', 'begins_with', 'not_begins_with', 'contains', 'not_contains',
      *  'ends_width', 'not_ends_with', 'is_empty', 'is_not_empty', 'is_null', 'is_not_null'
-     * ]
+     * ].
      *
      * @var string
      */
@@ -139,7 +142,7 @@ class Rule implements RuleInterface
 
     /**
      * @var mixed
-     * Possibilities for the type of value should come from @see Rule::valueType()
+     *            Possibilities for the type of value should come from @see Rule::valueType()
      */
     private $value;
 
@@ -148,7 +151,7 @@ class Rule implements RuleInterface
      * @param string $field
      * @param string $type
      * @param string $operator
-     * @param mixed $value
+     * @param mixed  $value
      */
     public function __construct(string $id, string $field, string $type, string $operator, $value)
     {
@@ -171,7 +174,7 @@ class Rule implements RuleInterface
      */
     private function validate_Type_Operator()
     {
-        if (! in_array($this->operator, self::TYPES_OPERATORS[$this->type])) {
+        if (!in_array($this->operator, self::TYPES_OPERATORS[$this->type])) {
             throw new RuleConstructionException(sprintf(
                 "Invalid Type/Operator Combination\nType: %s\nOperator: %s",
                 $this->type,
@@ -213,7 +216,8 @@ class Rule implements RuleInterface
     /**
      * When @see Rule::$value is an array,
      * each ELEMENT must be of an allowed type,
-     * according to @see Rule::TYPES_VALUETYPES
+     * according to @see Rule::TYPES_VALUETYPES.
+     *
      * @throws RuleConstructionException
      */
     private function validate_ValueIsArray()
@@ -239,12 +243,13 @@ class Rule implements RuleInterface
     }
 
     /**
-     * When @see Rule::$operator is 'between', the @see Rule::$value must be an array of 2 elements
+     * When @see Rule::$operator is 'between', the @see Rule::$value must be an array of 2 elements.
+     *
      * @throws RuleConstructionException
      */
     private function validate_OperatorIsBetween()
     {
-        /**
+        /*
          * Don't throw an exception if the valueType is not an array,
          * @see Rule::validate_Operator_ValueType() is in charge of that
          */
@@ -265,7 +270,7 @@ class Rule implements RuleInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getId(): string
     {
@@ -273,7 +278,7 @@ class Rule implements RuleInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getField(): string
     {
@@ -281,7 +286,7 @@ class Rule implements RuleInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getType(): string
     {
@@ -289,7 +294,7 @@ class Rule implements RuleInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getOperator(): string
     {
@@ -297,7 +302,7 @@ class Rule implements RuleInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getValue()
     {
@@ -305,9 +310,10 @@ class Rule implements RuleInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * Useful to convert a value (such as @see Rule::$value
      * into PHP variable types and class names
+     *
      * @link http://php.net/manual/en/function.gettype.php
      * @link http://php.net/manual/en/function.get-class.php
      * [

@@ -23,23 +23,23 @@ class JsonDeserializerTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->inputJsonString =
-            '{' .
+            '{'.
                 '"condition":"AND",'.
-                '"rules":[' .
-                    '{"id":"price","field":"price","type":"double","input":"text","operator":"less","value":"10.25"},' .
-                    '{"id":"price","field":"price","type":"double","input":"text","operator":"in","value":["10.25", "3.23", "5.22"]},' .
-                    '{"id":"price","field":"price","type":"double","input":"text","operator":"between","value":["0.2", "100.3"]},' .
-                    '{"id":"name","field":"name","type":"string","input":"text","operator":"in","value":["some_name", "another_name", null]},' .
-                    '{"id":"name","field":"name","type":"string","input":"text","operator":"not_in","value":["some_name", "another_name", null]},' .
-                    '{' .
-                        '"condition":"OR",' .
-                        '"rules":[' .
-                            '{"id":"category","field":"category","type":"integer","input":"select","operator":"equal","value":"2"},' .
-                            '{"id":"category","field":"category","type":"integer","input":"select","operator":"equal","value":"1"},' .
-                            '{"id":"category","field":"category","type":"integer","input":"select","operator":"is_not_null","value":null}' .
-                        ']' .
-                    '}' .
-                ']' .
+                '"rules":['.
+                    '{"id":"price","field":"price","type":"double","input":"text","operator":"less","value":"10.25"},'.
+                    '{"id":"price","field":"price","type":"double","input":"text","operator":"in","value":["10.25", "3.23", "5.22"]},'.
+                    '{"id":"price","field":"price","type":"double","input":"text","operator":"between","value":["0.2", "100.3"]},'.
+                    '{"id":"name","field":"name","type":"string","input":"text","operator":"in","value":["some_name", "another_name", null]},'.
+                    '{"id":"name","field":"name","type":"string","input":"text","operator":"not_in","value":["some_name", "another_name", null]},'.
+                    '{'.
+                        '"condition":"OR",'.
+                        '"rules":['.
+                            '{"id":"category","field":"category","type":"integer","input":"select","operator":"equal","value":"2"},'.
+                            '{"id":"category","field":"category","type":"integer","input":"select","operator":"equal","value":"1"},'.
+                            '{"id":"category","field":"category","type":"integer","input":"select","operator":"is_not_null","value":null}'.
+                        ']'.
+                    '}'.
+                ']'.
             '}';
 
         $ruleGroupA = new RuleGroup(RuleGroupInterface::MODE_AND);
@@ -83,24 +83,24 @@ class JsonDeserializerTest extends \PHPUnit_Framework_TestCase
     {
         $ruleGroupA = new RuleGroup(RuleGroupInterface::MODE_AND);
         $ruleGroupA_RuleA = new Rule('price', 'price', 'double', 'less', 10.25);
-        $ruleGroupA_RuleB = new Rule('date', 'date', 'datetime', 'in', [new \DateTimeImmutable("now")]);
-        $ruleGroupA_RuleC = new Rule('date', 'date', 'datetime', 'in', [new \DateTimeImmutable("now")]);
-        $ruleGroupA_RuleD = new Rule('date', 'date', 'datetime', 'not_in', [new \DateTimeImmutable("now")]);
+        $ruleGroupA_RuleB = new Rule('date', 'date', 'datetime', 'in', [new \DateTimeImmutable('now')]);
+        $ruleGroupA_RuleC = new Rule('date', 'date', 'datetime', 'in', [new \DateTimeImmutable('now')]);
+        $ruleGroupA_RuleD = new Rule('date', 'date', 'datetime', 'not_in', [new \DateTimeImmutable('now')]);
         $ruleGroupA->addRule($ruleGroupA_RuleA);
         $ruleGroupA->addRule($ruleGroupA_RuleB);
         $ruleGroupA->addRule($ruleGroupA_RuleC);
         $ruleGroupA->addRule($ruleGroupA_RuleD);
 
         $jsonString =
-            '{' .
+            '{'.
                 '"condition":"AND",'.
-                '"rules":[' .
-                    '{"id":"price","field":"price","type":"double","input":"text","operator":"less","value":"10.25"},' .
-                    '{"id":"date","field":"date","type":"datetime","input":"text","operator":"in","value":["now"]},' .
+                '"rules":['.
+                    '{"id":"price","field":"price","type":"double","input":"text","operator":"less","value":"10.25"},'.
+                    '{"id":"date","field":"date","type":"datetime","input":"text","operator":"in","value":["now"]},'.
                     // operators in and not_in require an array, the next two lines test that single values are converted to an array
-                    '{"id":"date","field":"date","type":"datetime","input":"text","operator":"in","value":"now"},' .
-                    '{"id":"date","field":"date","type":"datetime","input":"text","operator":"not_in","value":"now"}' .
-                ']' .
+                    '{"id":"date","field":"date","type":"datetime","input":"text","operator":"in","value":"now"},'.
+                    '{"id":"date","field":"date","type":"datetime","input":"text","operator":"not_in","value":"now"}'.
+                ']'.
             '}';
 
         $jsonDeserializer = new JsonDeserializer();
@@ -117,7 +117,7 @@ class JsonDeserializerTest extends \PHPUnit_Framework_TestCase
      */
     public function assertRuleGroupsAreEqual(RuleGroupInterface $ruleGroupA, RuleGroupInterface $ruleGroupB)
     {
-        /**
+        /*
          * Verify descendants are equal, recursively
          */
         $ruleGroups_inRuleGroupA = [];
@@ -130,7 +130,7 @@ class JsonDeserializerTest extends \PHPUnit_Framework_TestCase
         }
 
         foreach ($ruleGroups_inRuleGroupA as $key => $ruleGroup) {
-            /** @var RuleGroupInterface $ruleGroup */
+            /* @var RuleGroupInterface $ruleGroup */
             if (!isset($ruleGroups_inRuleGroupB[$key])) {
                 $this->fail('Number of RuleGroups not matching');
             }
@@ -143,7 +143,7 @@ class JsonDeserializerTest extends \PHPUnit_Framework_TestCase
             $this->assertRuleGroupsAreEqual($ruleGroup, $ruleGroups_inRuleGroupA[$key]);
         }
 
-        /**
+        /*
          * Verify rules are equal
          */
         $rules_inRuleGroupA = [];

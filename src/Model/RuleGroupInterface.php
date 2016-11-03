@@ -23,16 +23,17 @@ interface RuleGroupInterface
 
     /**
      * @param RuleInterface $rule
+     *
      * @return RuleGroupInterface
      */
     public function addRule(RuleInterface $rule): RuleGroupInterface;
 
     /**
      * @param RuleInterface $rule
+     *
      * @return RuleGroupInterface
      */
     public function removeRule(RuleInterface $rule) : RuleGroupInterface;
-
 
     /**
      * @return \SplObjectStorage|RuleGroupInterface[]
@@ -41,12 +42,14 @@ interface RuleGroupInterface
 
     /**
      * @param RuleGroupInterface $ruleGroup
+     *
      * @return RuleGroupInterface
      */
     public function addRuleGroup(RuleGroupInterface $ruleGroup) : RuleGroupInterface;
 
     /**
      * @param RuleGroupInterface $ruleGroup
+     *
      * @return RuleGroupInterface
      */
     public function removeRuleGroup(RuleGroupInterface $ruleGroup) : RuleGroupInterface;

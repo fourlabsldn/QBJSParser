@@ -18,7 +18,7 @@ class ParsedRuleGroup
 
     /**
      * @param string $dqlString
-     * @param array $parameters
+     * @param array  $parameters
      */
     public function __construct(string $dqlString, array $parameters)
     {
