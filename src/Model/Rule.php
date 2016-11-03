@@ -138,8 +138,9 @@ class Rule implements RuleInterface
     private $operator;
 
     /**
-     * @var mixed
      * Possibilities for the type of value should come from @see Rule::valueType()
+     * 
+     * @var mixed
      */
     private $value;
 
