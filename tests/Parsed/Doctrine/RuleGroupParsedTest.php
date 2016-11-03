@@ -17,7 +17,6 @@ class RuleGroupParsedTest extends \PHPUnit_Framework_TestCase
      */
     private $sampleInvalid_Dqls_Parameters;
 
-
     public function setUp()
     {
         $this->sampleValid_Dqls_Parameters = [
@@ -70,7 +69,7 @@ class RuleGroupParsedTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @param \Closure $function
-     * @param string $dqlString
+     * @param string   $dqlString
      */
     private function assertParsedRuleGroupConstructionException(\Closure $function, string $dqlString)
     {
@@ -79,6 +78,6 @@ class RuleGroupParsedTest extends \PHPUnit_Framework_TestCase
         } catch (ParsedRuleGroupConstructionException $e) {
             return;
         }
-        $this->fail(ParsedRuleGroup::class . ' with dqlString: \'' . $dqlString . '\' should be invalid.');
+        $this->fail(ParsedRuleGroup::class.' with dqlString: \''.$dqlString.'\' should be invalid.');
     }
 }

@@ -8,6 +8,7 @@ interface DeserializerInterface
 {
     /**
      * @param string $string
+     *
      * @return RuleGroupInterface
      */
     public function deserialize(string $string) : RuleGroupInterface;

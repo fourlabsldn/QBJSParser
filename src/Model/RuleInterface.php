@@ -31,6 +31,7 @@ interface RuleInterface
 
     /**
      * @param $value
+     *
      * @return string
      */
     public function valueType($value): string;

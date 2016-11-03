@@ -15,6 +15,7 @@ interface ParserInterface
 {
     /**
      * @param RuleGroupInterface $ruleGroup
+     *
      * @return mixed
      */
     public function parse(RuleGroupInterface $ruleGroup);
