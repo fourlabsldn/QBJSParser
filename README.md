@@ -1,5 +1,6 @@
 # Query Builder JS Parser
 
+[![StyleCI](https://styleci.io/repos/68804319/shield?branch=master)](https://styleci.io/repos/68804319)
 [![Build Status](https://travis-ci.org/fourlabsldn/QBJSParser.svg?branch=master)](https://travis-ci.org/fourlabsldn/QBJSParser)
 
 Parse JSON coming from [jQuery QueryBuilder](http://querybuilder.js.org/), such as
