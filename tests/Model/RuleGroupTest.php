@@ -38,7 +38,6 @@ class RuleGroupTest extends \PHPUnit_Framework_TestCase
         });
     }
 
-
     /**
      * @param \Closure $function
      */
@@ -49,6 +48,6 @@ class RuleGroupTest extends \PHPUnit_Framework_TestCase
         } catch (RuleGroupConstructionException $e) {
             return;
         }
-        $this->fail('Expected ' . RuleGroupConstructionException::class);
+        $this->fail('Expected '.RuleGroupConstructionException::class);
     }
 }

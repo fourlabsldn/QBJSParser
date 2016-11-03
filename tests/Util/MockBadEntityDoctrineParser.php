@@ -8,7 +8,7 @@ class MockBadEntityDoctrineParser extends DoctrineParser
 {
     public function __construct()
     {
-        parent::__construct(MockBadEntity::class,[
+        parent::__construct(MockBadEntity::class, [
             'id' => 'id',
             'price' => 'price',
             'name' => 'name',

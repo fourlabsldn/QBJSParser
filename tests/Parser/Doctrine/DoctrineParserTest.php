@@ -29,7 +29,7 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
 
-        /**
+        /*
          * First $this->mockEntity_ParseCases Case
          */
         $ruleGroupA = new RuleGroup(RuleGroupInterface::MODE_AND);
@@ -38,11 +38,11 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
 
         $this->mockEntity_ParseCases[] = [
                 'rulegroup' => $ruleGroupA,
-                'expectedDqlString'=>'SELECT object FROM ' . MockEntity::class . ' object WHERE ( object.price IS NOT NULL ) ',
+                'expectedDqlString' => 'SELECT object FROM '.MockEntity::class.' object WHERE ( object.price IS NOT NULL ) ',
                 'expectedParameters' => [],
         ];
 
-        /**
+        /*
          * Second $this->mockEntity_ParseCases Case
          */
         $ruleGroupA = new RuleGroup(RuleGroupInterface::MODE_OR);
@@ -69,7 +69,7 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
 
         $this->mockEntity_ParseCases[] = [
             'rulegroup' => $ruleGroupA,
-            'expectedDqlString'=>'SELECT object FROM ' . MockEntity::class . ' object WHERE ( object.price IS NOT NULL OR object.name = ?0 OR object.name LIKE ?1 OR object.name NOT LIKE ?2 OR object.name LIKE ?3 OR object.name LIKE ?4 OR object.name NOT LIKE ?5 OR object.name NOT LIKE ?6 OR object.name = \'\' OR object.name != \'\' ) ',
+            'expectedDqlString' => 'SELECT object FROM '.MockEntity::class.' object WHERE ( object.price IS NOT NULL OR object.name = ?0 OR object.name LIKE ?1 OR object.name NOT LIKE ?2 OR object.name LIKE ?3 OR object.name LIKE ?4 OR object.name NOT LIKE ?5 OR object.name NOT LIKE ?6 OR object.name = \'\' OR object.name != \'\' ) ',
             'expectedParameters' => [
                 'hello',
                 '%world%',
@@ -81,7 +81,7 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
             ],
         ];
 
-        /**
+        /*
          * Third $this->mockEntity_ParseCases Case
          */
         $ruleGroupA = new RuleGroup(RuleGroupInterface::MODE_AND);
@@ -103,7 +103,7 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
 
         $this->mockEntity_ParseCases[] = [
             'rulegroup' => $ruleGroupA,
-            'expectedDqlString'=>'SELECT object FROM ' . MockEntity::class . ' object WHERE ( object.price IS NOT NULL AND object.name = ?0 AND ( object.price > ?1 OR object.price <= ?2 ) ) ',
+            'expectedDqlString' => 'SELECT object FROM '.MockEntity::class.' object WHERE ( object.price IS NOT NULL AND object.name = ?0 AND ( object.price > ?1 OR object.price <= ?2 ) ) ',
             'expectedParameters' => ['hello', 0.3, 22.0],
         ];
 
@@ -117,7 +117,7 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
 
         $this->mockEntity_WithAssociation_ParseCases[] = [
             'rulegroup' => $ruleGroupA,
-            'expectedDqlString'=>'SELECT object, object_associationEntities FROM ' . MockEntity::class . ' object LEFT JOIN object.associationEntities object_associationEntities WHERE ( object.price IS NOT NULL AND object_associationEntities.id = ?0 ) ',
+            'expectedDqlString' => 'SELECT object, object_associationEntities FROM '.MockEntity::class.' object LEFT JOIN object.associationEntities object_associationEntities WHERE ( object.price IS NOT NULL AND object_associationEntities.id = ?0 ) ',
             'expectedParameters' => ['hello'],
         ];
     }
@@ -198,7 +198,7 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
         } catch (FieldMappingException $e) {
             return;
         }
-        $this->fail('Expected ' . FieldMappingException::class);
+        $this->fail('Expected '.FieldMappingException::class);
     }
 
     /**
@@ -211,6 +211,6 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
         } catch (InvalidClassNameException $e) {
             return;
         }
-        $this->fail('Expected ' . InvalidClassNameException::class);
+        $this->fail('Expected '.InvalidClassNameException::class);
     }
 }

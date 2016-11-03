@@ -13,7 +13,7 @@ class FromPartialParserTest extends \PHPUnit_Framework_TestCase
     {
         $className = 'SomeNamespace\SomeClass';
         $parsed = FromPartialParser::parse($className);
-        $expected = ' FROM ' . $className . ' object ';
+        $expected = ' FROM '.$className.' object ';
 
         $this->assertEquals($expected, $parsed);
     }

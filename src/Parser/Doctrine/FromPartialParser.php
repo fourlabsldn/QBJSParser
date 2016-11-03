@@ -10,11 +10,12 @@ abstract class FromPartialParser
 
     /**
      * @param string $className
+     *
      * @return string
      */
     final public static function parse(string $className) : string
     {
-        $fromString = ' FROM ' . $className . ' ' . SelectPartialParser::OBJECT_WORD . ' ' ;
+        $fromString = ' FROM '.$className.' '.SelectPartialParser::OBJECT_WORD.' ';
 
         return $fromString;
     }

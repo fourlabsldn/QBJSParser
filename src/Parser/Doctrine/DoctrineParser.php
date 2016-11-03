@@ -4,7 +4,6 @@ namespace FL\QBJSParser\Parser\Doctrine;
 
 use FL\QBJSParser\Exception\Parser\Doctrine\InvalidClassNameException;
 use FL\QBJSParser\Exception\Parser\Doctrine\FieldMappingException;
-use FL\QBJSParser\Exception\Parser\Doctrine\InvalidFieldException;
 use FL\QBJSParser\Exception\Parser\Doctrine\MissingAssociationClassException;
 use FL\QBJSParser\Model\RuleGroupInterface;
 use FL\QBJSParser\Parsed\Doctrine\ParsedRuleGroup;
@@ -31,20 +30,20 @@ class DoctrineParser implements ParserInterface
 
     /**
      * @param string $className
-     * @param array $queryBuilderFieldsToProperties E.g. [
-     *      'id' => 'id',
-     *      'labels.id' => 'labels.id',
-     *      'labels.name' => 'labels.name',
-     *      'labels.authors.id'=> 'labels.authors.id',
-     *      'labels.authors.address.city'=> 'labels.authors.address.city',
-     *      'authors.id' => 'authors.id',
-     * ]
-     * @param array $queryBuilderFieldPrefixesToAssociationClasses E.g. [
-     *      'labels' => Label::class,
-     *      'labels.authors' => Author::class,
-     *      'labels.authors.address' => Address::class,
-     *      'author' => Address::class,
-     * ]
+     * @param array  $queryBuilderFieldsToProperties                E.g. [
+     *                                                              'id' => 'id',
+     *                                                              'labels.id' => 'labels.id',
+     *                                                              'labels.name' => 'labels.name',
+     *                                                              'labels.authors.id'=> 'labels.authors.id',
+     *                                                              'labels.authors.address.city'=> 'labels.authors.address.city',
+     *                                                              'authors.id' => 'authors.id',
+     *                                                              ]
+     * @param array  $queryBuilderFieldPrefixesToAssociationClasses E.g. [
+     *                                                              'labels' => Label::class,
+     *                                                              'labels.authors' => Author::class,
+     *                                                              'labels.authors.address' => Address::class,
+     *                                                              'author' => Address::class,
+     *                                                              ]
      */
     public function __construct(string $className, array $queryBuilderFieldsToProperties, array $queryBuilderFieldPrefixesToAssociationClasses)
     {
@@ -55,7 +54,8 @@ class DoctrineParser implements ParserInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
+     *
      * @return RuleGroupInterface
      */
     final public function parse(RuleGroupInterface $ruleGroup) : ParsedRuleGroup
@@ -68,7 +68,8 @@ class DoctrineParser implements ParserInterface
         $whereString = $whereParsedRuleGroup->getDqlString();
         $parameters = $whereParsedRuleGroup->getParameters();
 
-        $dqlString = $selectString . $fromString . $joinString . $whereString;
+        $dqlString = $selectString.$fromString.$joinString.$whereString;
+
         return new ParsedRuleGroup(preg_replace('/\s+/', ' ', $dqlString), $parameters); // preg_replace -> no more than one space
     }
 
@@ -85,7 +86,7 @@ class DoctrineParser implements ParserInterface
             $suffixMatches = [];
             $doesFieldHaveSuffix = preg_match($suffixPattern, $queryBuilderField, $suffixMatches);
             if ($doesFieldHaveSuffix) { // $queryBuilderField is for an Association
-                $fieldPrefix =  preg_replace($suffixPattern, '', $queryBuilderField);
+                $fieldPrefix = preg_replace($suffixPattern, '', $queryBuilderField);
                 $this->validateFieldPrefixIsInAssociations($fieldPrefix);
                 $fieldSuffix = str_replace('.', '', $suffixMatches[0]); // remove preceding dot
                 $classForThisPrefix = $this->queryBuilderFieldPrefixesToAssociationClasses[$fieldPrefix];
@@ -102,9 +103,9 @@ class DoctrineParser implements ParserInterface
             $suffixMatches = [];
             $doesFieldPrefixHaveSuffix = preg_match($suffixPattern, $fieldPrefix, $suffixMatches);
             if ($doesFieldPrefixHaveSuffix) { // $fieldPrefix is for an Association in an Association
-                $fieldPrefixPrefix =  preg_replace($suffixPattern, '', $fieldPrefix);
+                $fieldPrefixPrefix = preg_replace($suffixPattern, '', $fieldPrefix);
                 $fieldSuffix = str_replace('.', '', $suffixMatches[0]); // remove preceding dot
-                if(!array_key_exists($fieldPrefixPrefix, $this->queryBuilderFieldPrefixesToAssociationClasses)){
+                if (!array_key_exists($fieldPrefixPrefix, $this->queryBuilderFieldPrefixesToAssociationClasses)) {
                     throw new MissingAssociationClassException(sprintf(
                         'Missing association class for queryBuilderFieldPrefix %s, at class %s, for parser %s',
                         $fieldPrefixPrefix,
@@ -122,7 +123,9 @@ class DoctrineParser implements ParserInterface
 
     /**
      * @param string $className
+     *
      * @link http://symfony.com/doc/current/components/property_info.html#components-property-info-extractors
+     *
      * @throws InvalidClassNameException
      */
     final private function validateClass(string $className)
@@ -139,7 +142,9 @@ class DoctrineParser implements ParserInterface
     /**
      * @param string $className
      * @param string $classProperty
+     *
      * @link http://symfony.com/doc/current/components/property_info.html#components-property-info-extractors
+     *
      * @throws FieldMappingException
      */
     final private function validateClassHasProperty(string $className, string $classProperty)
@@ -158,6 +163,7 @@ class DoctrineParser implements ParserInterface
 
     /**
      * @param string $fieldPrefix
+     *
      * @throws MissingAssociationClassException
      */
     final private function validateFieldPrefixIsInAssociations(string $fieldPrefix)
