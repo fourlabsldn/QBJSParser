@@ -31,8 +31,7 @@ class DoctrineParser implements ParserInterface
 
     /**
      * @param string $className
-     * @param array $queryBuilderFieldsToProperties
-     * E.g. [
+     * @param array $queryBuilderFieldsToProperties E.g. [
      *      'id' => 'id',
      *      'labels.id' => 'labels.id',
      *      'labels.name' => 'labels.name',
@@ -40,7 +39,7 @@ class DoctrineParser implements ParserInterface
      *      'labels.authors.address.city'=> 'labels.authors.address.city',
      *      'authors.id' => 'authors.id',
      * ]
-     * @param array $queryBuilderFieldPrefixesToAssociationClasses [
+     * @param array $queryBuilderFieldPrefixesToAssociationClasses E.g. [
      *      'labels' => Label::class,
      *      'labels.authors' => Author::class,
      *      'labels.authors.address' => Address::class,

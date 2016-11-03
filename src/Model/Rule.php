@@ -116,22 +116,24 @@ class Rule implements RuleInterface
     private $field;
 
     /**
-     * @var string
      * Possibilities for $type come from JSQueryBuilder types:
      * [
      *  'string', 'integer', 'double', 'date', 'time', 'datetime', 'boolean'
      * ]
+     *
+     * @var string
      */
     private $type;
 
     /**
-     * @var string
      * Possibilities for $operator come from JSQueryBuilder operators:
      * [
      *  'equal', 'not_equal', 'in', 'not_in', 'less', 'less_or_equal', 'greater', 'greater_or_equal',
      *  'between', 'not_between', 'begins_with', 'not_begins_with', 'contains', 'not_contains',
      *  'ends_width', 'not_ends_with', 'is_empty', 'is_not_empty', 'is_null', 'is_not_null'
      * ]
+     *
+     * @var string
      */
     private $operator;
 
