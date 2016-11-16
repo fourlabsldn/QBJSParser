@@ -70,7 +70,7 @@ class DoctrineParser implements ParserInterface
 
         $orderString = OrderPartialParser::parse($this->queryBuilderFieldsToProperties, $sortColumns);
 
-        $dqlString = preg_replace('/\s+/', ' ',$selectString.$fromString.$joinString.$whereString.$orderString);
+        $dqlString = preg_replace('/\s+/', ' ', $selectString.$fromString.$joinString.$whereString.$orderString);
 
         return new ParsedRuleGroup($dqlString, $parameters); // preg_replace -> no more than one space
     }

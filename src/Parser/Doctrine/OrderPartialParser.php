@@ -6,7 +6,6 @@ use FL\QBJSParser\Exception\Parser\Doctrine\InvalidFieldException;
 
 abstract class OrderPartialParser
 {
-
     /**
      * @var array
      */
@@ -16,9 +15,8 @@ abstract class OrderPartialParser
     {
     }
 
-
     /**
-     * @param array $queryBuilderFieldsToProperties
+     * @param array      $queryBuilderFieldsToProperties
      * @param array|null $sortColumns
      *
      * @return string
@@ -29,7 +27,7 @@ abstract class OrderPartialParser
             static::$queryBuilderFieldsToOrderAlias[$queryBuilderField] = static::replaceAllDotsExceptLast(SelectPartialParser::OBJECT_WORD.'.'.$property);
         }
 
-        if ($sortColumns === null || count($sortColumns) === 0){
+        if ($sortColumns === null || count($sortColumns) === 0) {
             return '';
         }
 
@@ -40,7 +38,8 @@ abstract class OrderPartialParser
                 static::queryBuilderOrderDirectionToSafeValue($order)
             );
         }
-        return rtrim($orderString, ', '). ' ';
+
+        return rtrim($orderString, ', ').' ';
     }
 
     /**
@@ -51,8 +50,8 @@ abstract class OrderPartialParser
     final private static function queryBuilderOrderDirectionToSafeValue(string $orderDirection) : string
     {
         $dictionary = [
-            'ASC'=> 'ASC',
-            'DESC'=>'DESC',
+            'ASC' => 'ASC',
+            'DESC' => 'DESC',
         ];
 
         if (!array_key_exists($orderDirection, $dictionary)) {
@@ -78,9 +77,9 @@ abstract class OrderPartialParser
         return $dictionary[$queryBuilderField];
     }
 
-
     /**
      * @param string $string
+     *
      * @return string
      */
     final private static function replaceAllDotsExceptLast(string $string) : string
