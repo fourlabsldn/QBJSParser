@@ -15,7 +15,7 @@ interface ParserInterface
 {
     /**
      * @param RuleGroupInterface $ruleGroup
-     * @param array $sortColumns (E.g. ['id' => 'ASC']) Not part of QBJS Builder, hence it's an o
+     * @param array              $sortColumns (E.g. ['id' => 'ASC']) Not part of QBJS Builder, hence it's an o
      *
      * @return mixed
      */
