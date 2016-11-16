@@ -56,9 +56,9 @@ class DoctrineParser implements ParserInterface
     /**
      * {@inheritdoc}
      *
-     * @return RuleGroupInterface
+     * @return ParsedRuleGroup
      */
-    final public function parse(RuleGroupInterface $ruleGroup) : ParsedRuleGroup
+    final public function parse(RuleGroupInterface $ruleGroup, array $sortColumns = null) : ParsedRuleGroup
     {
         $selectString = SelectPartialParser::parse($this->queryBuilderFieldPrefixesToAssociationClasses);
         $fromString = FromPartialParser::parse($this->className);
@@ -68,9 +68,11 @@ class DoctrineParser implements ParserInterface
         $whereString = $whereParsedRuleGroup->getDqlString();
         $parameters = $whereParsedRuleGroup->getParameters();
 
-        $dqlString = $selectString.$fromString.$joinString.$whereString;
+        $orderString = OrderPartialParser::parse($this->queryBuilderFieldsToProperties, $sortColumns);
 
-        return new ParsedRuleGroup(preg_replace('/\s+/', ' ', $dqlString), $parameters); // preg_replace -> no more than one space
+        $dqlString = preg_replace('/\s+/', ' ',$selectString.$fromString.$joinString.$whereString.$orderString);
+
+        return new ParsedRuleGroup($dqlString, $parameters); // preg_replace -> no more than one space
     }
 
     /**
