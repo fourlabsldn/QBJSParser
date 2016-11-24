@@ -21,35 +21,39 @@ class DoctrineParser implements ParserInterface
     /**
      * @var array
      */
-    private $queryBuilderFieldsToProperties;
+    private $fieldsToProperties;
 
     /**
      * @var array
      */
-    private $queryBuilderFieldPrefixesToAssociationClasses;
+    private $fieldPrefixesToClasses;
+
 
     /**
-     * @param string $className
-     * @param array  $queryBuilderFieldsToProperties                E.g. [
+     * @param string $className                                     E.g. Product::class
+     * @param array  $fieldsToProperties                            E.g. [
      *                                                              'id' => 'id',
      *                                                              'labels.id' => 'labels.id',
      *                                                              'labels.name' => 'labels.name',
      *                                                              'labels.authors.id'=> 'labels.authors.id',
      *                                                              'labels.authors.address.city'=> 'labels.authors.address.city',
-     *                                                              'authors.id' => 'authors.id',
+     *                                                              'author.id' => 'author.id',
      *                                                              ]
-     * @param array  $queryBuilderFieldPrefixesToAssociationClasses E.g. [
+     * @param array  $fieldPrefixesToClasses                        E.g. [
      *                                                              'labels' => Label::class,
      *                                                              'labels.authors' => Author::class,
      *                                                              'labels.authors.address' => Address::class,
-     *                                                              'author' => Address::class,
+     *                                                              'author' => Author::class,
      *                                                              ]
      */
-    public function __construct(string $className, array $queryBuilderFieldsToProperties, array $queryBuilderFieldPrefixesToAssociationClasses)
-    {
+    public function __construct(
+        string $className,
+        array $fieldsToProperties,
+        array $fieldPrefixesToClasses = []
+    ) {
         $this->className = $className;
-        $this->queryBuilderFieldsToProperties = $queryBuilderFieldsToProperties;
-        $this->queryBuilderFieldPrefixesToAssociationClasses = $queryBuilderFieldPrefixesToAssociationClasses;
+        $this->fieldsToProperties = $fieldsToProperties;
+        $this->fieldPrefixesToClasses = $fieldPrefixesToClasses;
         $this->validate();
     }
 
@@ -60,15 +64,15 @@ class DoctrineParser implements ParserInterface
      */
     final public function parse(RuleGroupInterface $ruleGroup, array $sortColumns = null) : ParsedRuleGroup
     {
-        $selectString = SelectPartialParser::parse($this->queryBuilderFieldPrefixesToAssociationClasses);
+        $selectString = SelectPartialParser::parse($this->fieldPrefixesToClasses);
         $fromString = FromPartialParser::parse($this->className);
-        $joinString = JoinPartialParser::parse($this->queryBuilderFieldPrefixesToAssociationClasses);
+        $joinString = JoinPartialParser::parse($this->fieldPrefixesToClasses);
 
-        $whereParsedRuleGroup = WherePartialParser::parse($this->queryBuilderFieldsToProperties, $ruleGroup);
+        $whereParsedRuleGroup = WherePartialParser::parse($this->fieldsToProperties, $ruleGroup);
         $whereString = $whereParsedRuleGroup->getDqlString();
         $parameters = $whereParsedRuleGroup->getParameters();
 
-        $orderString = OrderPartialParser::parse($this->queryBuilderFieldsToProperties, $sortColumns);
+        $orderString = OrderPartialParser::parse($this->fieldsToProperties, $sortColumns);
 
         $dqlString = preg_replace('/\s+/', ' ', $selectString.$fromString.$joinString.$whereString.$orderString);
 
@@ -81,33 +85,53 @@ class DoctrineParser implements ParserInterface
     final private function validate()
     {
         $this->validateClass($this->className);
+        $this->validateFieldsToProperties($this->fieldsToProperties, $this->fieldPrefixesToClasses);
+        $this->validateFieldPrefixesToClasses($this->fieldPrefixesToClasses);
+    }
 
-        // check $queryBuilderFieldsToProperties
-        foreach ($this->queryBuilderFieldsToProperties as $queryBuilderField => $property) {
+
+    /**
+     * @param array $fieldsToProperties
+     * @param array $fieldPrefixesToClasses
+     *
+     * @throws InvalidClassNameException|FieldMappingException|MissingAssociationClassException
+     */
+    final private function validateFieldsToProperties(array $fieldsToProperties, array $fieldPrefixesToClasses)
+    {
+        // check $fieldsToProperties
+        foreach ($fieldsToProperties as $queryBuilderField => $property) {
             $suffixPattern = '/\.((?!\.).)+$/';
             $suffixMatches = [];
             $doesFieldHaveSuffix = preg_match($suffixPattern, $queryBuilderField, $suffixMatches);
             if ($doesFieldHaveSuffix) { // $queryBuilderField is for an Association
                 $fieldPrefix = preg_replace($suffixPattern, '', $queryBuilderField);
-                $this->validateFieldPrefixIsInAssociations($fieldPrefix);
+                $this->validateFieldPrefixIsInAssociations($fieldPrefix, $fieldPrefixesToClasses);
                 $fieldSuffix = str_replace('.', '', $suffixMatches[0]); // remove preceding dot
-                $classForThisPrefix = $this->queryBuilderFieldPrefixesToAssociationClasses[$fieldPrefix];
+                $classForThisPrefix = $fieldPrefixesToClasses[$fieldPrefix];
                 $this->validateClass($classForThisPrefix);
                 $this->validateClassHasProperty($classForThisPrefix, $fieldSuffix);
             } else { // $queryBuilderField is for $this->className
                 $this->validateClassHasProperty($this->className, $property);
             }
         }
+    }
 
-        // validate queryBuilderFieldPrefixesToAssociationClasses
-        foreach ($this->queryBuilderFieldPrefixesToAssociationClasses as $fieldPrefix => $associationClass) {
+    /**
+     * @param array $fieldPrefixesToClasses
+     *
+     * @throws InvalidClassNameException|FieldMappingException|MissingAssociationClassException
+     */
+    final private function validateFieldPrefixesToClasses(array $fieldPrefixesToClasses)
+    {
+        // validate fieldPrefixesToClasses
+        foreach ($fieldPrefixesToClasses as $fieldPrefix => $associationClass) {
             $suffixPattern = '/\.((?!\.).)+$/';
             $suffixMatches = [];
             $doesFieldPrefixHaveSuffix = preg_match($suffixPattern, $fieldPrefix, $suffixMatches);
             if ($doesFieldPrefixHaveSuffix) { // $fieldPrefix is for an Association in an Association
                 $fieldPrefixPrefix = preg_replace($suffixPattern, '', $fieldPrefix);
                 $fieldSuffix = str_replace('.', '', $suffixMatches[0]); // remove preceding dot
-                if (!array_key_exists($fieldPrefixPrefix, $this->queryBuilderFieldPrefixesToAssociationClasses)) {
+                if (!array_key_exists($fieldPrefixPrefix, $fieldPrefixesToClasses)) {
                     throw new MissingAssociationClassException(sprintf(
                         'Missing association class for queryBuilderFieldPrefix %s, at class %s, for parser %s',
                         $fieldPrefixPrefix,
@@ -115,7 +139,7 @@ class DoctrineParser implements ParserInterface
                         static::class
                     ));
                 }
-                $classForThisPrefix = $this->queryBuilderFieldPrefixesToAssociationClasses[$fieldPrefixPrefix];
+                $classForThisPrefix = $fieldPrefixesToClasses[$fieldPrefixPrefix];
                 $this->validateClassHasProperty($classForThisPrefix, $fieldSuffix);
             } else { // $fieldPrefix an association for $this->className
                 $this->validateClassHasProperty($this->className, $fieldPrefix);
@@ -165,14 +189,15 @@ class DoctrineParser implements ParserInterface
 
     /**
      * @param string $fieldPrefix
+     * @param array $fieldPrefixesToClasses
      *
      * @throws MissingAssociationClassException
      */
-    final private function validateFieldPrefixIsInAssociations(string $fieldPrefix)
+    final private function validateFieldPrefixIsInAssociations(string $fieldPrefix, array $fieldPrefixesToClasses)
     {
-        if (!array_key_exists($fieldPrefix, $this->queryBuilderFieldPrefixesToAssociationClasses)) {
+        if (!array_key_exists($fieldPrefix, $fieldPrefixesToClasses)) {
             throw new MissingAssociationClassException(sprintf(
-                'Missing association class for queryBuilderFieldPrefix %s, at class %s, for parser %s',
+                'Missing class for fieldPrefix %s, at class %s, for parser %s',
                 $fieldPrefix,
                 $this->className,
                 static::class
