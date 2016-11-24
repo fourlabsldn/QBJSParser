@@ -8,7 +8,7 @@ class MockEntity
     private $price;
     private $name;
     private $date;
-    private $associationEntities;
+    private $associationEntity;
 
     public function getId()
     {
@@ -30,8 +30,8 @@ class MockEntity
         return $this->date;
     }
 
-    public function getAssociationEntities()
+    public function getAssociationEntity()
     {
-        return $this->associationEntities;
+        return $this->associationEntity;
     }
 }
