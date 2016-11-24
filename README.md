@@ -2,6 +2,7 @@
 
 [![StyleCI](https://styleci.io/repos/68804319/shield?branch=master)](https://styleci.io/repos/68804319)
 [![Build Status](https://travis-ci.org/fourlabsldn/QBJSParser.svg?branch=master)](https://travis-ci.org/fourlabsldn/QBJSParser)
+[![Coverage Status](https://coveralls.io/repos/github/fourlabsldn/QBJSParser/badge.svg?branch=master)](https://coveralls.io/github/fourlabsldn/QBJSParser?branch=master)
 
 Parse JSON coming from [jQuery QueryBuilder](http://querybuilder.js.org/), such as
 

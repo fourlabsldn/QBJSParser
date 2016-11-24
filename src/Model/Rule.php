@@ -313,7 +313,7 @@ class Rule implements RuleInterface
     /**
      * {@inheritdoc}
      * Useful to convert a value (such as @see Rule::$value
-     * into PHP variable types and class names
+     * into PHP variable types and class names.
      *
      * @link http://php.net/manual/en/function.gettype.php
      * @link http://php.net/manual/en/function.get-class.php
