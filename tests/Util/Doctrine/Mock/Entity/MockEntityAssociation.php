@@ -1,6 +1,6 @@
 <?php
 
-namespace FL\QBJSParser\Tests\Util;
+namespace FL\QBJSParser\Tests\Util\Doctrine\Mock\Entity;
 
 class MockEntityAssociation
 {

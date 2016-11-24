@@ -8,11 +8,11 @@ use FL\QBJSParser\Model\Rule;
 use FL\QBJSParser\Model\RuleGroup;
 use FL\QBJSParser\Model\RuleGroupInterface;
 use FL\QBJSParser\Parser\Doctrine\DoctrineParser;
-use FL\QBJSParser\Tests\Util\MockBadEntity2DoctrineParser;
-use FL\QBJSParser\Tests\Util\MockBadEntityDoctrineParser;
-use FL\QBJSParser\Tests\Util\MockEntity;
-use FL\QBJSParser\Tests\Util\MockEntityDoctrineParser;
-use FL\QBJSParser\Tests\Util\MockEntityWithAssociationDoctrineParser;
+use FL\QBJSParser\Tests\Util\Doctrine\Mock\DoctrineParser\MockBadEntity2DoctrineParser;
+use FL\QBJSParser\Tests\Util\Doctrine\Mock\DoctrineParser\MockBadEntityDoctrineParser;
+use FL\QBJSParser\Tests\Util\Doctrine\Mock\DoctrineParser\MockEntityDoctrineParser;
+use FL\QBJSParser\Tests\Util\Doctrine\Mock\DoctrineParser\MockEntityWithAssociationDoctrineParser;
+use FL\QBJSParser\Tests\Util\Doctrine\Mock\Entity\MockEntity;
 
 class DoctrineParserTest extends \PHPUnit_Framework_TestCase
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace FL\QBJSParser\Tests\Util;
+namespace FL\QBJSParser\Tests\Util\Doctrine\Mock\Entity;
 
 class MockEntity
 {
@@ -9,6 +9,7 @@ class MockEntity
     private $name;
     private $date;
     private $associationEntity;
+    private $embeddable;
 
     public function getId()
     {
@@ -33,5 +34,10 @@ class MockEntity
     public function getAssociationEntity()
     {
         return $this->associationEntity;
+    }
+
+    public function getEmbeddable()
+    {
+        return $this->embeddable;
     }
 }

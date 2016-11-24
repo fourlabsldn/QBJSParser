@@ -1,14 +1,15 @@
 <?php
 
-namespace FL\QBJSParser\Tests\Util;
+namespace FL\QBJSParser\Tests\Util\Doctrine\Mock\DoctrineParser;
 
 use FL\QBJSParser\Parser\Doctrine\DoctrineParser;
+use FL\QBJSParser\Tests\Util\Doctrine\Mock\Entity\MockBadEntity;
 
-class MockEntityDoctrineParser extends DoctrineParser
+class MockBadEntityDoctrineParser extends DoctrineParser
 {
     public function __construct()
     {
-        parent::__construct(MockEntity::class, [
+        parent::__construct(MockBadEntity::class, [
             'id' => 'id',
             'price' => 'price',
             'name' => 'name',
