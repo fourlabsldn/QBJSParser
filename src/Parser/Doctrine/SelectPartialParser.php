@@ -11,16 +11,16 @@ abstract class SelectPartialParser
     }
 
     /**
-     * @param array $queryBuilderFieldPrefixesToAssociationClasses
+     * @param array $fieldPrefixesToClasses
      *
      * @return string
      */
-    final public static function parse(array $queryBuilderFieldPrefixesToAssociationClasses = []): string
+    final public static function parse(array $fieldPrefixesToClasses = []): string
     {
         $selectString = 'SELECT '.static::OBJECT_WORD;
 
-        foreach ($queryBuilderFieldPrefixesToAssociationClasses as $queryBuilderPrefix => $associationClass) {
-            $selectString .= ', '.self::OBJECT_WORD.'_'.str_replace('.', '_', $queryBuilderPrefix);
+        foreach ($fieldPrefixesToClasses as $fieldPrefix => $associationClass) {
+            $selectString .= ', '.self::OBJECT_WORD.'_'.str_replace('.', '_', $fieldPrefix);
         }
 
         return $selectString.' ';

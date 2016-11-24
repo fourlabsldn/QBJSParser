@@ -52,12 +52,14 @@ class DoctrineParser implements ParserInterface
      *                                                           'labels.name' => 'labels.name',
      *                                                           'labels.authors.id'=> 'labels.authors.id',
      *                                                           'labels.authors.address.city'=> 'labels.authors.address.city',
+     *                                                           'labels.authors.nextHoliday.approved' => 'labels.authors.nextHoliday.approved'
      *                                                           'author.id' => 'author.id',
      *                                                           ]
      * @param array  $fieldPrefixesToClasses                     E.g. [
      *                                                           'labels' => Label::class,
      *                                                           'labels.authors' => Author::class,
      *                                                           'labels.authors.address' => Address::class,
+     *                                                           'labels.authors.nextHoliday' => NextHoliday::class,
      *                                                           'author' => Author::class,
      *                                                           ]
      * @param array  $embeddableFieldsToProperties               E.g. [
@@ -65,17 +67,18 @@ class DoctrineParser implements ParserInterface
      *                                                           'period.endDate' => 'period.startDate',
      *                                                           'labels.period.startDate' => 'labels.period.startDate',
      *                                                           'labels.period.endDate'=> 'labels.period.endDate',
-     *                                                           'labels.authors.nextHoliday.approved' => 'labels.authors.nextHoliday.approved'
-     *                                                           'labels.authors.nextHoliday.period.startDate' => 'labels.authors.nextHoliday.period.startDate'
-     *                                                           'labels.authors.nextHoliday.period.endDate' => 'labels.authors.nextHoliday.period.endDate'
+     *                                                           'labels.authors.nextHoliday.period.startDate' => 'labels.authors.nextHoliday.period.startDate',
+     *                                                           'labels.authors.nextHoliday.period.endDate' => 'labels.authors.nextHoliday.period.endDate',
      *                                                           ]
      * @param array  $embeddableFieldPrefixesToClasses           E.g. [
+     *                                                           'labels' => NextHoliday::class,
+     *                                                           'labels.authors' => NextHoliday::class,
      *                                                           'labels.authors.nextHoliday' => NextHoliday::class,
      *                                                           ]
      * @param array  $embeddableFieldPrefixesToEmbeddableClasses E.g. [
      *                                                           'period' => \League\Period\Period::class,
-     *                                                           'labels.period' => \League\Period\Period::class
-     *                                                           'labels.authors.nextHoliday.period' => \League\Period\Period::class
+     *                                                           'labels.period' => \League\Period\Period::class,
+     *                                                           'labels.authors.nextHoliday.period' => \League\Period\Period::class,
      *                                                           ]
      */
     public function __construct(
@@ -106,7 +109,13 @@ class DoctrineParser implements ParserInterface
         $fromString = FromPartialParser::parse($this->className);
         $joinString = JoinPartialParser::parse($this->fieldPrefixesToClasses);
 
-        $whereParsedRuleGroup = WherePartialParser::parse($this->fieldsToProperties, $ruleGroup);
+        $whereParsedRuleGroup = WherePartialParser::parse(
+            $this->fieldsToProperties,
+            $ruleGroup,
+            $this->embeddableFieldsToProperties,
+            $this->embeddableFieldPrefixesToClasses,
+            $this->embeddableFieldPrefixesToEmbeddableClasses
+        );
         $whereString = $whereParsedRuleGroup->getDqlString();
         $parameters = $whereParsedRuleGroup->getParameters();
 

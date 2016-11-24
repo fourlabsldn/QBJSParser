@@ -30,13 +30,21 @@ abstract class WherePartialParser
     }
 
     /**
-     * @param array              $queryBuilderFieldsToProperties
+     * @param array $queryBuilderFieldsToProperties
      * @param RuleGroupInterface $ruleGroup
+     * @param array $embeddableFieldsToProperties
+     * @param array $embeddableFieldPrefixesToClasses
+     * @param array $embeddableFieldPrefixesToEmbeddableClasses
      *
      * @return ParsedRuleGroup
      */
-    final public static function parse(array $queryBuilderFieldsToProperties, RuleGroupInterface $ruleGroup) : ParsedRuleGroup
-    {
+    final public static function parse(
+        array $queryBuilderFieldsToProperties,
+        RuleGroupInterface $ruleGroup,
+        array $embeddableFieldsToProperties,
+        array $embeddableFieldPrefixesToClasses,
+        array $embeddableFieldPrefixesToEmbeddableClasses
+    ): ParsedRuleGroup {
         foreach ($queryBuilderFieldsToProperties as $queryBuilderField => $property) {
             static::$queryBuilderFieldsToWhereAlias[$queryBuilderField] = static::replaceAllDotsExceptLast(SelectPartialParser::OBJECT_WORD.'.'.$property);
         }

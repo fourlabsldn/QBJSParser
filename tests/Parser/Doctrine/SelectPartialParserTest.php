@@ -11,12 +11,12 @@ class SelectPartialParserTest extends \PHPUnit_Framework_TestCase
      */
     public function parseTest()
     {
-        $queryBuilderFieldPrefixesToAssociationClasses = [
+        $fieldPrefixesToClasses = [
             'labels' => 'Valid_Class_Is_Not_Checked',
             'specification' => 'Valid_Class_Is_Not_Checked',
             'labels.specification' => 'Valid_Class_Is_Not_Checked',
         ];
-        $parsed = SelectPartialParser::parse($queryBuilderFieldPrefixesToAssociationClasses);
+        $parsed = SelectPartialParser::parse($fieldPrefixesToClasses);
         $expected = 'SELECT object, object_labels, object_specification, object_labels_specification ';
 
         $this->assertEquals($expected, $parsed);
