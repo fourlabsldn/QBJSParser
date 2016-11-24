@@ -44,40 +44,39 @@ class DoctrineParser implements ParserInterface
      */
     private $embeddableFieldPrefixesToEmbeddableClasses;
 
-
     /**
-     * @param string $className                                     E.g. Product::class
-     * @param array  $fieldsToProperties                            E.g. [
-     *                                                              'id' => 'id',
-     *                                                              'labels.id' => 'labels.id',
-     *                                                              'labels.name' => 'labels.name',
-     *                                                              'labels.authors.id'=> 'labels.authors.id',
-     *                                                              'labels.authors.address.city'=> 'labels.authors.address.city',
-     *                                                              'author.id' => 'author.id',
-     *                                                              ]
-     * @param array  $fieldPrefixesToClasses                        E.g. [
-     *                                                              'labels' => Label::class,
-     *                                                              'labels.authors' => Author::class,
-     *                                                              'labels.authors.address' => Address::class,
-     *                                                              'author' => Author::class,
-     *                                                              ]
-     * @param array  $embeddableFieldsToProperties                  E.g. [
-     *                                                              'period.startDate' => 'period.endDate',
-     *                                                              'period.endDate' => 'period.startDate',
-     *                                                              'labels.period.startDate' => 'labels.period.startDate',
-     *                                                              'labels.period.endDate'=> 'labels.period.endDate',
-     *                                                              'labels.authors.nextHoliday.approved' => 'labels.authors.nextHoliday.approved'
-     *                                                              'labels.authors.nextHoliday.period.startDate' => 'labels.authors.nextHoliday.period.startDate'
-     *                                                              'labels.authors.nextHoliday.period.endDate' => 'labels.authors.nextHoliday.period.endDate'
-     *                                                              ]
-     * @param array  $embeddableFieldPrefixesToClasses              E.g. [
-     *                                                              'labels.authors.nextHoliday' => NextHoliday::class,
-     *                                                              ]
-     * @param array  $embeddableFieldPrefixesToEmbeddableClasses    E.g. [
-     *                                                              'period' => \League\Period\Period::class,
-     *                                                              'labels.period' => \League\Period\Period::class
-     *                                                              'labels.authors.nextHoliday.period' => \League\Period\Period::class
-     *                                                              ]
+     * @param string $className                                  E.g. Product::class
+     * @param array  $fieldsToProperties                         E.g. [
+     *                                                           'id' => 'id',
+     *                                                           'labels.id' => 'labels.id',
+     *                                                           'labels.name' => 'labels.name',
+     *                                                           'labels.authors.id'=> 'labels.authors.id',
+     *                                                           'labels.authors.address.city'=> 'labels.authors.address.city',
+     *                                                           'author.id' => 'author.id',
+     *                                                           ]
+     * @param array  $fieldPrefixesToClasses                     E.g. [
+     *                                                           'labels' => Label::class,
+     *                                                           'labels.authors' => Author::class,
+     *                                                           'labels.authors.address' => Address::class,
+     *                                                           'author' => Author::class,
+     *                                                           ]
+     * @param array  $embeddableFieldsToProperties               E.g. [
+     *                                                           'period.startDate' => 'period.endDate',
+     *                                                           'period.endDate' => 'period.startDate',
+     *                                                           'labels.period.startDate' => 'labels.period.startDate',
+     *                                                           'labels.period.endDate'=> 'labels.period.endDate',
+     *                                                           'labels.authors.nextHoliday.approved' => 'labels.authors.nextHoliday.approved'
+     *                                                           'labels.authors.nextHoliday.period.startDate' => 'labels.authors.nextHoliday.period.startDate'
+     *                                                           'labels.authors.nextHoliday.period.endDate' => 'labels.authors.nextHoliday.period.endDate'
+     *                                                           ]
+     * @param array  $embeddableFieldPrefixesToClasses           E.g. [
+     *                                                           'labels.authors.nextHoliday' => NextHoliday::class,
+     *                                                           ]
+     * @param array  $embeddableFieldPrefixesToEmbeddableClasses E.g. [
+     *                                                           'period' => \League\Period\Period::class,
+     *                                                           'labels.period' => \League\Period\Period::class
+     *                                                           'labels.authors.nextHoliday.period' => \League\Period\Period::class
+     *                                                           ]
      */
     public function __construct(
         string $className,
@@ -253,7 +252,7 @@ class DoctrineParser implements ParserInterface
 
     /**
      * @param string $fieldPrefix
-     * @param array $fieldPrefixesToClasses
+     * @param array  $fieldPrefixesToClasses
      *
      * @throws MissingAssociationClassException
      */
