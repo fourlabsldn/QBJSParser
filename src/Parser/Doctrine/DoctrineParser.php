@@ -2,6 +2,7 @@
 
 namespace FL\QBJSParser\Parser\Doctrine;
 
+use FL\QBJSParser\Exception\Parser\Doctrine\DuplicatePrefixException;
 use FL\QBJSParser\Exception\Parser\Doctrine\InvalidClassNameException;
 use FL\QBJSParser\Exception\Parser\Doctrine\FieldMappingException;
 use FL\QBJSParser\Exception\Parser\Doctrine\MissingAssociationClassException;
@@ -28,6 +29,21 @@ class DoctrineParser implements ParserInterface
      */
     private $fieldPrefixesToClasses;
 
+    /**
+     * @var array
+     */
+    private $embeddableFieldsToProperties;
+
+    /**
+     * @var array
+     */
+    private $embeddableFieldPrefixesToClasses;
+
+    /**
+     * @var array
+     */
+    private $embeddableFieldPrefixesToEmbeddableClasses;
+
 
     /**
      * @param string $className                                     E.g. Product::class
@@ -45,15 +61,38 @@ class DoctrineParser implements ParserInterface
      *                                                              'labels.authors.address' => Address::class,
      *                                                              'author' => Author::class,
      *                                                              ]
+     * @param array  $embeddableFieldsToProperties                  E.g. [
+     *                                                              'period.startDate' => 'period.endDate',
+     *                                                              'period.endDate' => 'period.startDate',
+     *                                                              'labels.period.startDate' => 'labels.period.startDate',
+     *                                                              'labels.period.endDate'=> 'labels.period.endDate',
+     *                                                              'labels.authors.nextHoliday.approved' => 'labels.authors.nextHoliday.approved'
+     *                                                              'labels.authors.nextHoliday.period.startDate' => 'labels.authors.nextHoliday.period.startDate'
+     *                                                              'labels.authors.nextHoliday.period.endDate' => 'labels.authors.nextHoliday.period.endDate'
+     *                                                              ]
+     * @param array  $embeddableFieldPrefixesToClasses              E.g. [
+     *                                                              'labels.authors.nextHoliday' => NextHoliday::class,
+     *                                                              ]
+     * @param array  $embeddableFieldPrefixesToEmbeddableClasses    E.g. [
+     *                                                              'period' => \League\Period\Period::class,
+     *                                                              'labels.period' => \League\Period\Period::class
+     *                                                              'labels.authors.nextHoliday.period' => \League\Period\Period::class
+     *                                                              ]
      */
     public function __construct(
         string $className,
         array $fieldsToProperties,
-        array $fieldPrefixesToClasses = []
+        array $fieldPrefixesToClasses = [],
+        array $embeddableFieldsToProperties = [],
+        array $embeddableFieldPrefixesToClasses = [],
+        array $embeddableFieldPrefixesToEmbeddableClasses = []
     ) {
         $this->className = $className;
         $this->fieldsToProperties = $fieldsToProperties;
         $this->fieldPrefixesToClasses = $fieldPrefixesToClasses;
+        $this->embeddableFieldsToProperties = $embeddableFieldsToProperties;
+        $this->embeddableFieldPrefixesToClasses = $embeddableFieldPrefixesToEmbeddableClasses;
+        $this->embeddableFieldPrefixesToEmbeddableClasses = $embeddableFieldPrefixesToEmbeddableClasses;
         $this->validate();
     }
 
@@ -87,8 +126,11 @@ class DoctrineParser implements ParserInterface
         $this->validateClass($this->className);
         $this->validateFieldsToProperties($this->fieldsToProperties, $this->fieldPrefixesToClasses);
         $this->validateFieldPrefixesToClasses($this->fieldPrefixesToClasses);
+        $allEmbeddablePrefixesToClasses = array_merge($this->embeddableFieldPrefixesToClasses, $this->embeddableFieldPrefixesToEmbeddableClasses);
+        $this->validateFieldsToProperties($this->embeddableFieldsToProperties, $allEmbeddablePrefixesToClasses);
+        $this->validateFieldPrefixesToClasses($allEmbeddablePrefixesToClasses);
+        $this->validateEmbeddableFieldPrefixes($this->embeddableFieldPrefixesToClasses, $this->embeddableFieldPrefixesToEmbeddableClasses);
     }
-
 
     /**
      * @param array $fieldsToProperties
@@ -143,6 +185,28 @@ class DoctrineParser implements ParserInterface
                 $this->validateClassHasProperty($classForThisPrefix, $fieldSuffix);
             } else { // $fieldPrefix an association for $this->className
                 $this->validateClassHasProperty($this->className, $fieldPrefix);
+            }
+        }
+    }
+
+    /**
+     * There should be no repeated prefixes (keys) between the two arrays.
+     *
+     * @param array $embeddableFieldPrefixesToClasses
+     * @param array $embeddableFieldPrefixesToEmbeddableClasses
+     */
+    final private function validateEmbeddableFieldPrefixes(array $embeddableFieldPrefixesToClasses, array $embeddableFieldPrefixesToEmbeddableClasses)
+    {
+        $prefixes = array_keys($embeddableFieldPrefixesToClasses);
+
+        foreach ($prefixes as $prefix) {
+            if (array_key_exists($prefix, $embeddableFieldPrefixesToEmbeddableClasses)) {
+                throw new DuplicatePrefixException(sprintf(
+                    'Duplicate embeddable field prefix %s, at class %s, for parser %s',
+                    $prefix,
+                    $this->className,
+                    static::class
+                ));
             }
         }
     }
