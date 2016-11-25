@@ -1,10 +1,11 @@
 <?php
 
-namespace FL\QBJSParser\Tests\Util;
+namespace FL\QBJSParser\Tests\Util\Doctrine\Mock\DoctrineParser;
 
 use FL\QBJSParser\Parser\Doctrine\DoctrineParser;
+use FL\QBJSParser\Tests\Util\Doctrine\Mock\Entity\MockEntity;
 
-class MockEntityDoctrineParser extends DoctrineParser
+class MockBadEntityDoctrineParser extends DoctrineParser
 {
     public function __construct()
     {
@@ -13,6 +14,7 @@ class MockEntityDoctrineParser extends DoctrineParser
             'price' => 'price',
             'name' => 'name',
             'date' => 'date',
+            'someMadeUpField', 'someMadeUpField',
         ], []);
     }
 }

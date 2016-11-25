@@ -1,8 +1,10 @@
 <?php
 
-namespace FL\QBJSParser\Tests\Util;
+namespace FL\QBJSParser\Tests\Util\Doctrine\Mock\DoctrineParser;
 
 use FL\QBJSParser\Parser\Doctrine\DoctrineParser;
+use FL\QBJSParser\Tests\Util\Doctrine\Mock\Entity\MockEntity;
+use FL\QBJSParser\Tests\Util\Doctrine\Mock\Entity\MockEntityAssociation;
 
 class MockEntityWithAssociationDoctrineParser extends DoctrineParser
 {
@@ -14,10 +16,10 @@ class MockEntityWithAssociationDoctrineParser extends DoctrineParser
             'price' => 'price',
             'name' => 'name',
             'date' => 'date',
-            'associationEntities.id' => 'associationEntities.id',
+            'associationEntity.id' => 'associationEntity.id',
             ],
             [
-                'associationEntities' => MockEntityAssociation::class,
+                'associationEntity' => MockEntityAssociation::class,
             ]
         );
     }
