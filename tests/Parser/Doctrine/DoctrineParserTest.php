@@ -19,32 +19,28 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
     /**
      * @var array
      */
-    private $mockEntity_ParseCases = [];
+    private $mockEntityParseCases = [];
 
     /**
      * @var array
      */
-    private $mockEntity_WithAssociation_ParseCases = [];
-
-    public function setUp()
+    private $mockAssociationParseCases = [];
+    
+    private function setUpFirstMockEntityParseCases()
     {
-
-        /*
-         * First $this->mockEntity_ParseCases Case
-         */
         $ruleGroupA = new RuleGroup(RuleGroupInterface::MODE_AND);
         $ruleGroupA_RuleA = new Rule('rule_id', 'price', 'double', 'is_not_null', null);
         $ruleGroupA->addRule($ruleGroupA_RuleA);
 
-        $this->mockEntity_ParseCases[] = [
-                'rulegroup' => $ruleGroupA,
-                'expectedDqlString' => 'SELECT object FROM '.MockEntity::class.' object WHERE ( object.price IS NOT NULL ) ',
-                'expectedParameters' => [],
-        ];
+        $this->mockEntityParseCases[] = [
+            'rulegroup' => $ruleGroupA,
+            'expectedDqlString' => 'SELECT object FROM '.MockEntity::class.' object WHERE ( object.price IS NOT NULL ) ',
+            'expectedParameters' => [],
+        ];   
+    }
 
-        /*
-         * Second $this->mockEntity_ParseCases Case
-         */
+    private function setUpSecondMockEntityParseCases()
+    {
         $ruleGroupA = new RuleGroup(RuleGroupInterface::MODE_OR);
         $ruleGroupA_RuleA = new Rule('rule_id', 'price', 'double', 'is_not_null', null);
         $ruleGroupA_RuleB = new Rule('rule_id', 'name', 'string', 'equal', 'hello');
@@ -67,7 +63,7 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
         $ruleGroupA->addRule($ruleGroupA_RuleI);
         $ruleGroupA->addRule($ruleGroupA_RuleJ);
 
-        $this->mockEntity_ParseCases[] = [
+        $this->mockEntityParseCases[] = [
             'rulegroup' => $ruleGroupA,
             'expectedDqlString' => 'SELECT object FROM '.MockEntity::class.' object WHERE ( object.price IS NOT NULL OR object.name = ?0 OR object.name LIKE ?1 OR object.name NOT LIKE ?2 OR object.name LIKE ?3 OR object.name LIKE ?4 OR object.name NOT LIKE ?5 OR object.name NOT LIKE ?6 OR object.name = \'\' OR object.name != \'\' ) ',
             'expectedParameters' => [
@@ -80,10 +76,10 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
                 '%world',
             ],
         ];
+    }
 
-        /*
-         * Third $this->mockEntity_ParseCases Case
-         */
+    private function setUpThirdMockEntityParseCases()
+    {
         $ruleGroupA = new RuleGroup(RuleGroupInterface::MODE_AND);
         $ruleGroupA_RuleA = new Rule('rule_id', 'price', 'double', 'is_not_null', null);
         $ruleGroupA_RuleB = new Rule('rule_id', 'name', 'string', 'equal', 'hello');
@@ -101,12 +97,15 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
             ->addRule($ruleGroupA_RuleGroup1_RuleB)
         ;
 
-        $this->mockEntity_ParseCases[] = [
+        $this->mockEntityParseCases[] = [
             'rulegroup' => $ruleGroupA,
             'expectedDqlString' => 'SELECT object FROM '.MockEntity::class.' object WHERE ( object.price IS NOT NULL AND object.name = ?0 AND ( object.price > ?1 OR object.price <= ?2 ) ) ',
             'expectedParameters' => ['hello', 0.3, 22.0],
         ];
+    }
 
+    private function setUpMockAssociationParseCases()
+    {
         $ruleGroupA = new RuleGroup(RuleGroupInterface::MODE_AND);
         $ruleGroupA_RuleA = new Rule('rule_id', 'price', 'double', 'is_not_null', null);
         $ruleGroupA_RuleB = new Rule('rule_id', 'associationEntity.id', 'string', 'equal', 'hello');
@@ -115,21 +114,29 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
             ->addRule($ruleGroupA_RuleB)
         ;
 
-        $this->mockEntity_WithAssociation_ParseCases[] = [
+        $this->mockAssociationParseCases[] = [
             'rulegroup' => $ruleGroupA,
             'expectedDqlString' => 'SELECT object, object_associationEntity FROM '.MockEntity::class.' object LEFT JOIN object.associationEntity object_associationEntity WHERE ( object.price IS NOT NULL AND object_associationEntity.id = ?0 ) ',
             'expectedParameters' => ['hello'],
         ];
     }
 
+    public function setUp()
+    {
+        $this->setUpFirstMockEntityParseCases();
+        $this->setUpSecondMockEntityParseCases();
+        $this->setUpThirdMockEntityParseCases();
+        $this->setUpMockAssociationParseCases();
+    }
+
     /**
      * @test
      */
-    public function testMockEntity_ParseCases()
+    public function testMockEntityParseCases()
     {
         $parser = new MockEntityDoctrineParser();
 
-        foreach ($this->mockEntity_ParseCases as $case) {
+        foreach ($this->mockEntityParseCases as $case) {
             $parsed = $parser->parse($case['rulegroup']);
 
             $dqlString = $parsed->getDqlString();
@@ -147,7 +154,7 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
     {
         $parser = new MockEntityWithAssociationDoctrineParser();
 
-        foreach ($this->mockEntity_WithAssociation_ParseCases as $case) {
+        foreach ($this->mockAssociationParseCases as $case) {
             $parsed = $parser->parse($case['rulegroup']);
 
             $dqlString = $parsed->getDqlString();
