@@ -20,7 +20,11 @@ abstract class SelectPartialParser
         $selectString = 'SELECT '.static::OBJECT_WORD;
 
         foreach ($fieldPrefixesToClasses as $fieldPrefix => $associationClass) {
-            $selectString .= ', '.self::OBJECT_WORD.'_'.str_replace('.', '_', $fieldPrefix);
+            $selectString .= sprintf(
+                ', %s_%s',
+                self::OBJECT_WORD,
+                StringManipulator::replaceAllDots($fieldPrefix)
+            );
         }
 
         return $selectString.' ';
