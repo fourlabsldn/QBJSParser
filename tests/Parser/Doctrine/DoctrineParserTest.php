@@ -160,57 +160,28 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @expectedException \FL\QBJSParser\Exception\Parser\Doctrine\FieldMappingException
      */
     public function testMockBadEntity()
     {
-        $this->assertFieldMappingException(function () {
-            new MockBadEntityDoctrineParser();
-        });
+        new MockBadEntityDoctrineParser();
     }
 
     /**
      * @test
+     * @expectedException \FL\QBJSParser\Exception\Parser\Doctrine\FieldMappingException
      */
     public function testMockBadEntity2()
     {
-        $this->assertFieldMappingException(function () {
-            new MockBadEntity2DoctrineParser();
-        });
+        new MockBadEntity2DoctrineParser();
     }
 
     /**
      * @test
+     * @expectedException \FL\QBJSParser\Exception\Parser\Doctrine\InvalidClassNameException
      */
     public function testNonExistentClass()
     {
-        $this->assertInvalidClassNameException(function () {
-            new DoctrineParser('This_Really_Long_Class_Name_With_Invalid_Characters_@#_IS_NOT_A_CLASS', [], []);
-        });
-    }
-
-    /**
-     * @param \Closure $function
-     */
-    private function assertFieldMappingException(\Closure $function)
-    {
-        try {
-            $function();
-        } catch (FieldMappingException $e) {
-            return;
-        }
-        $this->fail('Expected '.FieldMappingException::class);
-    }
-
-    /**
-     * @param \Closure $function
-     */
-    private function assertInvalidClassNameException(\Closure $function)
-    {
-        try {
-            $function();
-        } catch (InvalidClassNameException $e) {
-            return;
-        }
-        $this->fail('Expected '.InvalidClassNameException::class);
+        new DoctrineParser('This_Really_Long_Class_Name_With_Invalid_Characters_@#_IS_NOT_A_CLASS', [], []);
     }
 }

@@ -6,6 +6,7 @@ class MockEntityAssociation
 {
     private $id;
     private $description;
+    private $embeddable;
 
     public function getId()
     {
@@ -15,5 +16,10 @@ class MockEntityAssociation
     public function getDescription()
     {
         return $this->description;
+    }
+
+    public function getEmbeddable()
+    {
+        return $this->embeddable;
     }
 }
