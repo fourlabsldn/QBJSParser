@@ -51,7 +51,11 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
         $this->mockEntityParseCases[] = new DoctrineParserTestCase(
             new MockEntityDoctrineParser(),
             $ruleGroupA,
-            'SELECT object FROM '.MockEntity::class.' object WHERE ( object.price IS NOT NULL ) ',
+            [
+                'price' => 'ASC'
+            ],
+            'SELECT object FROM '.MockEntity::class.' object WHERE ( object.price IS NOT NULL ) '.
+            'ORDER BY object.price ASC ',
             []
         );
     }
@@ -83,13 +87,18 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
         $this->mockEntityParseCases[] = new DoctrineParserTestCase(
             new MockEntityDoctrineParser(),
             $ruleGroupA,
+            [
+                'price' => 'ASC',
+                'name' => 'DESC',
+            ],
             sprintf(
                 'SELECT object FROM %s object '.
                 'WHERE ( object.price IS NOT NULL OR object.name = ?0'.
                 ' OR object.name LIKE ?1 OR object.name NOT LIKE ?2 '.
                 'OR object.name LIKE ?3 OR object.name LIKE ?4 '.
                 'OR object.name NOT LIKE ?5 OR object.name NOT LIKE ?6 '.
-                'OR object.name = \'\' OR object.name != \'\' ) ',
+                'OR object.name = \'\' OR object.name != \'\' ) '.
+                'ORDER BY object.price ASC, object.name DESC ',
                 MockEntity::class
             ),
             [
@@ -127,10 +136,15 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
         $this->mockEntityParseCases[] = new DoctrineParserTestCase(
             new MockEntityDoctrineParser(),
             $ruleGroupA,
+            [
+                'name' => 'DESC',
+                'price' => 'ASC'
+            ],
             sprintf(
                 'SELECT object FROM %s object '.
                 'WHERE ( object.price IS NOT NULL AND object.name = ?0 '.
-                'AND ( object.price > ?1 OR object.price <= ?2 ) ) ',
+                'AND ( object.price > ?1 OR object.price <= ?2 ) ) '.
+                'ORDER BY object.name DESC, object.price ASC ',
                 MockEntity::class
             ),
             ['hello', 0.3, 22.0]
@@ -150,10 +164,15 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
         $this->mockAssociationParseCases[] = new DoctrineParserTestCase(
             new MockEntityWithAssociationDoctrineParser(),
             $ruleGroupA,
+            [
+                'name' => 'DESC',
+                'associationEntity.id' => 'ASC'
+            ],
             sprintf(
                 'SELECT object, object_associationEntity FROM %s object '.
                 'LEFT JOIN object.associationEntity object_associationEntity '.
-                'WHERE ( object.price IS NOT NULL AND object_associationEntity.id = ?0 ) ',
+                'WHERE ( object.price IS NOT NULL AND object_associationEntity.id = ?0 ) '.
+                'ORDER BY object.name DESC, object_associationEntity.id ASC ',
                 MockEntity::class
             ),
             ['hello']
@@ -183,13 +202,20 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
         $this->mockEmbeddableParseCases[] = new DoctrineParserTestCase(
             new MockEntityWithEmbeddableDoctrineParser(),
             $ruleGroupA,
+            [
+                'name' => 'DESC',
+                'associationEntity.id' => 'ASC',
+                'associationEntity.embeddable.startDate' => 'ASC',
+                'associationEntity.associationEntity.embeddable.startDate' => 'DESC',
+            ],
             sprintf(
                 'SELECT object, object_associationEntity FROM %s object '.
                 'LEFT JOIN object.associationEntity object_associationEntity '.
                 'WHERE ( object.price IS NOT NULL AND object_associationEntity.id = ?0 '.
                 'AND object.embeddable.startDate = ?1 AND object_associationEntity.embeddable.startDate = ?2 '.
                 'AND object_associationEntity.embeddable.endDate = ?3 '.
-                'AND object_associationEntity_associationEntity.embeddable.startDate = ?4 ) ',
+                'AND object_associationEntity_associationEntity.embeddable.startDate = ?4 ) '.
+                'ORDER BY object.name DESC, object_associationEntity.id ASC, object_associationEntity.embeddable.startDate ASC, object_associationEntity_associationEntity.embeddable.startDate DESC ',
                 MockEntity::class
             ),
             ['hello', $dateA, $dateA, $dateB, $dateA]
@@ -202,7 +228,7 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
     private function verifyParserTestCases(array $cases)
     {
         foreach ($cases as $case) {
-            $parsed = $case->getDoctrineParser()->parse($case->getRuleGroup());
+            $parsed = $case->getDoctrineParser()->parse($case->getRuleGroup(), $case->getSortColumns());
 
             $dqlString = $parsed->getDqlString();
             $parameters = $parsed->getParameters();

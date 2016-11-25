@@ -18,6 +18,11 @@ class DoctrineParserTestCase
     private $ruleGroup;
 
     /**
+     * @var array
+     */
+    private $sortColumns;
+
+    /**
      * @var string
      */
     private $expectedDqlString;
@@ -30,17 +35,20 @@ class DoctrineParserTestCase
     /**
      * @param DoctrineParser $doctrineParser
      * @param RuleGroup $ruleGroup
+     * @param array $sortColumns
      * @param string $expectedDqlString
      * @param array $expectedParameters
      */
     public function __construct(
         DoctrineParser $doctrineParser,
         RuleGroup $ruleGroup,
+        array $sortColumns,
         string $expectedDqlString,
         array $expectedParameters
     ) {
         $this->doctrineParser = $doctrineParser;
         $this->ruleGroup = $ruleGroup;
+        $this->sortColumns = $sortColumns;
         $this->expectedDqlString = $expectedDqlString;
         $this->expectedParameters = $expectedParameters;
     }
@@ -59,6 +67,14 @@ class DoctrineParserTestCase
     public function getRuleGroup(): RuleGroup
     {
         return $this->ruleGroup;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSortColumns(): array
+    {
+        return $this->sortColumns;
     }
 
     /**
