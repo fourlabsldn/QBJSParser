@@ -29,9 +29,9 @@ class DoctrineParserTestCase
 
     /**
      * @param DoctrineParser $doctrineParser
-     * @param RuleGroup $ruleGroup
-     * @param string $expectedDqlString
-     * @param array $expectedParameters
+     * @param RuleGroup      $ruleGroup
+     * @param string         $expectedDqlString
+     * @param array          $expectedParameters
      */
     public function __construct(
         DoctrineParser $doctrineParser,
