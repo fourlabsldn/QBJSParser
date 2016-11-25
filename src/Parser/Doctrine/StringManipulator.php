@@ -49,6 +49,8 @@ abstract class StringManipulator
 
     /**
      * @param string $string
+     * @param array $embeddableFieldPrefixesToClasses
+     * @param array $embeddableFieldPrefixesToEmbeddableClasses
      *
      * @return string
      */
@@ -56,7 +58,7 @@ abstract class StringManipulator
         string $string,
         array $embeddableFieldPrefixesToClasses,
         array $embeddableFieldPrefixesToEmbeddableClasses
-    ) : string {
+    ): string {
         return str_replace('.', '_', $string);
     }
 }

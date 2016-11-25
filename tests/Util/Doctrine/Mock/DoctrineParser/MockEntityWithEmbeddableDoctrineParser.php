@@ -30,11 +30,11 @@ class MockEntityWithEmbeddableDoctrineParser extends DoctrineParser
                 'associationEntity.embeddable.endDate' => 'associationEntity.embeddable.endDate'
             ],
             [
-                'embeddable' => MockEmbeddable::class,
-                'associationEntity.embeddable' => MockEmbeddable::class,
+                'associationEntity' => MockEntityAssociation::class,
             ],
             [
-                'associationEntity' => MockEntityAssociation::class,
+                'embeddable' => MockEmbeddable::class,
+                'associationEntity.embeddable' => MockEmbeddable::class,
             ]
         );
     }

@@ -49,7 +49,7 @@ abstract class WherePartialParser
             static::$queryBuilderFieldsToWhereAlias[$queryBuilderField] = StringManipulator::replaceAllDotsExceptLast(SelectPartialParser::OBJECT_WORD.'.'.$property);
         }
         foreach ($embeddableFieldsToProperties as $queryBuilderField => $property) {
-            static::$queryBuilderFieldsToWhereAlias[$queryBuilderField] = StringManipulator::replaceDotsForEmbeddable(SelectPartialParser::OBJECT_WORD.'.'.$property, $embeddableFieldPrefixesToClasses, $embeddableFieldPrefixesToEmbeddableClasses);
+            static::$queryBuilderFieldsToWhereAlias[$queryBuilderField] = SelectPartialParser::OBJECT_WORD.'.'.StringManipulator::replaceDotsForEmbeddable($property, $embeddableFieldPrefixesToClasses, $embeddableFieldPrefixesToEmbeddableClasses);
         }
 
         static::$parameters = [];
