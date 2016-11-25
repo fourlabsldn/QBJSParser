@@ -50,7 +50,7 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
             new MockEntityDoctrineParser(),
             $ruleGroupA,
             [
-                'price' => 'ASC'
+                'price' => 'ASC',
             ],
             'SELECT object FROM '.MockEntity::class.' object WHERE ( object.price IS NOT NULL ) '.
             'ORDER BY object.price ASC ',
@@ -136,7 +136,7 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
             $ruleGroupA,
             [
                 'name' => 'DESC',
-                'price' => 'ASC'
+                'price' => 'ASC',
             ],
             sprintf(
                 'SELECT object FROM %s object '.
@@ -164,7 +164,7 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
             $ruleGroupA,
             [
                 'name' => 'DESC',
-                'associationEntity.id' => 'ASC'
+                'associationEntity.id' => 'ASC',
             ],
             sprintf(
                 'SELECT object, object_associationEntity FROM %s object '.
