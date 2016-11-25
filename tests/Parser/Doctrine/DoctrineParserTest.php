@@ -162,12 +162,20 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
 
     private function setUpMockEmbeddableParseCases()
     {
+        $dateA = new \DateTimeImmutable("now - 2 days");
+        $dateB = new \DateTimeImmutable("now + 2 days");
         $ruleGroupA = new RuleGroup(RuleGroupInterface::MODE_AND);
         $ruleGroupA_RuleA = new Rule('rule_id', 'price', 'double', 'is_not_null', null);
         $ruleGroupA_RuleB = new Rule('rule_id', 'associationEntity.id', 'string', 'equal', 'hello');
+        $ruleGroupA_RuleC = new Rule('rule_id', 'embeddable.startDate', 'date', 'equal', $dateA);
+        $ruleGroupA_RuleD = new Rule('rule_id', 'associationEntity.embeddable.startDate', 'date', 'equal', $dateA);
+        $ruleGroupA_RuleE = new Rule('rule_id', 'associationEntity.embeddable.endDate', 'date', 'equal', $dateB);
         $ruleGroupA
             ->addRule($ruleGroupA_RuleA)
             ->addRule($ruleGroupA_RuleB)
+            ->addRule($ruleGroupA_RuleC)
+            ->addRule($ruleGroupA_RuleD)
+            ->addRule($ruleGroupA_RuleE)
         ;
 
         $this->mockEmbeddableParseCases[] = new DoctrineParserTestCase(
@@ -176,10 +184,12 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
             sprintf(
                 'SELECT object, object_associationEntity FROM %s object '.
                 'LEFT JOIN object.associationEntity object_associationEntity '.
-                'WHERE ( object.price IS NOT NULL AND object_associationEntity.id = ?0 ) ',
+                'WHERE ( object.price IS NOT NULL AND object_associationEntity.id = ?0 '.
+                'AND object.embeddable.startDate = ?1 AND object_associationEntity.embeddable.startDate = ?2 '.
+                'AND object_associationEntity.embeddable.endDate = ?3 ) ',
                 MockEntity::class
             ),
-            ['hello']
+            ['hello', $dateA, $dateA, $dateB]
         );
     }
 
