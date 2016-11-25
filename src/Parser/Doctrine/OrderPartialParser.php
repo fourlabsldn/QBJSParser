@@ -16,11 +16,11 @@ abstract class OrderPartialParser
     }
 
     /**
-     * @param array $queryBuilderFieldsToProperties
+     * @param array      $queryBuilderFieldsToProperties
      * @param array|null $sortColumns
-     * @param array $embeddableFieldsToProperties
-     * @param array $embeddableFieldPrefixesToClasses
-     * @param array $embeddableFieldPrefixesToEmbeddableClasses
+     * @param array      $embeddableFieldsToProperties
+     * @param array      $embeddableFieldPrefixesToClasses
+     * @param array      $embeddableFieldPrefixesToEmbeddableClasses
      *
      * @return string
      */
@@ -30,7 +30,7 @@ abstract class OrderPartialParser
         array $embeddableFieldsToProperties,
         array $embeddableFieldPrefixesToClasses,
         array $embeddableFieldPrefixesToEmbeddableClasses
-    ): string{
+    ): string {
         foreach ($queryBuilderFieldsToProperties as $queryBuilderField => $property) {
             static::$queryBuilderFieldsToOrderAlias[$queryBuilderField] = StringManipulator::replaceAllDotsExceptLast(SelectPartialParser::OBJECT_WORD.'.'.$property);
         }
@@ -40,9 +40,7 @@ abstract class OrderPartialParser
 
             if (in_array($fieldPrefix, array_keys($embeddableFieldPrefixesToClasses))) {
                 static::$queryBuilderFieldsToOrderAlias[$queryBuilderField] = SelectPartialParser::OBJECT_WORD.StringManipulator::replaceAllDotsExceptLast('.'.$property);
-
-            }
-            elseif (in_array($fieldPrefix, array_keys($embeddableFieldPrefixesToEmbeddableClasses))) {
+            } elseif (in_array($fieldPrefix, array_keys($embeddableFieldPrefixesToEmbeddableClasses))) {
                 static::$queryBuilderFieldsToOrderAlias[$queryBuilderField] = SelectPartialParser::OBJECT_WORD.StringManipulator::replaceAllDotsExceptLastTwo('.'.$property);
             }
         }

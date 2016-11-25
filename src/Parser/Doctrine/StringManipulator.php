@@ -5,13 +5,16 @@ namespace FL\QBJSParser\Parser\Doctrine;
 abstract class StringManipulator
 {
     private function __construct()
-    {}
+    {
+    }
 
     /**
-     * Will convert object.something.cool.today TO object_something.cool.today
-     * Will convert object.something.cool TO object.something.cool
-     * Will convert object.something TO object.something
-     * Will convert object TO object     * @param string $string
+     * Will convert "object.something.cool.today" TO "object_something.cool.today".
+     * Will convert "object.something.cool" TO "object.something.cool".
+     * Will convert "object.something" TO "object.something".
+     * Will convert "object" TO "object".
+     *
+     * @param string $string
      *
      * @return string
      */
@@ -31,10 +34,11 @@ abstract class StringManipulator
     }
 
     /**
-     * Will convert object.something.cool.today TO object_something_cool.today
-     * Will convert object.something.cool TO object_something.cool
-     * Will convert object.something TO object.something
-     * Will convert object TO object
+     * Will convert "object.something.cool.today" TO "object_something_cool.today".
+     * Will convert "object.something.cool" TO "object_something.cool".
+     * Will convert "object.something" TO "object.something".
+     * Will convert "object" TO "object".
+     *
      * @param string $string
      *
      * @return string
@@ -55,10 +59,10 @@ abstract class StringManipulator
     }
 
     /**
-     * Will convert object.something.cool.today TO object_something_cool_today
-     * Will convert object.something.cool TO object_something_cool
-     * Will convert object.something TO object_something
-     * Will convert object TO object
+     * Will convert "object.something.cool.today" TO "object_something_cool_today".
+     * Will convert "object.something.cool" TO object_something_cool".
+     * Will convert "object.something" "TO object_something".
+     * Will convert "object" TO "object".
      *
      * @param string $string
      *

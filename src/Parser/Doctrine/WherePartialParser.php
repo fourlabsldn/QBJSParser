@@ -30,11 +30,11 @@ abstract class WherePartialParser
     }
 
     /**
-     * @param array $queryBuilderFieldsToProperties
+     * @param array              $queryBuilderFieldsToProperties
      * @param RuleGroupInterface $ruleGroup
-     * @param array $embeddableFieldsToProperties
-     * @param array $embeddableFieldPrefixesToClasses
-     * @param array $embeddableFieldPrefixesToEmbeddableClasses
+     * @param array              $embeddableFieldsToProperties
+     * @param array              $embeddableFieldPrefixesToClasses
+     * @param array              $embeddableFieldPrefixesToEmbeddableClasses
      *
      * @return ParsedRuleGroup
      */
@@ -54,9 +54,7 @@ abstract class WherePartialParser
 
             if (in_array($fieldPrefix, array_keys($embeddableFieldPrefixesToClasses))) {
                 static::$queryBuilderFieldsToWhereAlias[$queryBuilderField] = SelectPartialParser::OBJECT_WORD.StringManipulator::replaceAllDotsExceptLast('.'.$property);
-
-            }
-            elseif (in_array($fieldPrefix, array_keys($embeddableFieldPrefixesToEmbeddableClasses))) {
+            } elseif (in_array($fieldPrefix, array_keys($embeddableFieldPrefixesToEmbeddableClasses))) {
                 static::$queryBuilderFieldsToWhereAlias[$queryBuilderField] = SelectPartialParser::OBJECT_WORD.StringManipulator::replaceAllDotsExceptLastTwo('.'.$property);
             }
         }
