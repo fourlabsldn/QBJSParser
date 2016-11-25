@@ -49,7 +49,16 @@ abstract class WherePartialParser
             static::$queryBuilderFieldsToWhereAlias[$queryBuilderField] = StringManipulator::replaceAllDotsExceptLast(SelectPartialParser::OBJECT_WORD.'.'.$property);
         }
         foreach ($embeddableFieldsToProperties as $queryBuilderField => $property) {
-            static::$queryBuilderFieldsToWhereAlias[$queryBuilderField] = SelectPartialParser::OBJECT_WORD.'.'.StringManipulator::replaceDotsForEmbeddable($property, $embeddableFieldPrefixesToClasses, $embeddableFieldPrefixesToEmbeddableClasses);
+            $suffixPattern = '/\.((?!\.).)+$/';
+            $fieldPrefix = preg_replace($suffixPattern, '', $queryBuilderField);
+
+            if (in_array($fieldPrefix, array_keys($embeddableFieldPrefixesToClasses))) {
+                static::$queryBuilderFieldsToWhereAlias[$queryBuilderField] = SelectPartialParser::OBJECT_WORD.StringManipulator::replaceAllDotsExceptLast('.'.$property);
+
+            }
+            elseif (in_array($fieldPrefix, array_keys($embeddableFieldPrefixesToEmbeddableClasses))) {
+                static::$queryBuilderFieldsToWhereAlias[$queryBuilderField] = SelectPartialParser::OBJECT_WORD.StringManipulator::replaceAllDotsExceptLastTwo('.'.$property);
+            }
         }
 
         static::$parameters = [];
