@@ -170,12 +170,14 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
         $ruleGroupA_RuleC = new Rule('rule_id', 'embeddable.startDate', 'date', 'equal', $dateA);
         $ruleGroupA_RuleD = new Rule('rule_id', 'associationEntity.embeddable.startDate', 'date', 'equal', $dateA);
         $ruleGroupA_RuleE = new Rule('rule_id', 'associationEntity.embeddable.endDate', 'date', 'equal', $dateB);
+        $ruleGroupA_RuleF = new Rule('rule_id', 'associationEntity.associationEntity.embeddable.startDate', 'date', 'equal', $dateA);
         $ruleGroupA
             ->addRule($ruleGroupA_RuleA)
             ->addRule($ruleGroupA_RuleB)
             ->addRule($ruleGroupA_RuleC)
             ->addRule($ruleGroupA_RuleD)
             ->addRule($ruleGroupA_RuleE)
+            ->addRule($ruleGroupA_RuleF)
         ;
 
         $this->mockEmbeddableParseCases[] = new DoctrineParserTestCase(
@@ -186,10 +188,11 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
                 'LEFT JOIN object.associationEntity object_associationEntity '.
                 'WHERE ( object.price IS NOT NULL AND object_associationEntity.id = ?0 '.
                 'AND object.embeddable.startDate = ?1 AND object_associationEntity.embeddable.startDate = ?2 '.
-                'AND object_associationEntity.embeddable.endDate = ?3 ) ',
+                'AND object_associationEntity.embeddable.endDate = ?3 '.
+                'AND object_associationEntity_associationEntity.embeddable.startDate = ?4 ) ',
                 MockEntity::class
             ),
-            ['hello', $dateA, $dateA, $dateB]
+            ['hello', $dateA, $dateA, $dateB, $dateA]
         );
     }
 
