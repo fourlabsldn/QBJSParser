@@ -119,7 +119,13 @@ class DoctrineParser implements ParserInterface
         $whereString = $whereParsedRuleGroup->getDqlString();
         $parameters = $whereParsedRuleGroup->getParameters();
 
-        $orderString = OrderPartialParser::parse($this->fieldsToProperties, $sortColumns);
+        $orderString = OrderPartialParser::parse(
+            $this->fieldsToProperties,
+            $sortColumns,
+            $this->embeddableFieldsToProperties,
+            $this->embeddableFieldPrefixesToClasses,
+            $this->embeddableFieldPrefixesToEmbeddableClasses
+        );
 
         $dqlString = preg_replace('/\s+/', ' ', $selectString.$fromString.$joinString.$whereString.$orderString);
 

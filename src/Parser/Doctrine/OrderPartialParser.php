@@ -16,15 +16,35 @@ abstract class OrderPartialParser
     }
 
     /**
-     * @param array      $queryBuilderFieldsToProperties
+     * @param array $queryBuilderFieldsToProperties
      * @param array|null $sortColumns
+     * @param array $embeddableFieldsToProperties
+     * @param array $embeddableFieldPrefixesToClasses
+     * @param array $embeddableFieldPrefixesToEmbeddableClasses
      *
      * @return string
      */
-    final public static function parse(array $queryBuilderFieldsToProperties, array $sortColumns = null): string
-    {
+    final public static function parse(
+        array $queryBuilderFieldsToProperties,
+        array $sortColumns = null,
+        array $embeddableFieldsToProperties,
+        array $embeddableFieldPrefixesToClasses,
+        array $embeddableFieldPrefixesToEmbeddableClasses
+    ): string{
         foreach ($queryBuilderFieldsToProperties as $queryBuilderField => $property) {
             static::$queryBuilderFieldsToOrderAlias[$queryBuilderField] = StringManipulator::replaceAllDotsExceptLast(SelectPartialParser::OBJECT_WORD.'.'.$property);
+        }
+        foreach ($embeddableFieldsToProperties as $queryBuilderField => $property) {
+            $suffixPattern = '/\.((?!\.).)+$/';
+            $fieldPrefix = preg_replace($suffixPattern, '', $queryBuilderField);
+
+            if (in_array($fieldPrefix, array_keys($embeddableFieldPrefixesToClasses))) {
+                static::$queryBuilderFieldsToOrderAlias[$queryBuilderField] = SelectPartialParser::OBJECT_WORD.StringManipulator::replaceAllDotsExceptLast('.'.$property);
+
+            }
+            elseif (in_array($fieldPrefix, array_keys($embeddableFieldPrefixesToEmbeddableClasses))) {
+                static::$queryBuilderFieldsToOrderAlias[$queryBuilderField] = SelectPartialParser::OBJECT_WORD.StringManipulator::replaceAllDotsExceptLastTwo('.'.$property);
+            }
         }
 
         if ($sortColumns === null || count($sortColumns) === 0) {
