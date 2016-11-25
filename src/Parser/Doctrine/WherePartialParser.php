@@ -46,7 +46,10 @@ abstract class WherePartialParser
         array $embeddableFieldPrefixesToEmbeddableClasses
     ): ParsedRuleGroup {
         foreach ($queryBuilderFieldsToProperties as $queryBuilderField => $property) {
-            static::$queryBuilderFieldsToWhereAlias[$queryBuilderField] = static::replaceAllDotsExceptLast(SelectPartialParser::OBJECT_WORD.'.'.$property);
+            static::$queryBuilderFieldsToWhereAlias[$queryBuilderField] = StringManipulator::replaceAllDotsExceptLast(SelectPartialParser::OBJECT_WORD.'.'.$property);
+        }
+        foreach ($embeddableFieldsToProperties as $queryBuilderField => $property) {
+            static::$queryBuilderFieldsToWhereAlias[$queryBuilderField] = StringManipulator::replaceDotsForEmbeddable(SelectPartialParser::OBJECT_WORD.'.'.$property, $embeddableFieldPrefixesToClasses, $embeddableFieldPrefixesToEmbeddableClasses);
         }
 
         static::$parameters = [];
@@ -253,25 +256,5 @@ abstract class WherePartialParser
         }
 
         return $dictionary[$queryBuilderField];
-    }
-
-    /**
-     * @param string $string
-     *
-     * @return string
-     */
-    final private static function replaceAllDotsExceptLast(string $string) : string
-    {
-        $countDots = substr_count($string, '.');
-        if ($countDots >= 2) {
-            $stringArray = explode('.', $string);
-            $string = '';
-            for ($i = 0; $i < $countDots - 1; ++$i) {
-                $string .= $stringArray[$i].'_';
-            }
-            $string .= $stringArray[$countDots - 1].'.'.$stringArray[$countDots];
-        }
-
-        return $string;
     }
 }
