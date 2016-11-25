@@ -72,6 +72,7 @@ class StringManipulatorTest extends \PHPUnit_Framework_TestCase
             StringManipulator::replaceAllDotsExceptLastTwo('.')
         );
     }
+
     /**
      * @test
      */

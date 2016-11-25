@@ -18,7 +18,7 @@ class MockEntityWithEmbeddableDoctrineParser extends DoctrineParser
                 'price' => 'price',
                 'name' => 'name',
                 'date' => 'date',
-                'associationEntity.id' => 'associationEntity.id'
+                'associationEntity.id' => 'associationEntity.id',
             ],
             [
                 'associationEntity' => MockEntityAssociation::class,
@@ -28,7 +28,7 @@ class MockEntityWithEmbeddableDoctrineParser extends DoctrineParser
                 'embeddable.endDate' => 'embeddable.endDate',
                 'associationEntity.embeddable.startDate' => 'associationEntity.embeddable.startDate',
                 'associationEntity.embeddable.endDate' => 'associationEntity.embeddable.endDate',
-                'associationEntity.associationEntity.embeddable.startDate' => 'associationEntity.associationEntity.embeddable.startDate'
+                'associationEntity.associationEntity.embeddable.startDate' => 'associationEntity.associationEntity.embeddable.startDate',
             ],
             [
                 'associationEntity' => MockEntityAssociation::class,

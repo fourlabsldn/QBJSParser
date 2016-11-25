@@ -2,8 +2,6 @@
 
 namespace FL\QBJSParser\Tests\Parser\Doctrine;
 
-use FL\QBJSParser\Exception\Parser\Doctrine\InvalidClassNameException;
-use FL\QBJSParser\Exception\Parser\Doctrine\FieldMappingException;
 use FL\QBJSParser\Model\Rule;
 use FL\QBJSParser\Model\RuleGroup;
 use FL\QBJSParser\Model\RuleGroupInterface;
@@ -41,7 +39,7 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
         $this->setUpMockAssociationParseCases();
         $this->setUpMockEmbeddableParseCases();
     }
-    
+
     private function setUpFirstMockEntityParseCases()
     {
         $ruleGroupA = new RuleGroup(RuleGroupInterface::MODE_AND);
@@ -181,8 +179,8 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
 
     private function setUpMockEmbeddableParseCases()
     {
-        $dateA = new \DateTimeImmutable("now - 2 days");
-        $dateB = new \DateTimeImmutable("now + 2 days");
+        $dateA = new \DateTimeImmutable('now - 2 days');
+        $dateB = new \DateTimeImmutable('now + 2 days');
         $ruleGroupA = new RuleGroup(RuleGroupInterface::MODE_AND);
         $ruleGroupA_RuleA = new Rule('rule_id', 'price', 'double', 'is_not_null', null);
         $ruleGroupA_RuleB = new Rule('rule_id', 'associationEntity.id', 'string', 'equal', 'hello');
@@ -223,7 +221,7 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @var DoctrineParserTestCase[] $cases
+     * @var DoctrineParserTestCase[]
      */
     private function verifyParserTestCases(array $cases)
     {
