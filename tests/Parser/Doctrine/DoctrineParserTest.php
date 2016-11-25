@@ -12,6 +12,7 @@ use FL\QBJSParser\Tests\Util\Doctrine\Mock\DoctrineParser\MockBadEntity2Doctrine
 use FL\QBJSParser\Tests\Util\Doctrine\Mock\DoctrineParser\MockBadEntityDoctrineParser;
 use FL\QBJSParser\Tests\Util\Doctrine\Mock\DoctrineParser\MockEntityDoctrineParser;
 use FL\QBJSParser\Tests\Util\Doctrine\Mock\DoctrineParser\MockEntityWithAssociationDoctrineParser;
+use FL\QBJSParser\Tests\Util\Doctrine\Mock\DoctrineParser\MockEntityWithEmbeddableDoctrineParser;
 use FL\QBJSParser\Tests\Util\Doctrine\Mock\Entity\MockEntity;
 
 class DoctrineParserTest extends \PHPUnit_Framework_TestCase
@@ -25,6 +26,11 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
      * @var array
      */
     private $mockAssociationParseCases = [];
+
+    /**
+     * @var array
+     */
+    private $mockEmbeddableParseCases = [];
     
     private function setUpFirstMockEntityParseCases()
     {
@@ -121,12 +127,30 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
         ];
     }
 
+    private function setUpMockEmbeddableParseCases()
+    {
+        $ruleGroupA = new RuleGroup(RuleGroupInterface::MODE_AND);
+        $ruleGroupA_RuleA = new Rule('rule_id', 'price', 'double', 'is_not_null', null);
+        $ruleGroupA_RuleB = new Rule('rule_id', 'associationEntity.id', 'string', 'equal', 'hello');
+        $ruleGroupA
+            ->addRule($ruleGroupA_RuleA)
+            ->addRule($ruleGroupA_RuleB)
+        ;
+
+        $this->mockEmbeddableParseCases[] = [
+            'rulegroup' => $ruleGroupA,
+            'expectedDqlString' => 'SELECT object, object_associationEntity FROM '.MockEntity::class.' object LEFT JOIN object.associationEntity object_associationEntity WHERE ( object.price IS NOT NULL AND object_associationEntity.id = ?0 ) ',
+            'expectedParameters' => ['hello'],
+        ];
+    }
+
     public function setUp()
     {
         $this->setUpFirstMockEntityParseCases();
         $this->setUpSecondMockEntityParseCases();
         $this->setUpThirdMockEntityParseCases();
         $this->setUpMockAssociationParseCases();
+        $this->setUpMockEmbeddableParseCases();
     }
 
     /**
@@ -150,11 +174,29 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function testMockEntity_WithAssociation_ParseCases()
+    public function testMockAssociationParseCases()
     {
         $parser = new MockEntityWithAssociationDoctrineParser();
 
         foreach ($this->mockAssociationParseCases as $case) {
+            $parsed = $parser->parse($case['rulegroup']);
+
+            $dqlString = $parsed->getDqlString();
+            $parameters = $parsed->getParameters();
+
+            $this->assertEquals($case['expectedDqlString'], $dqlString);
+            $this->assertEquals($case['expectedParameters'], $parameters);
+        }
+    }
+
+    /**
+     * @test
+     */
+    public function testMockEmbeddableParseCases()
+    {
+        $parser = new MockEntityWithEmbeddableDoctrineParser();
+
+        foreach ($this->mockEmbeddableParseCases as $case) {
             $parsed = $parser->parse($case['rulegroup']);
 
             $dqlString = $parsed->getDqlString();

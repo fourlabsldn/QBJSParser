@@ -93,7 +93,7 @@ class DoctrineParser implements ParserInterface
         $this->fieldsToProperties = $fieldsToProperties;
         $this->fieldPrefixesToClasses = $fieldPrefixesToClasses;
         $this->embeddableFieldsToProperties = $embeddableFieldsToProperties;
-        $this->embeddableFieldPrefixesToClasses = $embeddableFieldPrefixesToEmbeddableClasses;
+        $this->embeddableFieldPrefixesToClasses = $embeddableFieldPrefixesToClasses;
         $this->embeddableFieldPrefixesToEmbeddableClasses = $embeddableFieldPrefixesToEmbeddableClasses;
         $this->validate();
     }

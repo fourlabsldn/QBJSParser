@@ -1,6 +1,6 @@
 <?php
 
-namespace FL\QBJSParser\Tests\Util\Mock\Embeddable;
+namespace FL\QBJSParser\Tests\Util\Doctrine\Mock\Embeddable;
 
 class MockEmbeddable
 {
