@@ -124,3 +124,46 @@ use YourNamespace\YourApp\Entity\Label;
 //... 
 ```
 
+Now supporting Doctrine embeddables. For example:
+
+```php
+<?php
+
+//...
+    $productParser = new DoctrineParser(
+        Entity::class,
+        [
+            'id' => 'id',
+            'price' => 'price',
+            'name' => 'name',
+            'date' => 'date',
+            'associationEntity.id' => 'associationEntity.id',
+            'associationEntity.associationEntity.id' => 'associationEntity.associationEntity.id',
+        ],
+        [
+            'associationEntity' => AssociationEntity::class,
+            'associationEntity.associationEntity' => AssociationEntity::class,
+        ],
+        // embeddable properties
+        [
+            'embeddable.startDate' => 'embeddable.startDate',
+            'embeddable.endDate' => 'embeddable.endDate',
+            'associationEntity.embeddable.startDate' => 'associationEntity.embeddable.startDate',
+            'associationEntity.embeddable.endDate' => 'associationEntity.embeddable.endDate',
+            'associationEntity.associationEntity.embeddable.startDate' => 'associationEntity.associationEntity.embeddable.startDate',
+        ],
+        // association prefixes, for embeddable properties
+        [
+            'associationEntity' => AssociationEntity::class,
+            'associationEntity.associationEntity' => AssociationEntity::class,
+        ],
+        // embeddable prefixes, for embeddable properties
+        [
+            'embeddable' => Embeddable::class,
+            'associationEntity.embeddable' => Embeddable::class,
+            'associationEntity.associationEntity.embeddable' => Embeddable::class,
+        ]
+    );
+//... 
+```
+
