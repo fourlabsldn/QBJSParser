@@ -8,6 +8,7 @@ class MockEntity
     private $price;
     private $name;
     private $date;
+    private $privateProperty;
     private $associationEntity;
     private $embeddable;
 
@@ -29,6 +30,11 @@ class MockEntity
     public function getDate()
     {
         return $this->date;
+    }
+
+    private function getPrivateProperty()
+    {
+        return $this->privateProperty;
     }
 
     public function getAssociationEntity()
