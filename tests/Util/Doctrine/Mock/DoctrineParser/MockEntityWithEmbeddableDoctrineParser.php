@@ -33,7 +33,7 @@ class MockEntityWithEmbeddableDoctrineParser extends DoctrineParser
             ],
             [
                 'embeddable.embeddableInsideEmbeddable.code' => 'embeddable.embeddableInsideEmbeddable.code',
-                'associationEntity.embeddable.embeddableInsideEmbeddable.code' => 'associationEntity.embeddable.embeddableInsideEmbeddable.code'
+                'associationEntity.embeddable.embeddableInsideEmbeddable.code' => 'associationEntity.embeddable.embeddableInsideEmbeddable.code',
             ],
             [
                 'associationEntity' => MockEntityAssociation::class,
