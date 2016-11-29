@@ -138,13 +138,10 @@ Now supporting Doctrine embeddables. For example:
             'name' => 'name',
             'date' => 'date',
             'associationEntity.id' => 'associationEntity.id',
-            'associationEntity.associationEntity.id' => 'associationEntity.associationEntity.id',
         ],
         [
             'associationEntity' => AssociationEntity::class,
-            'associationEntity.associationEntity' => AssociationEntity::class,
         ],
-        // embeddable properties
         [
             'embeddable.startDate' => 'embeddable.startDate',
             'embeddable.endDate' => 'embeddable.endDate',
@@ -152,16 +149,20 @@ Now supporting Doctrine embeddables. For example:
             'associationEntity.embeddable.endDate' => 'associationEntity.embeddable.endDate',
             'associationEntity.associationEntity.embeddable.startDate' => 'associationEntity.associationEntity.embeddable.startDate',
         ],
-        // association prefixes, for embeddable properties
+        [
+            'embeddable.embeddableInsideEmbeddable.code' => 'embeddable.embeddableInsideEmbeddable.code',
+            'associationEntity.embeddable.embeddableInsideEmbeddable.code' => 'associationEntity.embeddable.embeddableInsideEmbeddable.code'
+        ],
         [
             'associationEntity' => AssociationEntity::class,
             'associationEntity.associationEntity' => AssociationEntity::class,
         ],
-        // embeddable prefixes, for embeddable properties
         [
             'embeddable' => Embeddable::class,
             'associationEntity.embeddable' => Embeddable::class,
             'associationEntity.associationEntity.embeddable' => Embeddable::class,
+            'embeddable.embeddableInsideEmbeddable' => EmbeddableInsideEmbeddable::class,
+            'associationEntity.embeddable.embeddableInsideEmbeddable' => EmbeddableInsideEmbeddable::class,
         ]
     );
 //... 
