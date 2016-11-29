@@ -131,40 +131,47 @@ Now supporting Doctrine embeddables. For example:
 
 //...
     $productParser = new DoctrineParser(
-        Entity::class,
-        [
-            'id' => 'id',
-            'price' => 'price',
-            'name' => 'name',
-            'date' => 'date',
-            'associationEntity.id' => 'associationEntity.id',
-        ],
-        [
-            'associationEntity' => AssociationEntity::class,
-        ],
-        [
-            'embeddable.startDate' => 'embeddable.startDate',
-            'embeddable.endDate' => 'embeddable.endDate',
-            'associationEntity.embeddable.startDate' => 'associationEntity.embeddable.startDate',
-            'associationEntity.embeddable.endDate' => 'associationEntity.embeddable.endDate',
-            'associationEntity.associationEntity.embeddable.startDate' => 'associationEntity.associationEntity.embeddable.startDate',
-        ],
-        [
-            'embeddable.embeddableInsideEmbeddable.code' => 'embeddable.embeddableInsideEmbeddable.code',
-            'associationEntity.embeddable.embeddableInsideEmbeddable.code' => 'associationEntity.embeddable.embeddableInsideEmbeddable.code'
-        ],
-        [
-            'associationEntity' => AssociationEntity::class,
-            'associationEntity.associationEntity' => AssociationEntity::class,
-        ],
-        [
-            'embeddable' => Embeddable::class,
-            'associationEntity.embeddable' => Embeddable::class,
-            'associationEntity.associationEntity.embeddable' => Embeddable::class,
-            'embeddable.embeddableInsideEmbeddable' => EmbeddableInsideEmbeddable::class,
-            'associationEntity.embeddable.embeddableInsideEmbeddable' => EmbeddableInsideEmbeddable::class,
-        ]
-    );
+            // $className
+            Entity::class,
+            // $fieldsToProperties
+            [
+                'id' => 'id',
+                'price' => 'price',
+                'name' => 'name',
+                'date' => 'date',
+                'associationEntity.id' => 'associationEntity.id',
+            ],
+            // $fieldPrefixesToClasses
+            [
+                'associationEntity' => AssociationEntity::class,
+            ],
+            // $embeddableFieldsToProperties
+            [
+                'embeddable.startDate' => 'embeddable.startDate',
+                'embeddable.endDate' => 'embeddable.endDate',
+                'associationEntity.embeddable.startDate' => 'associationEntity.embeddable.startDate',
+                'associationEntity.embeddable.endDate' => 'associationEntity.embeddable.endDate',
+                'associationEntity.associationEntity.embeddable.startDate' => 'associationEntity.associationEntity.embeddable.startDate',
+            ],
+            // $embeddableInsideEmbeddableFieldsToProperties
+            [
+                'embeddable.embeddableInsideEmbeddable.code' => 'embeddable.embeddableInsideEmbeddable.code',
+                'associationEntity.embeddable.embeddableInsideEmbeddable.code' => 'associationEntity.embeddable.embeddableInsideEmbeddable.code'
+            ],
+            // $embeddableFieldPrefixesToClasses
+            [
+                'associationEntity' => AssociationEntity::class,
+                'associationEntity.associationEntity' => AssociationEntity::class,
+            ],
+            // $embeddableFieldPrefixesToEmbeddableClasses
+            [
+                'embeddable' => Embeddable::class,
+                'associationEntity.embeddable' => Embeddable::class,
+                'associationEntity.associationEntity.embeddable' => Embeddable::class,
+                'embeddable.embeddableInsideEmbeddable' => EmbeddableInsideEmbeddable::class,
+                'associationEntity.embeddable.embeddableInsideEmbeddable' => EmbeddableInsideEmbeddable::class,
+            ]
+        );
 //... 
 ```
 
