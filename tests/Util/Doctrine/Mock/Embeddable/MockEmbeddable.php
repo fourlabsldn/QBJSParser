@@ -6,6 +6,7 @@ class MockEmbeddable
 {
     private $startDate;
     private $endDate;
+    private $embeddableInsideEmbeddable;
 
     public function getStartDate()
     {
@@ -15,5 +16,10 @@ class MockEmbeddable
     public function getEndDate()
     {
         return $this->endDate;
+    }
+
+    public function getEmbeddableInsideEmbeddable()
+    {
+        return $this->embeddableInsideEmbeddable;
     }
 }
