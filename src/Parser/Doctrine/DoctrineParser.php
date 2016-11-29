@@ -9,6 +9,7 @@ use FL\QBJSParser\Exception\Parser\Doctrine\MissingAssociationClassException;
 use FL\QBJSParser\Model\RuleGroupInterface;
 use FL\QBJSParser\Parsed\Doctrine\ParsedRuleGroup;
 use FL\QBJSParser\Parser\ParserInterface;
+use FL\QBJSParser\Tests\Util\Doctrine\Mock\DoctrineParser\MockEntityWithEmbeddableDoctrineParser;
 use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
 use Symfony\Component\PropertyInfo\PropertyInfoExtractor;
 
@@ -37,6 +38,11 @@ class DoctrineParser implements ParserInterface
     /**
      * @var array
      */
+    private $embeddableInsideEmbeddableFieldsToProperties;
+
+    /**
+     * @var array
+     */
     private $embeddableFieldPrefixesToClasses;
 
     /**
@@ -45,47 +51,22 @@ class DoctrineParser implements ParserInterface
     private $embeddableFieldPrefixesToEmbeddableClasses;
 
     /**
-     * @param string $className                                  E.g. Product::class
-     * @param array  $fieldsToProperties                         E.g. [
-     *                                                           'id' => 'id',
-     *                                                           'labels.id' => 'labels.id',
-     *                                                           'labels.name' => 'labels.name',
-     *                                                           'labels.authors.id'=> 'labels.authors.id',
-     *                                                           'labels.authors.address.city'=> 'labels.authors.address.city',
-     *                                                           'labels.authors.nextHoliday.approved' => 'labels.authors.nextHoliday.approved'
-     *                                                           'author.id' => 'author.id',
-     *                                                           ]
-     * @param array  $fieldPrefixesToClasses                     E.g. [
-     *                                                           'labels' => Label::class,
-     *                                                           'labels.authors' => Author::class,
-     *                                                           'labels.authors.address' => Address::class,
-     *                                                           'labels.authors.nextHoliday' => NextHoliday::class,
-     *                                                           'author' => Author::class,
-     *                                                           ]
-     * @param array  $embeddableFieldsToProperties               E.g. [
-     *                                                           'period.startDate' => 'period.endDate',
-     *                                                           'period.endDate' => 'period.startDate',
-     *                                                           'labels.period.startDate' => 'labels.period.startDate',
-     *                                                           'labels.period.endDate'=> 'labels.period.endDate',
-     *                                                           'labels.authors.nextHoliday.period.startDate' => 'labels.authors.nextHoliday.period.startDate',
-     *                                                           'labels.authors.nextHoliday.period.endDate' => 'labels.authors.nextHoliday.period.endDate',
-     *                                                           ]
-     * @param array  $embeddableFieldPrefixesToClasses           E.g. [
-     *                                                           'labels' => NextHoliday::class,
-     *                                                           'labels.authors' => NextHoliday::class,
-     *                                                           'labels.authors.nextHoliday' => NextHoliday::class,
-     *                                                           ]
-     * @param array  $embeddableFieldPrefixesToEmbeddableClasses E.g. [
-     *                                                           'period' => \League\Period\Period::class,
-     *                                                           'labels.period' => \League\Period\Period::class,
-     *                                                           'labels.authors.nextHoliday.period' => \League\Period\Period::class,
-     *                                                           ]
+     * @param string $className
+     * @param array $fieldsToProperties
+     * @param array $fieldPrefixesToClasses
+     * @param array $embeddableFieldsToProperties
+     * @param array $embeddableInsideEmbeddableFieldsToProperties
+     * @param array $embeddableFieldPrefixesToClasses
+     * @param array $embeddableFieldPrefixesToEmbeddableClasses
+     *
+     * @see MockEntityWithEmbeddableDoctrineParser for full example
      */
     public function __construct(
         string $className,
         array $fieldsToProperties,
         array $fieldPrefixesToClasses = [],
         array $embeddableFieldsToProperties = [],
+        array $embeddableInsideEmbeddableFieldsToProperties = [],
         array $embeddableFieldPrefixesToClasses = [],
         array $embeddableFieldPrefixesToEmbeddableClasses = []
     ) {
@@ -93,6 +74,7 @@ class DoctrineParser implements ParserInterface
         $this->fieldsToProperties = $fieldsToProperties;
         $this->fieldPrefixesToClasses = $fieldPrefixesToClasses;
         $this->embeddableFieldsToProperties = $embeddableFieldsToProperties;
+        $this->embeddableInsideEmbeddableFieldsToProperties = $embeddableInsideEmbeddableFieldsToProperties;
         $this->embeddableFieldPrefixesToClasses = $embeddableFieldPrefixesToClasses;
         $this->embeddableFieldPrefixesToEmbeddableClasses = $embeddableFieldPrefixesToEmbeddableClasses;
         $this->validate();
@@ -113,8 +95,7 @@ class DoctrineParser implements ParserInterface
             $this->fieldsToProperties,
             $ruleGroup,
             $this->embeddableFieldsToProperties,
-            $this->embeddableFieldPrefixesToClasses,
-            $this->embeddableFieldPrefixesToEmbeddableClasses
+            $this->embeddableInsideEmbeddableFieldsToProperties
         );
         $whereString = $whereParsedRuleGroup->getDqlString();
         $parameters = $whereParsedRuleGroup->getParameters();
@@ -123,8 +104,7 @@ class DoctrineParser implements ParserInterface
             $this->fieldsToProperties,
             $sortColumns,
             $this->embeddableFieldsToProperties,
-            $this->embeddableFieldPrefixesToClasses,
-            $this->embeddableFieldPrefixesToEmbeddableClasses
+            $this->embeddableInsideEmbeddableFieldsToProperties
         );
 
         $dqlString = preg_replace('/\s+/', ' ', $selectString.$fromString.$joinString.$whereString.$orderString);
@@ -140,8 +120,9 @@ class DoctrineParser implements ParserInterface
         $this->validateClass($this->className);
         $this->validateFieldsToProperties($this->fieldsToProperties, $this->fieldPrefixesToClasses);
         $this->validateFieldPrefixesToClasses($this->fieldPrefixesToClasses);
+        $allEmbeddableFields = array_merge($this->embeddableFieldsToProperties, $this->embeddableInsideEmbeddableFieldsToProperties);
         $allEmbeddablePrefixesToClasses = array_merge($this->embeddableFieldPrefixesToClasses, $this->embeddableFieldPrefixesToEmbeddableClasses);
-        $this->validateFieldsToProperties($this->embeddableFieldsToProperties, $allEmbeddablePrefixesToClasses);
+        $this->validateFieldsToProperties($allEmbeddableFields, $allEmbeddablePrefixesToClasses);
         $this->validateFieldPrefixesToClasses($allEmbeddablePrefixesToClasses);
         $this->validateEmbeddableFieldPrefixes($this->embeddableFieldPrefixesToClasses, $this->embeddableFieldPrefixesToEmbeddableClasses);
     }

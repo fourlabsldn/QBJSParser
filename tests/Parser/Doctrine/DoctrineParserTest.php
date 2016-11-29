@@ -188,6 +188,8 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
         $ruleGroupA_RuleD = new Rule('rule_id', 'associationEntity.embeddable.startDate', 'date', 'equal', $dateA);
         $ruleGroupA_RuleE = new Rule('rule_id', 'associationEntity.embeddable.endDate', 'date', 'equal', $dateB);
         $ruleGroupA_RuleF = new Rule('rule_id', 'associationEntity.associationEntity.embeddable.startDate', 'date', 'equal', $dateA);
+        $ruleGroupA_RuleG = new Rule('rule_id', 'embeddable.embeddableInsideEmbeddable.code', 'string', 'equal', 'goodbye');
+        $ruleGroupA_RuleH = new Rule('rule_id', 'associationEntity.embeddable.embeddableInsideEmbeddable.code', 'string', 'equal', 'cool');
         $ruleGroupA
             ->addRule($ruleGroupA_RuleA)
             ->addRule($ruleGroupA_RuleB)
@@ -195,6 +197,8 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
             ->addRule($ruleGroupA_RuleD)
             ->addRule($ruleGroupA_RuleE)
             ->addRule($ruleGroupA_RuleF)
+            ->addRule($ruleGroupA_RuleG)
+            ->addRule($ruleGroupA_RuleH)
         ;
 
         $this->mockEmbeddableParseCases[] = new DoctrineParserTestCase(
@@ -205,6 +209,8 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
                 'associationEntity.id' => 'ASC',
                 'associationEntity.embeddable.startDate' => 'ASC',
                 'associationEntity.associationEntity.embeddable.startDate' => 'DESC',
+                'embeddable.embeddableInsideEmbeddable.code' => 'ASC',
+                'associationEntity.embeddable.embeddableInsideEmbeddable.code' => 'DESC',
             ],
             sprintf(
                 'SELECT object, object_associationEntity FROM %s object '.
@@ -212,11 +218,17 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
                 'WHERE ( object.price IS NOT NULL AND object_associationEntity.id = ?0 '.
                 'AND object.embeddable.startDate = ?1 AND object_associationEntity.embeddable.startDate = ?2 '.
                 'AND object_associationEntity.embeddable.endDate = ?3 '.
-                'AND object_associationEntity_associationEntity.embeddable.startDate = ?4 ) '.
-                'ORDER BY object.name DESC, object_associationEntity.id ASC, object_associationEntity.embeddable.startDate ASC, object_associationEntity_associationEntity.embeddable.startDate DESC ',
+                'AND object_associationEntity_associationEntity.embeddable.startDate = ?4 '.
+                'AND object.embeddable.embeddableInsideEmbeddable.code = ?5 '.
+                'AND object_associationEntity.embeddable.embeddableInsideEmbeddable.code = ?6 ) '.
+                'ORDER BY object.name DESC, object_associationEntity.id ASC, '.
+                'object_associationEntity.embeddable.startDate ASC, '.
+                'object_associationEntity_associationEntity.embeddable.startDate DESC, '.
+                'object.embeddable.embeddableInsideEmbeddable.code ASC, '.
+                'object_associationEntity.embeddable.embeddableInsideEmbeddable.code DESC ',
                 MockEntity::class
             ),
-            ['hello', $dateA, $dateA, $dateB, $dateA]
+            ['hello', $dateA, $dateA, $dateB, $dateA, 'goodbye', 'cool']
         );
     }
 

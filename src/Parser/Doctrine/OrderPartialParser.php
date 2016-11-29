@@ -19,8 +19,7 @@ abstract class OrderPartialParser
      * @param array      $queryBuilderFieldsToProperties
      * @param array|null $sortColumns
      * @param array      $embeddableFieldsToProperties
-     * @param array      $embeddableFieldPrefixesToClasses
-     * @param array      $embeddableFieldPrefixesToEmbeddableClasses
+     * @param array      $embeddableInsideEmbeddableFieldsToProperties
      *
      * @return string
      */
@@ -28,21 +27,16 @@ abstract class OrderPartialParser
         array $queryBuilderFieldsToProperties,
         array $sortColumns = null,
         array $embeddableFieldsToProperties,
-        array $embeddableFieldPrefixesToClasses,
-        array $embeddableFieldPrefixesToEmbeddableClasses
+        array $embeddableInsideEmbeddableFieldsToProperties
     ): string {
-        foreach ($queryBuilderFieldsToProperties as $queryBuilderField => $property) {
-            static::$queryBuilderFieldsToOrderAlias[$queryBuilderField] = StringManipulator::replaceAllDotsExceptLast(SelectPartialParser::OBJECT_WORD.'.'.$property);
+        foreach ($queryBuilderFieldsToProperties as $field => $property) {
+            static::$queryBuilderFieldsToOrderAlias[$field] = StringManipulator::replaceAllDotsExceptLast(SelectPartialParser::OBJECT_WORD.'.'.$property);
         }
-        foreach ($embeddableFieldsToProperties as $queryBuilderField => $property) {
-            $suffixPattern = '/\.((?!\.).)+$/';
-            $fieldPrefix = preg_replace($suffixPattern, '', $queryBuilderField);
-
-            if (in_array($fieldPrefix, array_keys($embeddableFieldPrefixesToClasses))) {
-                static::$queryBuilderFieldsToOrderAlias[$queryBuilderField] = SelectPartialParser::OBJECT_WORD.StringManipulator::replaceAllDotsExceptLast('.'.$property);
-            } elseif (in_array($fieldPrefix, array_keys($embeddableFieldPrefixesToEmbeddableClasses))) {
-                static::$queryBuilderFieldsToOrderAlias[$queryBuilderField] = SelectPartialParser::OBJECT_WORD.StringManipulator::replaceAllDotsExceptLastTwo('.'.$property);
-            }
+        foreach ($embeddableFieldsToProperties as $field => $property) {
+            static::$queryBuilderFieldsToOrderAlias[$field] = SelectPartialParser::OBJECT_WORD.StringManipulator::replaceAllDotsExceptLastTwo('.'.$property);
+        }
+        foreach ($embeddableInsideEmbeddableFieldsToProperties as $field => $property) {
+            static::$queryBuilderFieldsToOrderAlias[$field] = SelectPartialParser::OBJECT_WORD.StringManipulator::replaceAllDotsExceptLastThree('.'.$property);
         }
 
         if ($sortColumns === null || count($sortColumns) === 0) {

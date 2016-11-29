@@ -33,8 +33,7 @@ abstract class WherePartialParser
      * @param array              $queryBuilderFieldsToProperties
      * @param RuleGroupInterface $ruleGroup
      * @param array              $embeddableFieldsToProperties
-     * @param array              $embeddableFieldPrefixesToClasses
-     * @param array              $embeddableFieldPrefixesToEmbeddableClasses
+     * @param array              $embeddableInsideEmbeddableFieldsToProperties
      *
      * @return ParsedRuleGroup
      */
@@ -42,21 +41,16 @@ abstract class WherePartialParser
         array $queryBuilderFieldsToProperties,
         RuleGroupInterface $ruleGroup,
         array $embeddableFieldsToProperties,
-        array $embeddableFieldPrefixesToClasses,
-        array $embeddableFieldPrefixesToEmbeddableClasses
+        array $embeddableInsideEmbeddableFieldsToProperties
     ): ParsedRuleGroup {
-        foreach ($queryBuilderFieldsToProperties as $queryBuilderField => $property) {
-            static::$queryBuilderFieldsToWhereAlias[$queryBuilderField] = StringManipulator::replaceAllDotsExceptLast(SelectPartialParser::OBJECT_WORD.'.'.$property);
+        foreach ($queryBuilderFieldsToProperties as $field => $property) {
+            static::$queryBuilderFieldsToWhereAlias[$field] = StringManipulator::replaceAllDotsExceptLast(SelectPartialParser::OBJECT_WORD.'.'.$property);
         }
-        foreach ($embeddableFieldsToProperties as $queryBuilderField => $property) {
-            $suffixPattern = '/\.((?!\.).)+$/';
-            $fieldPrefix = preg_replace($suffixPattern, '', $queryBuilderField);
-
-            if (in_array($fieldPrefix, array_keys($embeddableFieldPrefixesToClasses))) {
-                static::$queryBuilderFieldsToWhereAlias[$queryBuilderField] = SelectPartialParser::OBJECT_WORD.StringManipulator::replaceAllDotsExceptLast('.'.$property);
-            } elseif (in_array($fieldPrefix, array_keys($embeddableFieldPrefixesToEmbeddableClasses))) {
-                static::$queryBuilderFieldsToWhereAlias[$queryBuilderField] = SelectPartialParser::OBJECT_WORD.StringManipulator::replaceAllDotsExceptLastTwo('.'.$property);
-            }
+        foreach ($embeddableFieldsToProperties as $field => $property) {
+            static::$queryBuilderFieldsToWhereAlias[$field] = SelectPartialParser::OBJECT_WORD.StringManipulator::replaceAllDotsExceptLastTwo('.'.$property);
+        }
+        foreach ($embeddableInsideEmbeddableFieldsToProperties as $field => $property) {
+            static::$queryBuilderFieldsToWhereAlias[$field] = SelectPartialParser::OBJECT_WORD.StringManipulator::replaceAllDotsExceptLastThree('.'.$property);
         }
 
         static::$parameters = [];
