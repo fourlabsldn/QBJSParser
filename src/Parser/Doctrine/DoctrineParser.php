@@ -52,12 +52,12 @@ class DoctrineParser implements ParserInterface
 
     /**
      * @param string $className
-     * @param array $fieldsToProperties
-     * @param array $fieldPrefixesToClasses
-     * @param array $embeddableFieldsToProperties
-     * @param array $embeddableInsideEmbeddableFieldsToProperties
-     * @param array $embeddableFieldPrefixesToClasses
-     * @param array $embeddableFieldPrefixesToEmbeddableClasses
+     * @param array  $fieldsToProperties
+     * @param array  $fieldPrefixesToClasses
+     * @param array  $embeddableFieldsToProperties
+     * @param array  $embeddableInsideEmbeddableFieldsToProperties
+     * @param array  $embeddableFieldPrefixesToClasses
+     * @param array  $embeddableFieldPrefixesToEmbeddableClasses
      *
      * @see MockEntityWithEmbeddableDoctrineParser for full example
      */
