@@ -9,6 +9,89 @@ class StringManipulatorTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function testReplaceAllDotsExceptLastThree()
+    {
+        $this->assertEquals(
+            'object_something.cool.today.noon',
+            StringManipulator::replaceAllDotsExceptLastThree('object.something.cool.today.noon')
+        );
+        $this->assertEquals(
+            'object_something.cool.today.',
+            StringManipulator::replaceAllDotsExceptLastThree('object.something.cool.today.')
+        );
+        $this->assertEquals(
+            'object.something.cool.today',
+            StringManipulator::replaceAllDotsExceptLastThree('object.something.cool.today')
+        );
+        $this->assertEquals(
+            'object.something.cool.',
+            StringManipulator::replaceAllDotsExceptLastThree('object.something.cool.')
+        );
+        $this->assertEquals(
+            'object.something.cool',
+            StringManipulator::replaceAllDotsExceptLastThree('object.something.cool')
+        );
+        $this->assertEquals(
+            'object.something.',
+            StringManipulator::replaceAllDotsExceptLastThree('object.something.')
+        );
+        $this->assertEquals(
+            'object.something',
+            StringManipulator::replaceAllDotsExceptLastThree('object.something')
+        );
+        $this->assertEquals(
+            'object.',
+            StringManipulator::replaceAllDotsExceptLastThree('object.')
+        );
+        $this->assertEquals(
+            'object',
+            StringManipulator::replaceAllDotsExceptLastThree('object')
+        );
+        $this->assertEquals(
+            '_object_something.cool.today.noon',
+            StringManipulator::replaceAllDotsExceptLastThree('.object.something.cool.today.noon')
+        );
+        $this->assertEquals(
+            '_object_something.cool.today.',
+            StringManipulator::replaceAllDotsExceptLastThree('.object.something.cool.today.')
+        );
+        $this->assertEquals(
+            '_object.something.cool.today',
+            StringManipulator::replaceAllDotsExceptLastThree('.object.something.cool.today')
+        );
+        $this->assertEquals(
+            '_object.something.cool.',
+            StringManipulator::replaceAllDotsExceptLastThree('.object.something.cool.')
+        );
+        $this->assertEquals(
+            '.object.something.cool',
+            StringManipulator::replaceAllDotsExceptLastThree('.object.something.cool')
+        );
+        $this->assertEquals(
+            '.object.something.',
+            StringManipulator::replaceAllDotsExceptLastThree('.object.something.')
+        );
+        $this->assertEquals(
+            '.object.something',
+            StringManipulator::replaceAllDotsExceptLastThree('.object.something')
+        );
+        $this->assertEquals(
+            '.object.',
+            StringManipulator::replaceAllDotsExceptLastThree('.object.')
+        );
+        $this->assertEquals(
+            '.object',
+            StringManipulator::replaceAllDotsExceptLastThree('.object')
+        );
+        $this->assertEquals(
+            '.',
+            StringManipulator::replaceAllDotsExceptLastThree('.')
+        );
+    }
+
+    /**
+     * @test
+     */
     public function testReplaceAllDotsExceptLastTwo()
     {
         $this->assertEquals(
