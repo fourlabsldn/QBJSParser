@@ -3,8 +3,9 @@
 namespace FL\QBJSParser\Parsed\Doctrine;
 
 use FL\QBJSParser\Exception\Parsed\Doctrine\ParsedRuleGroupConstructionException;
+use FL\QBJSParser\Parsed\AbstractParsedRuleGroup;
 
-class ParsedRuleGroup
+class ParsedRuleGroup extends AbstractParsedRuleGroup
 {
     /**
      * @var string
