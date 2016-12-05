@@ -142,7 +142,7 @@ abstract class WherePartialParser
      *
      * @return bool
      */
-    final private static function queryBuilderOperator_UsesValue(string $operator) : bool
+    final private static function queryBuilderOperator_UsesValue(string $operator): bool
     {
         return in_array($operator, [
             'equal', 'not_equal', 'less', 'less_or_equal', 'greater', 'greater_or_equal',
@@ -155,7 +155,7 @@ abstract class WherePartialParser
      *
      * @return bool
      */
-    final private static function queryBuilderOperator_UsesArray(string $operator) : bool
+    final private static function queryBuilderOperator_UsesArray(string $operator): bool
     {
         return in_array($operator, ['in', 'not_in']);
     }
@@ -165,7 +165,7 @@ abstract class WherePartialParser
      *
      * @return bool
      */
-    final private static function queryBuilderOperator_UsesArrayOfTwo(string $operator) : bool
+    final private static function queryBuilderOperator_UsesArrayOfTwo(string $operator): bool
     {
         return in_array($operator, ['between']);
     }
@@ -175,7 +175,7 @@ abstract class WherePartialParser
      *
      * @return bool
      */
-    final private static function queryBuilderOperator_UsesNull(string $operator) : bool
+    final private static function queryBuilderOperator_UsesNull(string $operator): bool
     {
         return in_array($operator, ['is_empty', 'is_not_empty', 'is_null', 'is_not_null']);
     }
@@ -185,7 +185,7 @@ abstract class WherePartialParser
      *
      * @return string
      */
-    final private static function queryBuilderOperatorToDoctrineOperator(string $queryBuilderOperator) : string
+    final private static function queryBuilderOperatorToDoctrineOperator(string $queryBuilderOperator): string
     {
         $dictionary = [
             'equal' => '=',
@@ -222,7 +222,7 @@ abstract class WherePartialParser
      *
      * @return string
      *
-     * @link http://doctrine.readthedocs.io/en/latest/en/manual/dql-doctrine-query-language.html#like-expressions
+     * @see http://doctrine.readthedocs.io/en/latest/en/manual/dql-doctrine-query-language.html#like-expressions
      */
     final private static function transformValueAccordingToQueryBuilderOperator(string $queryBuilderOperator, $value)
     {
@@ -248,7 +248,7 @@ abstract class WherePartialParser
      *
      * @return string
      */
-    final private static function queryBuilderFieldToWhereAlias(string $queryBuilderField) : string
+    final private static function queryBuilderFieldToWhereAlias(string $queryBuilderField): string
     {
         $dictionary = static::$queryBuilderFieldsToWhereAlias;
 

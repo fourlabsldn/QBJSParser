@@ -59,7 +59,7 @@ abstract class OrderPartialParser
      *
      * @return string
      */
-    final private static function queryBuilderOrderDirectionToSafeValue(string $orderDirection) : string
+    final private static function queryBuilderOrderDirectionToSafeValue(string $orderDirection): string
     {
         $dictionary = [
             'ASC' => 'ASC',
@@ -78,7 +78,7 @@ abstract class OrderPartialParser
      *
      * @return string
      */
-    final private static function queryBuilderFieldToOrderAlias(string $queryBuilderField) : string
+    final private static function queryBuilderFieldToOrderAlias(string $queryBuilderField): string
     {
         $dictionary = static::$queryBuilderFieldsToOrderAlias;
 

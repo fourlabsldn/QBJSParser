@@ -44,7 +44,6 @@ class RuleTest extends \PHPUnit_Framework_TestCase
             ['type' => 'double', 'operator' => 'in', 'value' => [1.3, 0.0, 3.1]],
             ['type' => 'double', 'operator' => 'between', 'value' => [1.0, 10.3]],
 
-
             ['type' => 'boolean', 'operator' => 'equal', 'value' => true],
             ['type' => 'boolean', 'operator' => 'is_null', 'value' => null],
             ['type' => 'boolean', 'operator' => 'is_not_null', 'value' => null],

@@ -15,7 +15,7 @@ class JsonDeserializer implements DeserializerInterface
     /**
      * {@inheritdoc}
      */
-    public function deserialize(string $string) : RuleGroupInterface
+    public function deserialize(string $string): RuleGroupInterface
     {
         $decodedRuleGroup = json_decode($string, true);
         if (is_null($decodedRuleGroup) || !is_array($decodedRuleGroup)) {
@@ -30,7 +30,7 @@ class JsonDeserializer implements DeserializerInterface
      *
      * @return RuleGroupInterface
      */
-    private function deserializeRuleGroup(array $decodedRuleGroup) : RuleGroupInterface
+    private function deserializeRuleGroup(array $decodedRuleGroup): RuleGroupInterface
     {
         if (!array_key_exists('condition', $decodedRuleGroup)) {
             throw new JsonDeserializerConditionException('Missing condition in RuleGroup');

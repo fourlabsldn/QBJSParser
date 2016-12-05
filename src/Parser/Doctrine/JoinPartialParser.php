@@ -13,7 +13,7 @@ abstract class JoinPartialParser
      *
      * @return string
      */
-    final public static function parse(array $queryBuilderFieldPrefixesToAssociationClasses) : string
+    final public static function parse(array $queryBuilderFieldPrefixesToAssociationClasses): string
     {
         $joinString = '';
         foreach ($queryBuilderFieldPrefixesToAssociationClasses as $queryBuilderPrefix => $associationClass) {
