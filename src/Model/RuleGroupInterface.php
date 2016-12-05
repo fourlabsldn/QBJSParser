@@ -5,7 +5,7 @@ namespace FL\QBJSParser\Model;
 interface RuleGroupInterface
 {
     /**
-     * @link http://stackoverflow.com/questions/5350672/pros-and-cons-of-interface-constants#5354044
+     * @see http://stackoverflow.com/questions/5350672/pros-and-cons-of-interface-constants#5354044
      */
     const MODE_AND = 'AND';
 
@@ -33,7 +33,7 @@ interface RuleGroupInterface
      *
      * @return RuleGroupInterface
      */
-    public function removeRule(RuleInterface $rule) : RuleGroupInterface;
+    public function removeRule(RuleInterface $rule): RuleGroupInterface;
 
     /**
      * @return \SplObjectStorage|RuleGroupInterface[]
@@ -45,14 +45,14 @@ interface RuleGroupInterface
      *
      * @return RuleGroupInterface
      */
-    public function addRuleGroup(RuleGroupInterface $ruleGroup) : RuleGroupInterface;
+    public function addRuleGroup(RuleGroupInterface $ruleGroup): RuleGroupInterface;
 
     /**
      * @param RuleGroupInterface $ruleGroup
      *
      * @return RuleGroupInterface
      */
-    public function removeRuleGroup(RuleGroupInterface $ruleGroup) : RuleGroupInterface;
+    public function removeRuleGroup(RuleGroupInterface $ruleGroup): RuleGroupInterface;
 
     /**
      * @return string

@@ -130,7 +130,6 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
             ->addRule($ruleGroupA_RuleGroup1_RuleB)
         ;
 
-
         $this->mockEntityParseCases[] = new DoctrineParserTestCase(
             new MockEntityDoctrineParser(),
             $ruleGroupA,

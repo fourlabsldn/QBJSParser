@@ -19,7 +19,7 @@ abstract class StringManipulator
      *
      * @return string
      */
-    final public static function replaceAllDotsExceptLastThree(string $string) : string
+    final public static function replaceAllDotsExceptLastThree(string $string): string
     {
         $countDots = substr_count($string, '.');
         if ($countDots > 3) {
@@ -44,7 +44,7 @@ abstract class StringManipulator
      *
      * @return string
      */
-    final public static function replaceAllDotsExceptLastTwo(string $string) : string
+    final public static function replaceAllDotsExceptLastTwo(string $string): string
     {
         $countDots = substr_count($string, '.');
         if ($countDots > 2) {
@@ -69,7 +69,7 @@ abstract class StringManipulator
      *
      * @return string
      */
-    final public static function replaceAllDotsExceptLast(string $string) : string
+    final public static function replaceAllDotsExceptLast(string $string): string
     {
         $countDots = substr_count($string, '.');
         if ($countDots > 1) {
@@ -94,7 +94,7 @@ abstract class StringManipulator
      *
      * @return string
      */
-    final public static function replaceAllDots(string $string) : string
+    final public static function replaceAllDots(string $string): string
     {
         return str_replace('.', '_', $string);
     }

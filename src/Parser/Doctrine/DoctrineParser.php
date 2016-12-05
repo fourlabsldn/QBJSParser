@@ -208,7 +208,7 @@ class DoctrineParser implements DoctrineParserInterface
     /**
      * @param string $className
      *
-     * @link http://symfony.com/doc/current/components/property_info.html#components-property-info-extractors
+     * @see http://symfony.com/doc/current/components/property_info.html#components-property-info-extractors
      *
      * @throws InvalidClassNameException
      */
@@ -227,7 +227,7 @@ class DoctrineParser implements DoctrineParserInterface
      * @param string $className
      * @param string $classProperty
      *
-     * @link http://symfony.com/doc/current/components/property_info.html#components-property-info-extractors
+     * @see http://symfony.com/doc/current/components/property_info.html#components-property-info-extractors
      *
      * @throws FieldMappingException
      */

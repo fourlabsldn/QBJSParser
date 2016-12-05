@@ -315,13 +315,13 @@ class Rule implements RuleInterface
      * Useful to convert a value (such as @see Rule::$value
      * into PHP variable types and class names.
      *
-     * @link http://php.net/manual/en/function.gettype.php
-     * @link http://php.net/manual/en/function.get-class.php
+     * @see http://php.net/manual/en/function.gettype.php
+     * @see http://php.net/manual/en/function.get-class.php
      * [
      *  'boolean', 'integer', 'double', 'string', 'array', 'NULL', ClassName::class
      * ]
      */
-    public function valueType($value) : string
+    public function valueType($value): string
     {
         $valueType = gettype($value);
         if (gettype($value) === 'object') {

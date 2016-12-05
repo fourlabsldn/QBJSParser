@@ -11,5 +11,5 @@ interface DeserializerInterface
      *
      * @return RuleGroupInterface
      */
-    public function deserialize(string $string) : RuleGroupInterface;
+    public function deserialize(string $string): RuleGroupInterface;
 }
