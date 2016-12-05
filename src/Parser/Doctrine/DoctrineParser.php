@@ -8,12 +8,11 @@ use FL\QBJSParser\Exception\Parser\Doctrine\FieldMappingException;
 use FL\QBJSParser\Exception\Parser\Doctrine\MissingAssociationClassException;
 use FL\QBJSParser\Model\RuleGroupInterface;
 use FL\QBJSParser\Parsed\Doctrine\ParsedRuleGroup;
-use FL\QBJSParser\Parser\ParserInterface;
 use FL\QBJSParser\Tests\Util\Doctrine\Mock\DoctrineParser\MockEntityWithEmbeddableDoctrineParser;
 use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
 use Symfony\Component\PropertyInfo\PropertyInfoExtractor;
 
-class DoctrineParser implements ParserInterface
+class DoctrineParser implements DoctrineParserInterface
 {
     /**
      * @var string
@@ -85,7 +84,7 @@ class DoctrineParser implements ParserInterface
      *
      * @return ParsedRuleGroup
      */
-    final public function parse(RuleGroupInterface $ruleGroup, array $sortColumns = null) : ParsedRuleGroup
+    final public function parse(RuleGroupInterface $ruleGroup, array $sortColumns = null): ParsedRuleGroup
     {
         $selectString = SelectPartialParser::parse($this->fieldPrefixesToClasses);
         $fromString = FromPartialParser::parse($this->className);

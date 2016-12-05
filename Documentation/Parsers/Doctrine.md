@@ -95,7 +95,6 @@ namespace YourNamespace\YourApp\Controller;
 use Doctrine\ORM\EntityManagerInterface;
 use FL\QBJSParser\Serializer\JsonDeserializer;
 use FL\QBJSParser\Parser\Doctrine\DoctrineParser;
-use YourNamespace\YourApp\QBJSParser\DoctrineCustomParser;
 use YourNamespace\YourApp\Entity\Product;
 use YourNamespace\YourApp\Entity\Label;
 
