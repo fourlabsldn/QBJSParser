@@ -6,7 +6,6 @@ use FL\QBJSParser\Model\RuleGroupInterface;
 use FL\QBJSParser\Parsed\Doctrine\ParsedRuleGroup;
 use FL\QBJSParser\Parser\ParserInterface;
 
-
 interface DoctrineParserInterface extends ParserInterface
 {
     /**
