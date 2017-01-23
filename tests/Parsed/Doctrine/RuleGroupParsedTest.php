@@ -37,10 +37,6 @@ class RuleGroupParsedTest extends \PHPUnit_Framework_TestCase
             // two parameters given, expected one array
             ['dqlString' => 'SELECT object FROM SomeNamespace/SomeClass object WHERE object.id IN (?0)', 'parameters' => [3, null]],
         ];
-        $this->sampleInvalid_ClassNames = [
-            '',
-            'ThisClassNameDoesNotExist'
-        ];
     }
 
     /**
