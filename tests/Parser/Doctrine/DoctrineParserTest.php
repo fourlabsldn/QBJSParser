@@ -56,6 +56,19 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
             'ORDER BY object.price ASC ',
             []
         );
+
+        // no where clause
+        $ruleGroupB = new RuleGroup(RuleGroupInterface::MODE_AND);
+        $this->mockEntityParseCases[] = new DoctrineParserTestCase(
+            new MockEntityDoctrineParser(),
+            $ruleGroupB,
+            [
+                'date' => 'ASC',
+            ],
+            'SELECT object FROM '.MockEntity::class.' object '.
+            'ORDER BY object.date ASC ',
+            []
+        );
     }
 
     private function setUpSecondMockEntityParseCases()

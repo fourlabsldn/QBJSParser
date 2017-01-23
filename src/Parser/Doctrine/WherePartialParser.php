@@ -57,7 +57,12 @@ abstract class WherePartialParser
         static::$dqlPartialWhereString = '';
 
         // populate static::$dqlPartialWhereString and static::$parameters
-        static::parseRuleGroup($ruleGroup, ' WHERE ( ', ' ) ');
+        if (
+            count($ruleGroup->getRuleGroups()) !== 0 ||
+            count($ruleGroup->getRules()) !== 0
+        ) {
+            static::parseRuleGroup($ruleGroup, ' WHERE ( ', ' ) ');
+        }
 
         return new ParsedRuleGroup(static::$dqlPartialWhereString, static::$parameters);
     }
