@@ -99,7 +99,7 @@ class ParsedRuleGroup extends AbstractParsedRuleGroup
     }
 
     /**
-     * E.g. $parsedRuleGroup->('ORDER BY', 'GROUP BY object.id ORDER BY', 'GROUP BY object.id').
+     * E.g. $parsedRuleGroup->copyWithReplacedString('ORDER BY', 'GROUP BY object.id ORDER BY', 'GROUP BY object.id').
      *
      *
      * {@inheritdoc}
