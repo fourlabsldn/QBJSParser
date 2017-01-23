@@ -10,7 +10,7 @@ class ParsedRuleGroup extends AbstractParsedRuleGroup
     /**
      * @var string
      */
-    private $dqlString;
+    private $queryString;
 
     /**
      * @var array
@@ -23,16 +23,16 @@ class ParsedRuleGroup extends AbstractParsedRuleGroup
     private $className;
 
     /**
-     * @param string $dqlString
+     * @param string $queryString
      * @param array  $parameters
      * @param string $className
      */
     public function __construct(
-        string $dqlString,
+        string $queryString,
         array $parameters,
         string $className
     ) {
-        $this->dqlString = $dqlString;
+        $this->queryString = $queryString;
         $this->parameters = $parameters;
         $this->className = $className;
         $this->validateParametersCountInDql();
@@ -44,15 +44,15 @@ class ParsedRuleGroup extends AbstractParsedRuleGroup
      */
     private function validateParametersCountInDql()
     {
-        $dqlString = $this->dqlString;
+        $queryString = $this->queryString;
 
-        $dqlParametersCount = preg_match_all('/\?\d+/', $dqlString);
+        $dqlParametersCount = preg_match_all('/\?\d+/', $queryString);
         $boundParametersCount = count($this->parameters);
 
         if ($dqlParametersCount !== $boundParametersCount) {
             throw new ParsedRuleGroupConstructionException(sprintf(
                 '%s has %u parameters. Expected %u.',
-                $dqlString,
+                $queryString,
                 $boundParametersCount,
                 $dqlParametersCount
             ));
@@ -73,15 +73,17 @@ class ParsedRuleGroup extends AbstractParsedRuleGroup
     }
 
     /**
-     * @return string (this is a dql string)
+     * This is a dql string.
+     *
+     * {@inheritdoc}
      */
     public function getQueryString(): string
     {
-        return $this->dqlString;
+        return $this->queryString;
     }
 
     /**
-     * @return array
+     * {@inheritdoc}
      */
     public function getParameters(): array
     {
@@ -89,10 +91,31 @@ class ParsedRuleGroup extends AbstractParsedRuleGroup
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getClassName(): string
     {
         return $this->className;
+    }
+
+    /**
+     * E.g. $parsedRuleGroup->('ORDER BY', 'GROUP BY object.id ORDER BY', 'GROUP BY object.id')
+     *
+     *
+     * {@inheritdoc}
+     */
+    public function copyWithReplacedString(
+        string $search,
+        string $replace,
+        string $appendToEndIfNotFound
+    ): AbstractParsedRuleGroup {
+        $count = 0;
+        $newDql = str_replace($search, $replace, $this->getQueryString(), $count);
+
+        if ($count === 0) {
+            $newDql = $this->getQueryString() . $appendToEndIfNotFound;
+        }
+        
+        return new ParsedRuleGroup($newDql, $this->parameters, $this->className);
     }
 }

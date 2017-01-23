@@ -5,7 +5,7 @@ namespace FL\QBJSParser\Parsed;
 abstract class AbstractParsedRuleGroup
 {
     /**
-     * @return string (this is a dql string)
+     * @return string
      */
     abstract public function getQueryString(): string;
 
@@ -20,4 +20,15 @@ abstract class AbstractParsedRuleGroup
      * @return string
      */
     abstract public function getClassName(): string;
+
+    /**
+     * Manipulate the string.
+     *
+     * @param string $search
+     * @param string $replace
+     * @param string $appendToEndIfNotFound
+     *
+     * @return AbstractParsedRuleGroup
+     */
+    abstract public function copyWithReplacedString(string $search, string $replace, string $appendToEndIfNotFound): AbstractParsedRuleGroup;
 }
