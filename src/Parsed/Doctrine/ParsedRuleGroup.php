@@ -99,7 +99,7 @@ class ParsedRuleGroup extends AbstractParsedRuleGroup
     }
 
     /**
-     * E.g. $parsedRuleGroup->('ORDER BY', 'GROUP BY object.id ORDER BY', 'GROUP BY object.id')
+     * E.g. $parsedRuleGroup->('ORDER BY', 'GROUP BY object.id ORDER BY', 'GROUP BY object.id').
      *
      *
      * {@inheritdoc}
@@ -113,9 +113,9 @@ class ParsedRuleGroup extends AbstractParsedRuleGroup
         $newDql = str_replace($search, $replace, $this->getQueryString(), $count);
 
         if ($count === 0) {
-            $newDql = $this->getQueryString() . $appendToEndIfNotFound;
+            $newDql = $this->getQueryString().$appendToEndIfNotFound;
         }
-        
-        return new ParsedRuleGroup($newDql, $this->parameters, $this->className);
+
+        return new self($newDql, $this->parameters, $this->className);
     }
 }
