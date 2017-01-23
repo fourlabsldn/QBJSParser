@@ -51,6 +51,7 @@ class RuleGroupParsedTest extends \PHPUnit_Framework_TestCase
 
             $this->assertEquals($parsedRuleGroup->getQueryString(), $dqlString);
             $this->assertEquals($parsedRuleGroup->getParameters(), $parameters);
+            $this->assertEquals($parsedRuleGroup->getClassName(), MockEntity::class);
         }
     }
 
