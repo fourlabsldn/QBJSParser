@@ -18,14 +18,25 @@ class ParsedRuleGroup extends AbstractParsedRuleGroup
     private $parameters;
 
     /**
+     * @var string
+     */
+    private $className;
+
+    /**
      * @param string $dqlString
      * @param array  $parameters
+     * @param string $className
      */
-    public function __construct(string $dqlString, array $parameters)
-    {
+    public function __construct(
+        string $dqlString,
+        array $parameters,
+        string $className
+    ) {
         $this->dqlString = $dqlString;
         $this->parameters = $parameters;
+        $this->className = $className;
         $this->validateParametersCountInDql();
+        $this->validateClassName();
     }
 
     /**
@@ -49,9 +60,22 @@ class ParsedRuleGroup extends AbstractParsedRuleGroup
     }
 
     /**
-     * @return string
+     * @throws ParsedRuleGroupConstructionException
      */
-    public function getDqlString(): string
+    private function validateClassName()
+    {
+        if (!class_exists($this->className)) {
+            throw new ParsedRuleGroupConstructionException(sprintf(
+                'The class %s does not exist',
+                $this->className
+            ));
+        }
+    }
+
+    /**
+     * @return string (this is a dql string)
+     */
+    public function getQueryString(): string
     {
         return $this->dqlString;
     }
@@ -62,5 +86,13 @@ class ParsedRuleGroup extends AbstractParsedRuleGroup
     public function getParameters(): array
     {
         return $this->parameters;
+    }
+
+    /**
+     * @return string
+     */
+    public function getClassName(): string
+    {
+        return $this->className;
     }
 }

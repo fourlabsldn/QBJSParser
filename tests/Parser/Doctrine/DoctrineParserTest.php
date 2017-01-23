@@ -252,7 +252,7 @@ class DoctrineParserTest extends \PHPUnit_Framework_TestCase
         foreach ($cases as $case) {
             $parsed = $case->getDoctrineParser()->parse($case->getRuleGroup(), $case->getSortColumns());
 
-            $dqlString = $parsed->getDqlString();
+            $dqlString = $parsed->getQueryString();
             $parameters = $parsed->getParameters();
 
             $this->assertEquals($case->getExpectedDqlString(), $dqlString);

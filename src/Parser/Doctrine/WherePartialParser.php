@@ -34,6 +34,7 @@ abstract class WherePartialParser
      * @param RuleGroupInterface $ruleGroup
      * @param array              $embeddableFieldsToProperties
      * @param array              $embeddableInsideEmbeddableFieldsToProperties
+     * @param string             $className
      *
      * @return ParsedRuleGroup
      */
@@ -41,7 +42,8 @@ abstract class WherePartialParser
         array $queryBuilderFieldsToProperties,
         RuleGroupInterface $ruleGroup,
         array $embeddableFieldsToProperties,
-        array $embeddableInsideEmbeddableFieldsToProperties
+        array $embeddableInsideEmbeddableFieldsToProperties,
+        string $className
     ): ParsedRuleGroup {
         foreach ($queryBuilderFieldsToProperties as $field => $property) {
             static::$queryBuilderFieldsToWhereAlias[$field] = StringManipulator::replaceAllDotsExceptLast(SelectPartialParser::OBJECT_WORD.'.'.$property);
@@ -64,7 +66,7 @@ abstract class WherePartialParser
             static::parseRuleGroup($ruleGroup, ' WHERE ( ', ' ) ');
         }
 
-        return new ParsedRuleGroup(static::$dqlPartialWhereString, static::$parameters);
+        return new ParsedRuleGroup(static::$dqlPartialWhereString, static::$parameters, $className);
     }
 
     /**

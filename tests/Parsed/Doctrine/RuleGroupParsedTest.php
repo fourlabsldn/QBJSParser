@@ -4,6 +4,7 @@ namespace FL\QBJSParser\Tests\Parsed\Doctrine;
 
 use FL\QBJSParser\Parsed\Doctrine\ParsedRuleGroup;
 use FL\QBJSParser\Exception\Parsed\Doctrine\ParsedRuleGroupConstructionException;
+use FL\QBJSParser\Tests\Util\Doctrine\Mock\Entity\MockEntity;
 
 class RuleGroupParsedTest extends \PHPUnit_Framework_TestCase
 {
@@ -36,6 +37,10 @@ class RuleGroupParsedTest extends \PHPUnit_Framework_TestCase
             // two parameters given, expected one array
             ['dqlString' => 'SELECT object FROM SomeNamespace/SomeClass object WHERE object.id IN (?0)', 'parameters' => [3, null]],
         ];
+        $this->sampleInvalid_ClassNames = [
+            '',
+            'ThisClassNameDoesNotExist'
+        ];
     }
 
     /**
@@ -46,9 +51,9 @@ class RuleGroupParsedTest extends \PHPUnit_Framework_TestCase
         foreach ($this->sampleValid_Dqls_Parameters as $valid_Dql_Parameter) {
             $dqlString = $valid_Dql_Parameter['dqlString'];
             $parameters = $valid_Dql_Parameter['parameters'];
-            $parsedRuleGroup = new ParsedRuleGroup($dqlString, $parameters);
+            $parsedRuleGroup = new ParsedRuleGroup($dqlString, $parameters, MockEntity::class);
 
-            $this->assertEquals($parsedRuleGroup->getDqlString(), $dqlString);
+            $this->assertEquals($parsedRuleGroup->getQueryString(), $dqlString);
             $this->assertEquals($parsedRuleGroup->getParameters(), $parameters);
         }
     }
@@ -56,14 +61,33 @@ class RuleGroupParsedTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function testInvalidConstructions()
+    public function testInvalidParameterConstructions()
     {
         foreach ($this->sampleInvalid_Dqls_Parameters as $invalid_Dql_Parameter) {
             $dqlString = $invalid_Dql_Parameter['dqlString'];
             $parameters = $invalid_Dql_Parameter['parameters'];
             $this->assertParsedRuleGroupConstructionException(function () use ($dqlString, $parameters) {
-                new ParsedRuleGroup($dqlString, $parameters);
+                new ParsedRuleGroup($dqlString, $parameters, MockEntity::class);
             }, $invalid_Dql_Parameter['dqlString']);
+        }
+    }
+
+    /**
+     * @test
+     */
+    public function testInvalidClassNameConstructions()
+    {
+        foreach ($this->sampleValid_Dqls_Parameters as $valid_Dql_Parameter) {
+            $dqlString = $valid_Dql_Parameter['dqlString'];
+            $parameters = $valid_Dql_Parameter['parameters'];
+
+            $this->assertParsedRuleGroupConstructionException(function () use ($dqlString, $parameters) {
+                new ParsedRuleGroup($dqlString, $parameters, 'ThisNameSpaceDoesNotExist\\ThisClassNameDoesNotExist');
+            }, $valid_Dql_Parameter['dqlString']);
+
+            $this->assertParsedRuleGroupConstructionException(function () use ($dqlString, $parameters) {
+                new ParsedRuleGroup($dqlString, $parameters, 'ThisClassNameDoesNotExist');
+            }, $valid_Dql_Parameter['dqlString']);
         }
     }
 

@@ -94,9 +94,10 @@ class DoctrineParser implements DoctrineParserInterface
             $this->fieldsToProperties,
             $ruleGroup,
             $this->embeddableFieldsToProperties,
-            $this->embeddableInsideEmbeddableFieldsToProperties
+            $this->embeddableInsideEmbeddableFieldsToProperties,
+            $this->className
         );
-        $whereString = $whereParsedRuleGroup->getDqlString();
+        $whereString = $whereParsedRuleGroup->getQueryString();
         $parameters = $whereParsedRuleGroup->getParameters();
 
         $orderString = OrderPartialParser::parse(
@@ -108,7 +109,7 @@ class DoctrineParser implements DoctrineParserInterface
 
         $dqlString = preg_replace('/\s+/', ' ', $selectString.$fromString.$joinString.$whereString.$orderString);
 
-        return new ParsedRuleGroup($dqlString, $parameters); // preg_replace -> no more than one space
+        return new ParsedRuleGroup($dqlString, $parameters, $this->className); // preg_replace -> no more than one space
     }
 
     /**

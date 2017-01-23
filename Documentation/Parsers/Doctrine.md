@@ -2,7 +2,7 @@
 
 #### What is it?
 - `FL\QBJSParser\Doctrine\AbstractDoctrineParser` parses `FL\QBJSParser\Model\RuleGroup` into a `FL\QBJSParser\Parsed\Doctrine\ParsedRuleGroup`.
-- A `ParsedRuleGroup` has two properties accessible via getters: `$dqlString` and `$parameters`. 
+- A `ParsedRuleGroup` has three properties accessible via getters: `$queryString`, `$parameters`, and `$className`. 
 - Use the `ParsedRuleGroup` to create a Doctrine Query with `Doctrine\ORM\EntityManager::createQuery($dql)` and `Doctrine\ORM\Query::setParameters($parameters)`
 
 #### Usage
@@ -117,7 +117,7 @@ use YourNamespace\YourApp\Entity\Label;
     $parsedRuleGroup = $productParser->parse($deserializedRuleGroup);
     
     /** @var EntityManagerInterface $entityManager */
-    $query = $entityManager->createQuery($parsedRuleGroup->getDqlString());
+    $query = $entityManager->createQuery($parsedRuleGroup->getQueryString());
     $query->setParameters($parsedRuleGroup->getParameters());
     $results = $query->execute();
 //... 
