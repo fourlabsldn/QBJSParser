@@ -99,8 +99,13 @@ class ParsedRuleGroup extends AbstractParsedRuleGroup
     }
 
     /**
-     * E.g. $parsedRuleGroup->copyWithReplacedString('ORDER BY', 'GROUP BY object.id ORDER BY', 'GROUP BY object.id').
+     * For example, $parsedRuleGroup->copyWithReplacedString('ORDER BY', 'GROUP BY object.id ORDER BY', 'GROUP BY object.id'):
      *
+     * "SELECT object FROM App\Entity\Class object ORDER BY object.id" would change to
+     * "SELECT object FROM App\Entity\Class object GROUP BY object.id ORDER BY object.id".
+     *
+     * "SELECT object FROM App\Entity\Class object" would change to
+     * "SELECT object FROM App\Entity\Class object GROUP BY object.id"
      *
      * {@inheritdoc}
      */
@@ -120,7 +125,10 @@ class ParsedRuleGroup extends AbstractParsedRuleGroup
     }
 
     /**
-     * E.g. $parsedRuleGroup->copyWithReplacedString('ORDER BY', 'GROUP BY object.id ORDER BY', 'GROUP BY object.id').
+     * E.g. $parsedRuleGroup->copyWithReplacedString('/SELECT.+object.+FROM/', 'SELECT object FROM', '').
+     *
+     * "SELECT object, association FROM App\Entity\Class object LEFT JOIN object.association association ORDER BY object.id" would change to
+     * "SELECT object FROM App\Entity\Class object LEFT JOIN object.association association ORDER BY object.id".
      *
      * {@inheritdoc}
      */
