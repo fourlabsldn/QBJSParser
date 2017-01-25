@@ -153,7 +153,7 @@ class RuleGroupParsedTest extends \PHPUnit_Framework_TestCase
      */
     public function testCopyWithReplacedStringRegex()
     {
-         $withMultipleSelects = new ParsedRuleGroup(
+        $withMultipleSelects = new ParsedRuleGroup(
             sprintf('SELECT object, association, association_in_association FROM %s object LEFT JOIN object.associationEntity association WHERE object.id != 3 ORDER BY object.id', MockEntity::class),
             [],
             MockEntityAssociation::class
