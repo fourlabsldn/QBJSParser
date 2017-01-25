@@ -5,6 +5,7 @@ namespace FL\QBJSParser\Tests\Parsed\Doctrine;
 use FL\QBJSParser\Parsed\Doctrine\ParsedRuleGroup;
 use FL\QBJSParser\Exception\Parsed\Doctrine\ParsedRuleGroupConstructionException;
 use FL\QBJSParser\Tests\Util\Doctrine\Mock\Entity\MockEntity;
+use FL\QBJSParser\Tests\Util\Doctrine\Mock\Entity\MockEntityAssociation;
 
 class RuleGroupParsedTest extends \PHPUnit_Framework_TestCase
 {
@@ -141,6 +142,45 @@ class RuleGroupParsedTest extends \PHPUnit_Framework_TestCase
             $withoutGroupByWithoutOrderBy->getQueryString()
         );
         $withoutGroupByWithoutOrderByWithExtraEnding = $withoutOrderBy->copyWithReplacedString('ORDER BY', 'GROUP BY object.id ORDER BY', ' _extra_ending_ ');
+        $this->assertEquals(
+            sprintf('SELECT object FROM %s object WHERE object.id != 3 _extra_ending_ ', MockEntity::class),
+            $withoutGroupByWithoutOrderByWithExtraEnding->getQueryString()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function testCopyWithReplacedStringRegex()
+    {
+         $withMultipleSelects = new ParsedRuleGroup(
+            sprintf('SELECT object, association, association_in_association FROM %s object LEFT JOIN object.associationEntity association WHERE object.id != 3 ORDER BY object.id', MockEntity::class),
+            [],
+            MockEntityAssociation::class
+        );
+        $withOneSelect = $withMultipleSelects->copyWithReplacedStringRegex('/SELECT.+object.+FROM/', 'SELECT object FROM', '');
+        $this->assertEquals(
+            sprintf('SELECT object FROM %s object LEFT JOIN object.associationEntity association WHERE object.id != 3 ORDER BY object.id', MockEntity::class),
+            $withOneSelect->getQueryString()
+        );
+
+        $withoutOrderBy = new ParsedRuleGroup(
+            sprintf('SELECT object FROM %s object WHERE object.id != 3', MockEntity::class),
+            [],
+            MockEntity::class
+        );
+
+        $withGroupByWithoutOrderBy = $withoutOrderBy->copyWithReplacedStringRegex('/ORDER BY/', 'GROUP BY object.id ORDER BY', ' GROUP BY object.id');
+        $this->assertEquals(
+            sprintf('SELECT object FROM %s object WHERE object.id != 3 GROUP BY object.id', MockEntity::class),
+            $withGroupByWithoutOrderBy->getQueryString()
+        );
+        $withoutGroupByWithoutOrderBy = $withoutOrderBy->copyWithReplacedStringRegex('/ORDER BY/', 'GROUP BY object.id ORDER BY', '');
+        $this->assertEquals(
+            sprintf('SELECT object FROM %s object WHERE object.id != 3', MockEntity::class),
+            $withoutGroupByWithoutOrderBy->getQueryString()
+        );
+        $withoutGroupByWithoutOrderByWithExtraEnding = $withoutOrderBy->copyWithReplacedStringRegex('/ORDER BY/', 'GROUP BY object.id ORDER BY', ' _extra_ending_ ');
         $this->assertEquals(
             sprintf('SELECT object FROM %s object WHERE object.id != 3 _extra_ending_ ', MockEntity::class),
             $withoutGroupByWithoutOrderByWithExtraEnding->getQueryString()

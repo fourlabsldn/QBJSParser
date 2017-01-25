@@ -22,7 +22,7 @@ abstract class AbstractParsedRuleGroup
     abstract public function getClassName(): string;
 
     /**
-     * Manipulate the string.
+     * Manipulate the query string with search and replace.
      *
      * @param string $search
      * @param string $replace
@@ -31,4 +31,15 @@ abstract class AbstractParsedRuleGroup
      * @return AbstractParsedRuleGroup
      */
     abstract public function copyWithReplacedString(string $search, string $replace, string $appendToEndIfNotFound): AbstractParsedRuleGroup;
+
+    /**
+     * Manipulate the query string with regex search and replace.
+     *
+     * @param string $pattern
+     * @param string $replace
+     * @param string $appendToEndIfNotFound
+     *
+     * @return AbstractParsedRuleGroup
+     */
+    abstract public function copyWithReplacedStringRegex(string $pattern, string $replace, string $appendToEndIfNotFound): AbstractParsedRuleGroup;
 }

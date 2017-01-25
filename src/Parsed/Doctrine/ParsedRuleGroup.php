@@ -118,4 +118,24 @@ class ParsedRuleGroup extends AbstractParsedRuleGroup
 
         return new self($newDql, $this->parameters, $this->className);
     }
+
+    /**
+     * E.g. $parsedRuleGroup->copyWithReplacedString('ORDER BY', 'GROUP BY object.id ORDER BY', 'GROUP BY object.id').
+     *
+     * {@inheritdoc}
+     */
+    public function copyWithReplacedStringRegex(
+        string $pattern,
+        string $replace,
+        string $appendToEndIfNotFound
+    ): AbstractParsedRuleGroup {
+        $count = 0;
+        $newDql = preg_replace($pattern, $replace, $this->getQueryString(), -1, $count);
+
+        if ($count === 0) {
+            $newDql = $this->getQueryString().$appendToEndIfNotFound;
+        }
+
+        return new self($newDql, $this->parameters, $this->className);
+    }
 }
