@@ -84,9 +84,9 @@ class JsonDeserializerTest extends TestCase
     {
         $ruleGroupA = new RuleGroup(RuleGroupInterface::MODE_AND);
         $ruleGroupA_RuleA = new Rule('price', 'price', 'double', 'less', 10.25);
-        $ruleGroupA_RuleB = new Rule('date', 'date', 'datetime', 'in', ['now']);
-        $ruleGroupA_RuleC = new Rule('date', 'date', 'datetime', 'in', ['now']);
-        $ruleGroupA_RuleD = new Rule('date', 'date', 'datetime', 'not_in', ['now']);
+        $ruleGroupA_RuleB = new Rule('date', 'date', 'datetime', 'in', [new \DateTimeImmutable('2017-08-03 14:12:12')]);
+        $ruleGroupA_RuleC = new Rule('date', 'date', 'datetime', 'in', [new \DateTimeImmutable('2017-08-03 14:12:12')]);
+        $ruleGroupA_RuleD = new Rule('date', 'date', 'datetime', 'not_in', [new \DateTimeImmutable('2017-08-03 14:12:12')]);
         $ruleGroupA->addRule($ruleGroupA_RuleA);
         $ruleGroupA->addRule($ruleGroupA_RuleB);
         $ruleGroupA->addRule($ruleGroupA_RuleC);
@@ -97,10 +97,10 @@ class JsonDeserializerTest extends TestCase
                 '"condition":"AND",'.
                 '"rules":['.
                     '{"id":"price","field":"price","type":"double","input":"text","operator":"less","value":"10.25"},'.
-                    '{"id":"date","field":"date","type":"datetime","input":"text","operator":"in","value":["now"]},'.
+                    '{"id":"date","field":"date","type":"datetime","input":"text","operator":"in","value":["2017-08-03 14:12:12"]},'.
                     // operators in and not_in require an array, the next two lines test that single values are converted to an array
-                    '{"id":"date","field":"date","type":"datetime","input":"text","operator":"in","value":"now"},'.
-                    '{"id":"date","field":"date","type":"datetime","input":"text","operator":"not_in","value":"now"}'.
+                    '{"id":"date","field":"date","type":"datetime","input":"text","operator":"in","value":"2017-08-03 14:12:12"},'.
+                    '{"id":"date","field":"date","type":"datetime","input":"text","operator":"not_in","value":"2017-08-03 14:12:12"}'.
                 ']'.
             '}';
 
