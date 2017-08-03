@@ -82,11 +82,13 @@ class JsonDeserializerTest extends TestCase
      */
     public function testParsing()
     {
+        $now = new \DateTimeImmutable();
+
         $ruleGroupA = new RuleGroup(RuleGroupInterface::MODE_AND);
         $ruleGroupA_RuleA = new Rule('price', 'price', 'double', 'less', 10.25);
-        $ruleGroupA_RuleB = new Rule('date', 'date', 'datetime', 'in', [new \DateTimeImmutable('now')]);
-        $ruleGroupA_RuleC = new Rule('date', 'date', 'datetime', 'in', [new \DateTimeImmutable('now')]);
-        $ruleGroupA_RuleD = new Rule('date', 'date', 'datetime', 'not_in', [new \DateTimeImmutable('now')]);
+        $ruleGroupA_RuleB = new Rule('date', 'date', 'datetime', 'in', [$now]);
+        $ruleGroupA_RuleC = new Rule('date', 'date', 'datetime', 'in', [$now]);
+        $ruleGroupA_RuleD = new Rule('date', 'date', 'datetime', 'not_in', [$now]);
         $ruleGroupA->addRule($ruleGroupA_RuleA);
         $ruleGroupA->addRule($ruleGroupA_RuleB);
         $ruleGroupA->addRule($ruleGroupA_RuleC);
@@ -133,13 +135,13 @@ class JsonDeserializerTest extends TestCase
         foreach ($ruleGroups_inRuleGroupA as $key => $ruleGroup) {
             /* @var RuleGroupInterface $ruleGroup */
             if (!isset($ruleGroups_inRuleGroupB[$key])) {
-                $this->fail('Number of RuleGroups not matching');
+                self::fail('Number of RuleGroups not matching');
             }
             $this->assertRuleGroupsAreEqual($ruleGroup, $ruleGroups_inRuleGroupB[$key]);
         }
         foreach ($ruleGroups_inRuleGroupB as $key => $ruleGroup) { // do both, in case $ruleGroups_inRuleGroupB has more ruleGroups than $ruleGroups_inRuleGroupA
             if (!isset($ruleGroups_inRuleGroupA[$key])) {
-                $this->fail('Number of RuleGroups not matching');
+                self::fail('Number of RuleGroups not matching');
             }
             $this->assertRuleGroupsAreEqual($ruleGroup, $ruleGroups_inRuleGroupA[$key]);
         }
@@ -158,15 +160,15 @@ class JsonDeserializerTest extends TestCase
 
         foreach ($rules_inRuleGroupA as $key => $rule) {
             if (!isset($rules_inRuleGroupB[$key])) {
-                $this->fail('Number of Rules not matching');
+                self::fail('Number of Rules not matching');
             }
-            $this->assertEquals($rule, $rules_inRuleGroupB[$key]);
+            self::assertEquals($rule, $rules_inRuleGroupB[$key]);
         }
         foreach ($rules_inRuleGroupB as $key => $rule) { // do both, in case $rules_inRuleGroupB has more rules than $rules_inRuleGroupA
             if (!isset($rules_inRuleGroupA[$key])) {
-                $this->fail('Number of Rules not matching');
+                self::fail('Number of Rules not matching');
             }
-            $this->assertEquals($rule, $rules_inRuleGroupA[$key]);
+            self::assertEquals($rule, $rules_inRuleGroupA[$key]);
         }
     }
 }

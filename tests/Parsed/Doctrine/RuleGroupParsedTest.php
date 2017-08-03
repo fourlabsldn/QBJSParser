@@ -14,7 +14,7 @@ class RuleGroupParsedTest extends TestCase
      * @dataProvider validDqlProvider
      *
      * @param string $dql
-     * @param array $parameters
+     * @param array  $parameters
      */
     public function testValidConstructions(string $dql, array $parameters)
     {
@@ -40,7 +40,7 @@ class RuleGroupParsedTest extends TestCase
      * @dataProvider invalidDqlProvider
      *
      * @param string $dql
-     * @param array $parameters
+     * @param array  $parameters
      */
     public function testInvalidParameterConstructions(string $dql, array $parameters)
     {
@@ -66,7 +66,7 @@ class RuleGroupParsedTest extends TestCase
      * @dataProvider validDqlProvider
      *
      * @param string $dql
-     * @param array $parameters
+     * @param array  $parameters
      */
     public function testInvalidClassNameConstructions(string $dql, array $parameters)
     {
