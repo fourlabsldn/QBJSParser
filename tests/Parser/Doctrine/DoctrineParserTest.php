@@ -13,8 +13,9 @@ use FL\QBJSParser\Tests\Util\Doctrine\Mock\DoctrineParser\MockEntityWithAssociat
 use FL\QBJSParser\Tests\Util\Doctrine\Mock\DoctrineParser\MockEntityWithEmbeddableDoctrineParser;
 use FL\QBJSParser\Tests\Util\Doctrine\Mock\Entity\MockEntity;
 use FL\QBJSParser\Tests\Util\Doctrine\Test\DoctrineParserTestCase;
+use PHPUnit\Framework\TestCase;
 
-class DoctrineParserTest extends \PHPUnit_Framework_TestCase
+class DoctrineParserTest extends TestCase
 {
     /**
      * @var DoctrineParserTestCase[]

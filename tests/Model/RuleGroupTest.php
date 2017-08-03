@@ -5,8 +5,9 @@ namespace FL\QBJSParser\Tests\Model;
 use FL\QBJSParser\Exception\Model\RuleGroupConstructionException;
 use FL\QBJSParser\Model\RuleGroup;
 use FL\QBJSParser\Model\RuleGroupInterface;
+use PHPUnit\Framework\TestCase;
 
-class RuleGroupTest extends \PHPUnit_Framework_TestCase
+class RuleGroupTest extends TestCase
 {
     /**
      * @var RuleGroupInterface
@@ -25,7 +26,7 @@ class RuleGroupTest extends \PHPUnit_Framework_TestCase
      */
     public function testRuleGroupImplementsInterface()
     {
-        $this->assertInstanceOf(RuleGroupInterface::class, $this->ruleGroup);
+        self::assertInstanceOf(RuleGroupInterface::class, $this->ruleGroup);
     }
 
     /**
@@ -33,21 +34,8 @@ class RuleGroupTest extends \PHPUnit_Framework_TestCase
      */
     public function testConstructionException()
     {
-        $this->assertRuleGroupConstructionException(function () {
-            $this->ruleGroup = new RuleGroup(1000);
-        });
-    }
+        $this->expectException(RuleGroupConstructionException::class);
 
-    /**
-     * @param \Closure $function
-     */
-    private function assertRuleGroupConstructionException(\Closure $function)
-    {
-        try {
-            $function();
-        } catch (RuleGroupConstructionException $e) {
-            return;
-        }
-        $this->fail('Expected '.RuleGroupConstructionException::class);
+        new RuleGroup(1000);
     }
 }

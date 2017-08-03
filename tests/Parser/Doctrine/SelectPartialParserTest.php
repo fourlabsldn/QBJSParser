@@ -3,8 +3,9 @@
 namespace FL\QBJSParser\Tests\Parser\Doctrine;
 
 use FL\QBJSParser\Parser\Doctrine\SelectPartialParser;
+use PHPUnit\Framework\TestCase;
 
-class SelectPartialParserTest extends \PHPUnit_Framework_TestCase
+class SelectPartialParserTest extends TestCase
 {
     /**
      * @test

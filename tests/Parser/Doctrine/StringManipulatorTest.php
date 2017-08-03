@@ -3,8 +3,9 @@
 namespace FL\QBJSParser\Tests\Parser\Doctrine;
 
 use FL\QBJSParser\Parser\Doctrine\StringManipulator;
+use PHPUnit\Framework\TestCase;
 
-class StringManipulatorTest extends \PHPUnit_Framework_TestCase
+class StringManipulatorTest extends TestCase
 {
     /**
      * @test

@@ -5,22 +5,33 @@ namespace FL\QBJSParser\Tests\Model;
 use FL\QBJSParser\Exception\Model\RuleConstructionException;
 use FL\QBJSParser\Model\Rule;
 use FL\QBJSParser\Model\RuleInterface;
+use PHPUnit\Framework\TestCase;
 
-class RuleTest extends \PHPUnit_Framework_TestCase
+class RuleTest extends TestCase
 {
     /**
-     * @var array
+     * @test
      */
-    private $samplesValidCombinations;
+    public function testRuleImplementsInterface()
+    {
+        self::assertInstanceOf(RuleInterface::class, new Rule('id', 'field', 'string', 'equal', 'value'));
+    }
 
     /**
-     * @var array
+     * @dataProvider validRulesProvider
+     *
+     * @param string $type
+     * @param string $operator
+     * @param mixed  $value
      */
-    private $samplesInvalidCombinations;
-
-    public function setup()
+    public function testSampleValidCombinations(string $type, string $operator, $value)
     {
-        $this->samplesValidCombinations = [
+        self::assertInstanceOf(RuleInterface::class, new Rule('id', 'field', $type, $operator, $value));
+    }
+
+    public function validRulesProvider()
+    {
+        return [
             ['type' => 'string', 'operator' => 'equal', 'value' => 'string is stringy'],
             ['type' => 'string', 'operator' => 'not_equal', 'value' => 'string is stringy'],
             ['type' => 'string', 'operator' => 'equal', 'value' => '3'],
@@ -53,7 +64,25 @@ class RuleTest extends \PHPUnit_Framework_TestCase
             ['type' => 'datetime', 'operator' => 'greater', 'value' => new \DateTimeImmutable()],
             ['type' => 'datetime', 'operator' => 'in', 'value' => [new \DateTimeImmutable(), new \DateTimeImmutable('+2 hours')]],
         ];
-        $this->samplesInvalidCombinations = [
+    }
+
+    /**
+     * @dataProvider invalidRulesProvider
+     *
+     * @param string $type
+     * @param string $operator
+     * @param mixed  $value
+     */
+    public function testSampleInvalidCombinations(string $type, string $operator, $value)
+    {
+        $this->expectException(RuleConstructionException::class);
+
+        new Rule('id', 'field', $type, $operator, $value);
+    }
+
+    public function invalidRulesProvider()
+    {
+        return [
             ['type' => 'string', 'operator' => 'equals', 'value' => 'string is stringy'], // OPERATOR cannot be 'equals' (must be 'equal')
             ['type' => 'string', 'operator' => 'is_null', 'value' => 'string is stringy'], // OPERATOR 'is_null' must correspond to VALUETYPE 'NULL'
             ['type' => 'string', 'operator' => 'is_not_null', 'value' => 'string is stringy'], // OPERATOR 'is_not_null' must correspond to VALUETYPE 'NULL'
@@ -86,64 +115,5 @@ class RuleTest extends \PHPUnit_Framework_TestCase
             ['type' => 'datetime', 'operator' => 'in', 'value' => [1, 2, 3]], // OPERATOR 'in' must have VALUETYPE 'array' AND all values of the 'array' must be '\Datetime::class'
             ['type' => 'datetime', 'operator' => 'in', 'value' => [new \DateTimeImmutable(), 2, 3]], // OPERATOR 'in' must have VALUETYPE 'array' AND all values of the 'array' must be '\Datetime::class'
         ];
-    }
-
-    /**
-     * @test
-     */
-    public function testRuleImplementsInterface()
-    {
-        $this->assertInstanceOf(RuleInterface::class, new Rule('id', 'field', 'string', 'equal', 'value'));
-    }
-
-    /**
-     * @test
-     */
-    public function testSampleValidCombinations()
-    {
-        $combinations = $this->samplesValidCombinations;
-        foreach ($combinations as $combination) {
-            new Rule('id', 'field', $combination['type'], $combination['operator'], $combination['value']);
-        }
-    }
-
-    /**
-     * @test
-     */
-    public function testSampleInvalidCombinations()
-    {
-        $combinations = $this->samplesInvalidCombinations;
-        foreach ($combinations as $combination) {
-            $this->assertRuleConstructionException(function () use ($combination) {
-                new Rule('id', 'field', $combination['type'], $combination['operator'], $combination['value']);
-            }, $combination);
-        }
-    }
-
-    /**
-     * @param \Closure $function
-     * @param array    $combination
-     */
-    private function assertRuleConstructionException(\Closure $function, array $combination)
-    {
-        try {
-            $function();
-        } catch (RuleConstructionException $e) {
-            return;
-        }
-
-        $appendToErrorSummary = '';
-        $errorValue = $combination['value'];
-        if (
-            (!is_array($errorValue)) &&
-            ((!is_object($errorValue) && settype($errorValue, 'string') !== false) ||
-                (is_object($errorValue) && method_exists($errorValue, '__toString')))
-        ) {
-            $appendToErrorSummary = ' AND value: '.strval($errorValue);
-        }
-
-        $errorSummary = 'Rule with type: '.strval($combination['type']).' AND operator: '.strval($combination['operator']).$appendToErrorSummary;
-
-        $this->fail('Expected '.RuleConstructionException::class.'. '.$errorSummary);
     }
 }

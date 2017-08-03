@@ -7,8 +7,9 @@ use FL\QBJSParser\Model\RuleGroup;
 use FL\QBJSParser\Model\RuleGroupInterface;
 use FL\QBJSParser\Serializer\JsonDeserializer;
 use FL\QBJSParser\Tests\Util\Doctrine\Mock\DoctrineParser\MockEntityDoctrineParser;
+use PHPUnit\Framework\TestCase;
 
-class JsonDeserializerTest extends \PHPUnit_Framework_TestCase
+class JsonDeserializerTest extends TestCase
 {
     /**
      * @var string
