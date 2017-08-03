@@ -82,13 +82,11 @@ class JsonDeserializerTest extends TestCase
      */
     public function testParsing()
     {
-        $now = new \DateTimeImmutable();
-
         $ruleGroupA = new RuleGroup(RuleGroupInterface::MODE_AND);
         $ruleGroupA_RuleA = new Rule('price', 'price', 'double', 'less', 10.25);
-        $ruleGroupA_RuleB = new Rule('date', 'date', 'datetime', 'in', [$now]);
-        $ruleGroupA_RuleC = new Rule('date', 'date', 'datetime', 'in', [$now]);
-        $ruleGroupA_RuleD = new Rule('date', 'date', 'datetime', 'not_in', [$now]);
+        $ruleGroupA_RuleB = new Rule('date', 'date', 'datetime', 'in', ['now']);
+        $ruleGroupA_RuleC = new Rule('date', 'date', 'datetime', 'in', ['now']);
+        $ruleGroupA_RuleD = new Rule('date', 'date', 'datetime', 'not_in', ['now']);
         $ruleGroupA->addRule($ruleGroupA_RuleA);
         $ruleGroupA->addRule($ruleGroupA_RuleB);
         $ruleGroupA->addRule($ruleGroupA_RuleC);
