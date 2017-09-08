@@ -67,6 +67,7 @@ class JsonDeserializer implements DeserializerInterface
         );
         if ($missingKey) {
             $keysGiven = implode(', ', array_keys($decodedRule));
+
             throw new JsonDeserializerRuleKeyException('Keys given: '.$keysGiven.'. Expected id, field, type, operator, value');
         }
 
