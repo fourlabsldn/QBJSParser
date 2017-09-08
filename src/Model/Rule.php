@@ -25,26 +25,26 @@ class Rule implements RuleInterface
         ],
         'integer' => [
             'equal', 'not_equal', 'in', 'not_in', 'is_null', 'is_not_null',
-            'less', 'less_or_equal', 'greater', 'greater_or_equal', 'between',
+            'less', 'less_or_equal', 'greater', 'greater_or_equal', 'between', 'not_between',
         ],
         'double' => [
             'equal', 'not_equal', 'in', 'not_in', 'is_null', 'is_not_null',
-            'less', 'less_or_equal', 'greater', 'greater_or_equal', 'between',
+            'less', 'less_or_equal', 'greater', 'greater_or_equal', 'between', 'not_between',
         ],
         'boolean' => [
             'equal', 'not_equal', 'is_null', 'is_not_null',
         ],
         'datetime' => [
             'equal', 'not_equal', 'in', 'not_in', 'is_null', 'is_not_null',
-            'less', 'less_or_equal', 'greater', 'greater_or_equal', 'between',
+            'less', 'less_or_equal', 'greater', 'greater_or_equal', 'between', 'not_between',
         ],
         'date' => [
             'equal', 'not_equal', 'in', 'not_in', 'is_null', 'is_not_null',
-            'less', 'less_or_equal', 'greater', 'greater_or_equal', 'between',
+            'less', 'less_or_equal', 'greater', 'greater_or_equal', 'between', 'not_between',
         ],
         'time' => [
             'equal', 'not_equal', 'in', 'not_in', 'is_null', 'is_not_null',
-            'less', 'less_or_equal', 'greater', 'greater_or_equal', 'between',
+            'less', 'less_or_equal', 'greater', 'greater_or_equal', 'between', 'not_between',
         ],
     ];
 
@@ -81,7 +81,7 @@ class Rule implements RuleInterface
      * Validation for this is at:
      * @see Rule::validate_Operator_ValueType()
      *
-     * Special case when the operator is 'between':
+     * Special case when the operator is 'between' or 'not_between':
      * @see Rule::validate_OperatorIsBetween()
      *
      * @var array
@@ -92,6 +92,7 @@ class Rule implements RuleInterface
         'in' => ['array'],
         'not_in' => ['array'],
         'between' => ['array'],
+        'not_between' => ['array'],
         'less' => ['integer', 'double', \DateTimeImmutable::class],
         'less_or_equal' => ['integer', 'double', \DateTimeImmutable::class],
         'greater' => ['integer', 'double', \DateTimeImmutable::class],
@@ -244,7 +245,7 @@ class Rule implements RuleInterface
     }
 
     /**
-     * When @see Rule::$operator is 'between', the @see Rule::$value must be an array of 2 elements.
+     * When @see Rule::$operator is 'between' or 'not_between', the @see Rule::$value must be an array of 2 elements.
      *
      * @throws RuleConstructionException
      */
@@ -254,7 +255,7 @@ class Rule implements RuleInterface
          * Don't throw an exception if the valueType is not an array,
          * @see Rule::validate_Operator_ValueType() is in charge of that
          */
-        if ($this->operator !== 'between' || $this->valueType($this->value) !== 'array') {
+        if (!in_array($this->operator, ['between', 'not_between']) || $this->valueType($this->value) !== 'array') {
             return;
         }
 

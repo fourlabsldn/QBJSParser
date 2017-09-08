@@ -46,6 +46,7 @@ class RuleTest extends TestCase
             ['type' => 'integer', 'operator' => 'in', 'value' => [1, 2, 3]],
             ['type' => 'integer', 'operator' => 'not_in', 'value' => [1, 2, 3]],
             ['type' => 'integer', 'operator' => 'between', 'value' => [1, 3]],
+            ['type' => 'integer', 'operator' => 'not_between', 'value' => [2, 5]],
 
             ['type' => 'double', 'operator' => 'equal', 'value' => M_PI],
             ['type' => 'double', 'operator' => 'greater', 'value' => 3.1416],
@@ -54,6 +55,7 @@ class RuleTest extends TestCase
             ['type' => 'double', 'operator' => 'less_or_equal', 'value' => 7.0],
             ['type' => 'double', 'operator' => 'in', 'value' => [1.3, 0.0, 3.1]],
             ['type' => 'double', 'operator' => 'between', 'value' => [1.0, 10.3]],
+            ['type' => 'double', 'operator' => 'not_between', 'value' => [4.0, 14.3]],
 
             ['type' => 'boolean', 'operator' => 'equal', 'value' => true],
             ['type' => 'boolean', 'operator' => 'is_null', 'value' => null],
@@ -88,6 +90,7 @@ class RuleTest extends TestCase
             ['type' => 'string', 'operator' => 'is_not_null', 'value' => 'string is stringy'], // OPERATOR 'is_not_null' must correspond to VALUETYPE 'NULL'
             ['type' => 'string', 'operator' => 'in', 'value' => 'test'], // OPERATOR 'in' must have VALUETYPE 'array'
             ['type' => 'string', 'operator' => 'between', 'value' => ['test', 'hello']], // TYPE 'string' cannot correspond to OPERATOR 'between'
+            ['type' => 'string', 'operator' => 'not_between', 'value' => ['test', 'hello']], // TYPE 'string' cannot correspond to OPERATOR 'not_between'
 
             ['type' => 'integer', 'operator' => 'not_begins_with', 'value' => 'test'], // TYPE 'integer' cannot correspond to OPERATOR 'not_begins_with'
             ['type' => 'integer', 'operator' => 'equal', 'value' => '3'], // TYPE 'integer' cannot have VALUETYPE 'string'
@@ -96,6 +99,8 @@ class RuleTest extends TestCase
             ['type' => 'integer', 'operator' => 'greater_or_equal', 'value' => 0.0], // TYPE 'integer' cannot have VALUETYPE 'double'
             ['type' => 'integer', 'operator' => 'between', 'value' => [1]], // OPERATOR 'between' must have a VALUE array with two elements
             ['type' => 'integer', 'operator' => 'between', 'value' => [1, 3, 5]], // OPERATOR 'between' must have a VALUE array with two elements
+            ['type' => 'integer', 'operator' => 'not_between', 'value' => [1]], // OPERATOR 'not_between' must have a VALUE array with two elements
+            ['type' => 'integer', 'operator' => 'not_between', 'value' => [1, 3, 5]], // OPERATOR 'not_between' must have a VALUE array with two elements
 
             ['type' => 'double', 'operator' => 'equal', 'value' => '3'], // TYPE 'double' cannot have VALUETYPE 'string'
             ['type' => 'double', 'operator' => 'equal', 'value' => 4], // TYPE 'double' cannot have VALUETYPE 'integer'
@@ -103,6 +108,8 @@ class RuleTest extends TestCase
             ['type' => 'double', 'operator' => 'greater_or_equal', 'value' => 0], // TYPE 'double' cannot have VALUETYPE 'integer'
             ['type' => 'double', 'operator' => 'between', 'value' => [1.3]], // OPERATOR 'between' must have a VALUE array with two elements
             ['type' => 'double', 'operator' => 'between', 'value' => [1.3, 3.4, 1.5]], // OPERATOR 'between' must have a VALUE array with two elements
+            ['type' => 'double', 'operator' => 'not_between', 'value' => [1.3]], // OPERATOR 'not_between' must have a VALUE array with two elements
+            ['type' => 'double', 'operator' => 'not_between', 'value' => [1.3, 3.4, 1.5]], // OPERATOR 'not_between' must have a VALUE array with two elements
 
             ['type' => 'boolean', 'operator' => 'equal', 'value' => []], // OPERATOR 'equal' cannot have VALUETYPE 'array'
             ['type' => 'boolean', 'operator' => 'equal', 'value' => '3'], // TYPE 'boolean' cannot have VALUETYPE 'string'
