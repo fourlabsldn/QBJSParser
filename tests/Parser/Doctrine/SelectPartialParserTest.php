@@ -20,6 +20,13 @@ class SelectPartialParserTest extends TestCase
         $parsed = SelectPartialParser::parse($fieldPrefixesToClasses);
         $expected = 'SELECT object, object_labels, object_specification, object_labels_specification ';
 
-        $this->assertEquals($expected, $parsed);
+        self::assertEquals($expected, $parsed);
+    }
+
+    public function testClassCantBeInstantiated()
+    {
+        self::expectException(\Error::class);
+
+        new class extends SelectPartialParser {};
     }
 }

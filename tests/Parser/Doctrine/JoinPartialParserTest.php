@@ -20,6 +20,13 @@ class JoinPartialParserTest extends TestCase
         $parsed = JoinPartialParser::parse($queryBuilderFieldPrefixesToAssociationClasses);
         $expected = ' LEFT JOIN  object.labels   object_labels   LEFT JOIN  object.specification   object_specification   LEFT JOIN  object_labels.specification   object_labels_specification  ';
 
-        $this->assertEquals($expected, $parsed);
+        self::assertEquals($expected, $parsed);
+    }
+
+    public function testClassCantBeInstantiated()
+    {
+        self::expectException(\Error::class);
+
+        new class extends JoinPartialParser {};
     }
 }

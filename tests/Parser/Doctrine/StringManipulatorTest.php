@@ -7,151 +7,152 @@ use PHPUnit\Framework\TestCase;
 
 class StringManipulatorTest extends TestCase
 {
-    /**
-     * @test
-     */
+    public function testClassCantBeInstantiated()
+    {
+        self::expectException(\Error::class);
+
+        new class extends StringManipulator {};
+    }
+
     public function testReplaceAllDotsExceptLastThree()
     {
-        $this->assertEquals(
+        self::assertEquals(
             'object_something.cool.today.noon',
             StringManipulator::replaceAllDotsExceptLastThree('object.something.cool.today.noon')
         );
-        $this->assertEquals(
+        self::assertEquals(
             'object_something.cool.today.',
             StringManipulator::replaceAllDotsExceptLastThree('object.something.cool.today.')
         );
-        $this->assertEquals(
+        self::assertEquals(
             'object.something.cool.today',
             StringManipulator::replaceAllDotsExceptLastThree('object.something.cool.today')
         );
-        $this->assertEquals(
+        self::assertEquals(
             'object.something.cool.',
             StringManipulator::replaceAllDotsExceptLastThree('object.something.cool.')
         );
-        $this->assertEquals(
+        self::assertEquals(
             'object.something.cool',
             StringManipulator::replaceAllDotsExceptLastThree('object.something.cool')
         );
-        $this->assertEquals(
+        self::assertEquals(
             'object.something.',
             StringManipulator::replaceAllDotsExceptLastThree('object.something.')
         );
-        $this->assertEquals(
+        self::assertEquals(
             'object.something',
             StringManipulator::replaceAllDotsExceptLastThree('object.something')
         );
-        $this->assertEquals(
+        self::assertEquals(
             'object.',
             StringManipulator::replaceAllDotsExceptLastThree('object.')
         );
-        $this->assertEquals(
+        self::assertEquals(
             'object',
             StringManipulator::replaceAllDotsExceptLastThree('object')
         );
-        $this->assertEquals(
+        self::assertEquals(
             '_object_something.cool.today.noon',
             StringManipulator::replaceAllDotsExceptLastThree('.object.something.cool.today.noon')
         );
-        $this->assertEquals(
+        self::assertEquals(
             '_object_something.cool.today.',
             StringManipulator::replaceAllDotsExceptLastThree('.object.something.cool.today.')
         );
-        $this->assertEquals(
+        self::assertEquals(
             '_object.something.cool.today',
             StringManipulator::replaceAllDotsExceptLastThree('.object.something.cool.today')
         );
-        $this->assertEquals(
+        self::assertEquals(
             '_object.something.cool.',
             StringManipulator::replaceAllDotsExceptLastThree('.object.something.cool.')
         );
-        $this->assertEquals(
+        self::assertEquals(
             '.object.something.cool',
             StringManipulator::replaceAllDotsExceptLastThree('.object.something.cool')
         );
-        $this->assertEquals(
+        self::assertEquals(
             '.object.something.',
             StringManipulator::replaceAllDotsExceptLastThree('.object.something.')
         );
-        $this->assertEquals(
+        self::assertEquals(
             '.object.something',
             StringManipulator::replaceAllDotsExceptLastThree('.object.something')
         );
-        $this->assertEquals(
+        self::assertEquals(
             '.object.',
             StringManipulator::replaceAllDotsExceptLastThree('.object.')
         );
-        $this->assertEquals(
+        self::assertEquals(
             '.object',
             StringManipulator::replaceAllDotsExceptLastThree('.object')
         );
-        $this->assertEquals(
+        self::assertEquals(
             '.',
             StringManipulator::replaceAllDotsExceptLastThree('.')
         );
     }
 
-    /**
-     * @test
-     */
     public function testReplaceAllDotsExceptLastTwo()
     {
-        $this->assertEquals(
+        self::assertEquals(
             'object_something.cool.today',
             StringManipulator::replaceAllDotsExceptLastTwo('object.something.cool.today')
         );
-        $this->assertEquals(
+        self::assertEquals(
             'object_something.cool.',
             StringManipulator::replaceAllDotsExceptLastTwo('object.something.cool.')
         );
-        $this->assertEquals(
+        self::assertEquals(
             'object.something.cool',
             StringManipulator::replaceAllDotsExceptLastTwo('object.something.cool')
         );
-        $this->assertEquals(
+        self::assertEquals(
             'object.something.',
             StringManipulator::replaceAllDotsExceptLastTwo('object.something.')
         );
-        $this->assertEquals(
+        self::assertEquals(
             'object.something',
             StringManipulator::replaceAllDotsExceptLastTwo('object.something')
         );
-        $this->assertEquals(
+        self::assertEquals(
             'object.',
             StringManipulator::replaceAllDotsExceptLastTwo('object.')
         );
-        $this->assertEquals(
+        self::assertEquals(
             'object',
             StringManipulator::replaceAllDotsExceptLastTwo('object')
         );
-        $this->assertEquals(
+        self::assertEquals(
             '_object_something.cool.today',
             StringManipulator::replaceAllDotsExceptLastTwo('.object.something.cool.today')
         );
-        $this->assertEquals(
+        self::assertEquals(
             '_object_something.cool.',
             StringManipulator::replaceAllDotsExceptLastTwo('.object.something.cool.')
         );
-        $this->assertEquals(
+        self::assertEquals(
             '_object.something.cool',
             StringManipulator::replaceAllDotsExceptLastTwo('.object.something.cool')
         );
-        $this->assertEquals(
+        self::assertEquals(
             '_object.something.',
             StringManipulator::replaceAllDotsExceptLastTwo('.object.something.')
         );
-        $this->assertEquals(
+        self::assertEquals(
             '.object.something',
             StringManipulator::replaceAllDotsExceptLastTwo('.object.something')
         );
-        $this->assertEquals(
+        self::assertEquals(
             '.object.',
             StringManipulator::replaceAllDotsExceptLastTwo('.object.')
         );
-        $this->assertEquals(
+        self::assertEquals(
             '.object',
             StringManipulator::replaceAllDotsExceptLastTwo('.object')
         );
-        $this->assertEquals(
+        self::assertEquals(
             '.',
             StringManipulator::replaceAllDotsExceptLastTwo('.')
         );
@@ -162,63 +163,63 @@ class StringManipulatorTest extends TestCase
      */
     public function testReplaceAllDotsExceptLast()
     {
-        $this->assertEquals(
+        self::assertEquals(
             'object_something_cool.today',
             StringManipulator::replaceAllDotsExceptLast('object.something.cool.today')
         );
-        $this->assertEquals(
+        self::assertEquals(
             'object_something_cool.',
             StringManipulator::replaceAllDotsExceptLast('object.something.cool.')
         );
-        $this->assertEquals(
+        self::assertEquals(
             'object_something.cool',
             StringManipulator::replaceAllDotsExceptLast('object.something.cool')
         );
-        $this->assertEquals(
+        self::assertEquals(
             'object_something.',
             StringManipulator::replaceAllDotsExceptLast('object.something.')
         );
-        $this->assertEquals(
+        self::assertEquals(
             'object.something',
             StringManipulator::replaceAllDotsExceptLast('object.something')
         );
-        $this->assertEquals(
+        self::assertEquals(
             'object.',
             StringManipulator::replaceAllDotsExceptLast('object.')
         );
-        $this->assertEquals(
+        self::assertEquals(
             'object',
             StringManipulator::replaceAllDotsExceptLast('object')
         );
-        $this->assertEquals(
+        self::assertEquals(
             '_object_something_cool.today',
             StringManipulator::replaceAllDotsExceptLast('.object.something.cool.today')
         );
-        $this->assertEquals(
+        self::assertEquals(
             '_object_something_cool.',
             StringManipulator::replaceAllDotsExceptLast('.object.something.cool.')
         );
-        $this->assertEquals(
+        self::assertEquals(
             '_object_something.cool',
             StringManipulator::replaceAllDotsExceptLast('.object.something.cool')
         );
-        $this->assertEquals(
+        self::assertEquals(
             '_object_something.',
             StringManipulator::replaceAllDotsExceptLast('.object.something.')
         );
-        $this->assertEquals(
+        self::assertEquals(
             '_object.something',
             StringManipulator::replaceAllDotsExceptLast('.object.something')
         );
-        $this->assertEquals(
+        self::assertEquals(
             '_object.',
             StringManipulator::replaceAllDotsExceptLast('.object.')
         );
-        $this->assertEquals(
+        self::assertEquals(
             '.object',
             StringManipulator::replaceAllDotsExceptLast('.object')
         );
-        $this->assertEquals(
+        self::assertEquals(
             '.',
             StringManipulator::replaceAllDotsExceptLast('.')
         );
@@ -229,63 +230,63 @@ class StringManipulatorTest extends TestCase
      */
     public function testReplaceAllDots()
     {
-        $this->assertEquals(
+        self::assertEquals(
             'object_something_cool_today',
             StringManipulator::replaceAllDots('object.something.cool.today')
         );
-        $this->assertEquals(
+        self::assertEquals(
             'object_something_cool_',
             StringManipulator::replaceAllDots('object.something.cool.')
         );
-        $this->assertEquals(
+        self::assertEquals(
             'object_something_cool',
             StringManipulator::replaceAllDots('object.something.cool')
         );
-        $this->assertEquals(
+        self::assertEquals(
             'object_something_',
             StringManipulator::replaceAllDots('object.something.')
         );
-        $this->assertEquals(
+        self::assertEquals(
             'object_something',
             StringManipulator::replaceAllDots('object.something')
         );
-        $this->assertEquals(
+        self::assertEquals(
             'object_',
             StringManipulator::replaceAllDots('object.')
         );
-        $this->assertEquals(
+        self::assertEquals(
             'object',
             StringManipulator::replaceAllDots('object')
         );
-        $this->assertEquals(
+        self::assertEquals(
             '_object_something_cool_today',
             StringManipulator::replaceAllDots('.object.something.cool.today')
         );
-        $this->assertEquals(
+        self::assertEquals(
             '_object_something_cool_',
             StringManipulator::replaceAllDots('.object.something.cool.')
         );
-        $this->assertEquals(
+        self::assertEquals(
             '_object_something_cool',
             StringManipulator::replaceAllDots('.object.something.cool')
         );
-        $this->assertEquals(
+        self::assertEquals(
             '_object_something_',
             StringManipulator::replaceAllDots('.object.something.')
         );
-        $this->assertEquals(
+        self::assertEquals(
             '_object_something',
             StringManipulator::replaceAllDots('.object.something')
         );
-        $this->assertEquals(
+        self::assertEquals(
             '_object_',
             StringManipulator::replaceAllDots('.object.')
         );
-        $this->assertEquals(
+        self::assertEquals(
             '_object',
             StringManipulator::replaceAllDots('.object')
         );
-        $this->assertEquals(
+        self::assertEquals(
             '_',
             StringManipulator::replaceAllDots('.')
         );

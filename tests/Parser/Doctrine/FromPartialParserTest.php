@@ -15,4 +15,11 @@ class FromPartialParserTest extends TestCase
 
         self::assertEquals($expected, $parsed);
     }
+
+    public function testClassCantBeInstantiated()
+    {
+        self::expectException(\Error::class);
+
+        new class extends FromPartialParser {};
+    }
 }
