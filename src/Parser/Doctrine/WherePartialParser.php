@@ -225,7 +225,7 @@ abstract class WherePartialParser
             'is_not_null' => 'IS NOT NULL',
         ];
 
-        if (!isset($dictionary[$queryBuilderOperator])) {
+        if (!array_key_exists($queryBuilderOperator, $dictionary)) {
             throw new InvalidOperatorException();
         }
 

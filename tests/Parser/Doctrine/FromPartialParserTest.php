@@ -7,15 +7,12 @@ use PHPUnit\Framework\TestCase;
 
 class FromPartialParserTest extends TestCase
 {
-    /**
-     * @test
-     */
-    public function parseTest()
+    public function testClassNameParsed()
     {
         $className = 'SomeNamespace\SomeClass';
         $parsed = FromPartialParser::parse($className);
         $expected = ' FROM '.$className.' object ';
 
-        $this->assertEquals($expected, $parsed);
+        self::assertEquals($expected, $parsed);
     }
 }
