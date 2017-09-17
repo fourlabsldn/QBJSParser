@@ -9,7 +9,7 @@ before_script:
   - mkdir -p build/logs
 
 script:
-  - phpunit --coverage-clover build/logs/clover.xml
+  - ./vendor/bin/phpunit --coverage-clover build/logs/clover.xml
 
 after_success:
   - php vendor/bin/coveralls

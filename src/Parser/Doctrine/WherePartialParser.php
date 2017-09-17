@@ -174,7 +174,7 @@ abstract class WherePartialParser
      */
     final private static function queryBuilderOperator_UsesArrayOfTwo(string $operator): bool
     {
-        return in_array($operator, ['between']);
+        return in_array($operator, ['between', 'not_between']);
     }
 
     /**
@@ -200,6 +200,7 @@ abstract class WherePartialParser
             'in' => 'IN',
             'not_in' => 'NOT IN',
             'between' => 'BETWEEN',
+            'not_between' => 'NOT BETWEEN',
             'less' => '<',
             'less_or_equal' => '<=',
             'greater' => '>',

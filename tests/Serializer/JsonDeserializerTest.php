@@ -30,6 +30,7 @@ class JsonDeserializerTest extends TestCase
                     '{"id":"price","field":"price","type":"double","input":"text","operator":"less","value":"10.25"},'.
                     '{"id":"price","field":"price","type":"double","input":"text","operator":"in","value":["10.25", "3.23", "5.22"]},'.
                     '{"id":"price","field":"price","type":"double","input":"text","operator":"between","value":["0.2", "100.3"]},'.
+                    '{"id":"price","field":"price","type":"double","input":"text","operator":"not_between","value":["2.2", "12.3"]},'.
                     '{"id":"name","field":"name","type":"string","input":"text","operator":"in","value":["some_name", "another_name", null]},'.
                     '{"id":"name","field":"name","type":"string","input":"text","operator":"not_in","value":["some_name", "another_name", null]},'.
                     '{'.
@@ -43,26 +44,38 @@ class JsonDeserializerTest extends TestCase
                 ']'.
             '}';
 
-        $ruleGroupA = new RuleGroup(RuleGroupInterface::MODE_AND);
-        $ruleGroupA_RuleA = new Rule('price', 'price', 'double', 'less', 10.25);
-        $ruleGroupA_RuleB = new Rule('price', 'price', 'double', 'in', [10.25, 3.23, 5.22]);
-        $ruleGroupA_RuleC = new Rule('price', 'price', 'double', 'between', [0.2, 100.3]);
-        $ruleGroupA_RuleD = new Rule('name', 'name', 'string', 'in', ['some_name', 'another_name', null]);
-        $ruleGroupA_RuleE = new Rule('name', 'name', 'string', 'not_in', ['some_name', 'another_name', null]);
-        $ruleGroupA_RuleGroup1 = new RuleGroup(RuleGroupInterface::MODE_OR);
-        $ruleGroupA_RuleGroup1_RuleA = new Rule('category', 'category', 'integer', 'equal', 2);
-        $ruleGroupA_RuleGroup1_RuleB = new Rule('category', 'category', 'integer', 'equal', 1);
-        $ruleGroupA_RuleGroup1_RuleC = new Rule('category', 'category', 'integer', 'is_not_null', null);
-
-        $ruleGroupA->addRule($ruleGroupA_RuleA);
-        $ruleGroupA->addRule($ruleGroupA_RuleB);
-        $ruleGroupA->addRule($ruleGroupA_RuleC);
-        $ruleGroupA->addRule($ruleGroupA_RuleD);
-        $ruleGroupA->addRule($ruleGroupA_RuleE);
-        $ruleGroupA->addRuleGroup($ruleGroupA_RuleGroup1);
-        $ruleGroupA_RuleGroup1->addRule($ruleGroupA_RuleGroup1_RuleA);
-        $ruleGroupA_RuleGroup1->addRule($ruleGroupA_RuleGroup1_RuleB);
-        $ruleGroupA_RuleGroup1->addRule($ruleGroupA_RuleGroup1_RuleC);
+        $ruleGroupA = (new RuleGroup(RuleGroupInterface::MODE_AND))
+            ->addRule(
+                new Rule('price', 'price', 'double', 'less', 10.25)
+            )
+            ->addRule(
+                new Rule('price', 'price', 'double', 'in', [10.25, 3.23, 5.22])
+            )
+            ->addRule(
+                new Rule('price', 'price', 'double', 'between', [0.2, 100.3])
+            )
+            ->addRule(
+                new Rule('price', 'price', 'double', 'not_between', [2.2, 12.3])
+            )
+            ->addRule(
+                new Rule('name', 'name', 'string', 'in', ['some_name', 'another_name', null])
+            )
+            ->addRule(
+                new Rule('name', 'name', 'string', 'not_in', ['some_name', 'another_name', null])
+            )
+        ;
+        $ruleGroupA->addRuleGroup(
+            (new RuleGroup(RuleGroupInterface::MODE_OR))
+                ->addRule(
+                    new Rule('category', 'category', 'integer', 'equal', 2)
+                )
+                ->addRule(
+                    new Rule('category', 'category', 'integer', 'equal', 1)
+                )
+                ->addRule(
+                    new Rule('category', 'category', 'integer', 'is_not_null', null)
+                )
+        );
 
         $this->expectedOutputRuleGroup = $ruleGroupA;
     }
