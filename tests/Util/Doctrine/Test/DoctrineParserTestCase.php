@@ -2,7 +2,7 @@
 
 namespace FL\QBJSParser\Tests\Util\Doctrine\Test;
 
-use FL\QBJSParser\Model\RuleGroup;
+use FL\QBJSParser\Model\RuleGroupInterface;
 use FL\QBJSParser\Parser\Doctrine\DoctrineParser;
 
 class DoctrineParserTestCase
@@ -13,7 +13,7 @@ class DoctrineParserTestCase
     private $doctrineParser;
 
     /**
-     * @var RuleGroup
+     * @var RuleGroupInterface
      */
     private $ruleGroup;
 
@@ -34,14 +34,14 @@ class DoctrineParserTestCase
 
     /**
      * @param DoctrineParser $doctrineParser
-     * @param RuleGroup      $ruleGroup
-     * @param array          $sortColumns
-     * @param string         $expectedDqlString
-     * @param array          $expectedParameters
+     * @param RuleGroupInterface $ruleGroup
+     * @param array $sortColumns
+     * @param string $expectedDqlString
+     * @param array $expectedParameters
      */
     public function __construct(
         DoctrineParser $doctrineParser,
-        RuleGroup $ruleGroup,
+        RuleGroupInterface $ruleGroup,
         array $sortColumns,
         string $expectedDqlString,
         array $expectedParameters
@@ -62,9 +62,9 @@ class DoctrineParserTestCase
     }
 
     /**
-     * @return RuleGroup
+     * @return RuleGroupInterface
      */
-    public function getRuleGroup(): RuleGroup
+    public function getRuleGroup(): RuleGroupInterface
     {
         return $this->ruleGroup;
     }

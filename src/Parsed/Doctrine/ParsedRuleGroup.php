@@ -27,12 +27,9 @@ class ParsedRuleGroup extends AbstractParsedRuleGroup
      * @param array  $parameters
      * @param string $className
      */
-    public function __construct(
-        string $queryString,
-        array $parameters,
-        string $className
-    ) {
-        $this->queryString = $queryString;
+    public function __construct(string $queryString, array $parameters, string $className)
+    {
+        $this->queryString = trim($queryString);
         $this->parameters = $parameters;
         $this->className = $className;
         $this->validateParametersCountInDql();
@@ -109,11 +106,8 @@ class ParsedRuleGroup extends AbstractParsedRuleGroup
      *
      * {@inheritdoc}
      */
-    public function copyWithReplacedString(
-        string $search,
-        string $replace,
-        string $appendToEndIfNotFound
-    ): AbstractParsedRuleGroup {
+    public function copyWithReplacedString(string $search, string $replace, string $appendToEndIfNotFound): AbstractParsedRuleGroup
+    {
         $count = 0;
         $newDql = str_replace($search, $replace, $this->getQueryString(), $count);
 

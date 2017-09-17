@@ -24,7 +24,7 @@ class RuleTest extends TestCase
      * @param string $operator
      * @param mixed  $value
      */
-    public function testSampleValidCombinations(string $type, string $operator, $value)
+    public function testValidCombinations(string $type, string $operator, $value)
     {
         self::assertInstanceOf(RuleInterface::class, new Rule('id', 'field', $type, $operator, $value));
     }
@@ -75,9 +75,9 @@ class RuleTest extends TestCase
      * @param string $operator
      * @param mixed  $value
      */
-    public function testSampleInvalidCombinations(string $type, string $operator, $value)
+    public function testInvalidTypeOperatorCombinationThrowsException(string $type, string $operator, $value)
     {
-        $this->expectException(RuleConstructionException::class);
+        self::expectException(RuleConstructionException::class);
 
         new Rule('id', 'field', $type, $operator, $value);
     }
@@ -122,5 +122,12 @@ class RuleTest extends TestCase
             ['type' => 'datetime', 'operator' => 'in', 'value' => [1, 2, 3]], // OPERATOR 'in' must have VALUETYPE 'array' AND all values of the 'array' must be '\Datetime::class'
             ['type' => 'datetime', 'operator' => 'in', 'value' => [new \DateTimeImmutable(), 2, 3]], // OPERATOR 'in' must have VALUETYPE 'array' AND all values of the 'array' must be '\Datetime::class'
         ];
+    }
+
+    public function testInvalidTypeThrowsException()
+    {
+        self::expectException(RuleConstructionException::class);
+
+        new Rule('id', 'field', 'float', 'equal', 7.0);
     }
 }
