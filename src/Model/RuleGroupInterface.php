@@ -58,4 +58,9 @@ interface RuleGroupInterface
      * @return string
      */
     public function getMode(): string;
+
+    /**
+     * @return bool
+     */
+    public function isNot(): bool;
 }
