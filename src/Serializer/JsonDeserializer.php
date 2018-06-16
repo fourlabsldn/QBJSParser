@@ -36,7 +36,17 @@ class JsonDeserializer implements DeserializerInterface
             throw new JsonDeserializerConditionException('Missing condition in RuleGroup');
         }
 
-        $deserializedRuleGroup = new RuleGroup($decodedRuleGroup['condition']);
+
+        $not = false;
+        if (
+            array_key_exists('not', $decodedRuleGroup) &&
+            $decodedRuleGroup['not'] = true
+        ) {
+            $not = true;
+        }
+
+        $deserializedRuleGroup = new RuleGroup($decodedRuleGroup['condition'], $not);
+
 
         foreach ($decodedRuleGroup['rules'] as $ruleOrGroup) {
             if (array_key_exists('condition', $ruleOrGroup)) {
