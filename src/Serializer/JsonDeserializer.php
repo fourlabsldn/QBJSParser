@@ -39,7 +39,7 @@ class JsonDeserializer implements DeserializerInterface
         $not = false;
         if (
             array_key_exists('not', $decodedRuleGroup) &&
-            $decodedRuleGroup['not'] === true
+            true === $decodedRuleGroup['not']
         ) {
             $not = true;
         }
