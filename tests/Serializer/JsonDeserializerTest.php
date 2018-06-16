@@ -25,7 +25,7 @@ class JsonDeserializerTest extends TestCase
                     '{"id":"name","field":"name","type":"string","input":"text","operator":"not_in","value":["some_name", "another_name", null]},'.
                     '{'.
                         '"condition":"OR",'.
-                        '"not": true,'.
+                        '"not": false,'.
                         '"rules":['.
                             '{"id":"category","field":"category","type":"integer","input":"select","operator":"equal","value":"2"},'.
                             '{"id":"category","field":"category","type":"integer","input":"select","operator":"equal","value":"1"},'.
@@ -56,7 +56,7 @@ class JsonDeserializerTest extends TestCase
             )
         ;
         $expectedOutputRuleGroup->addRuleGroup(
-            (new RuleGroup(RuleGroupInterface::MODE_OR, true))
+            (new RuleGroup(RuleGroupInterface::MODE_OR, false))
                 ->addRule(
                     new Rule('category', 'category', 'integer', 'equal', 2)
                 )
