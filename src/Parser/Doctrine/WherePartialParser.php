@@ -85,6 +85,10 @@ abstract class WherePartialParser
             $andOr = ' OR ';
         }
 
+        if ($ruleGroup->isNot()) {
+            static::$dqlPartialWhereString .= ' NOT (';
+        }
+
         foreach ($ruleGroup->getRules() as $rule) {
             if ($iteration === 0) {
                 static::parseRule($rule, ' ', ' ');
@@ -101,6 +105,10 @@ abstract class WherePartialParser
                 static::parseRuleGroup($ruleGroup, ' '.$andOr.' ( ', ' ) ');
             }
             ++$iteration;
+        }
+
+        if ($ruleGroup->isNot()) {
+            static::$dqlPartialWhereString .= ' ) ';
         }
 
         static::$dqlPartialWhereString .= $append ?? '';
