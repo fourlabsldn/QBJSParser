@@ -30,7 +30,7 @@ abstract class AbstractParsedRuleGroup
      *
      * @return AbstractParsedRuleGroup
      */
-    abstract public function copyWithReplacedString(string $search, string $replace, string $appendToEndIfNotFound): AbstractParsedRuleGroup;
+    abstract public function copyWithReplacedString(string $search, string $replace, string $appendToEndIfNotFound): self;
 
     /**
      * Manipulate the query string with regex search and replace.
@@ -41,5 +41,5 @@ abstract class AbstractParsedRuleGroup
      *
      * @return AbstractParsedRuleGroup
      */
-    abstract public function copyWithReplacedStringRegex(string $pattern, string $replace, string $appendToEndIfNotFound): AbstractParsedRuleGroup;
+    abstract public function copyWithReplacedStringRegex(string $pattern, string $replace, string $appendToEndIfNotFound): self;
 }
