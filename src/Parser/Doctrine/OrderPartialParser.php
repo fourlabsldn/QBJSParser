@@ -39,7 +39,7 @@ abstract class OrderPartialParser
             static::$queryBuilderFieldsToOrderAlias[$field] = SelectPartialParser::OBJECT_WORD.StringManipulator::replaceAllDotsExceptLastThree('.'.$property);
         }
 
-        if ($sortColumns === null || count($sortColumns) === 0) {
+        if (null === $sortColumns || 0 === count($sortColumns)) {
             return '';
         }
 

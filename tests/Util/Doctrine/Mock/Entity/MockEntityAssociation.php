@@ -5,8 +5,11 @@ namespace FL\QBJSParser\Tests\Util\Doctrine\Mock\Entity;
 class MockEntityAssociation
 {
     private $id;
+
     private $description;
+
     private $embeddable;
+
     private $associationEntity;
 
     public function getId()

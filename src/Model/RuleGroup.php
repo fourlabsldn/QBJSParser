@@ -28,7 +28,7 @@ class RuleGroup implements RuleGroupInterface
 
     /**
      * @param string $mode
-     * @param bool $not
+     * @param bool   $not
      */
     public function __construct(string $mode, bool $not = false)
     {

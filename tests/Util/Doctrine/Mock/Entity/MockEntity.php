@@ -5,11 +5,17 @@ namespace FL\QBJSParser\Tests\Util\Doctrine\Mock\Entity;
 class MockEntity
 {
     private $id;
+
     private $price;
+
     private $name;
+
     private $date;
+
     private $privateProperty;
+
     private $associationEntity;
+
     private $embeddable;
 
     public function getId()
