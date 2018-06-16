@@ -11,19 +11,9 @@ use PHPUnit\Framework\TestCase;
 
 class JsonDeserializerTest extends TestCase
 {
-    /**
-     * @var string
-     */
-    private $inputJsonString;
-
-    /**
-     * @var RuleGroupInterface
-     */
-    private $expectedOutputRuleGroup;
-
-    public function setUp()
+    public function testDeserialization()
     {
-        $this->inputJsonString =
+        $inputJsonString =
             '{'.
                 '"condition":"AND",'.
                 '"rules":['.
@@ -35,6 +25,7 @@ class JsonDeserializerTest extends TestCase
                     '{"id":"name","field":"name","type":"string","input":"text","operator":"not_in","value":["some_name", "another_name", null]},'.
                     '{'.
                         '"condition":"OR",'.
+                        '"not": false,'.
                         '"rules":['.
                             '{"id":"category","field":"category","type":"integer","input":"select","operator":"equal","value":"2"},'.
                             '{"id":"category","field":"category","type":"integer","input":"select","operator":"equal","value":"1"},'.
@@ -44,7 +35,7 @@ class JsonDeserializerTest extends TestCase
                 ']'.
             '}';
 
-        $ruleGroupA = (new RuleGroup(RuleGroupInterface::MODE_AND))
+        $expectedOutputRuleGroup = (new RuleGroup(RuleGroupInterface::MODE_AND))
             ->addRule(
                 new Rule('price', 'price', 'double', 'less', 10.25)
             )
@@ -64,8 +55,8 @@ class JsonDeserializerTest extends TestCase
                 new Rule('name', 'name', 'string', 'not_in', ['some_name', 'another_name', null])
             )
         ;
-        $ruleGroupA->addRuleGroup(
-            (new RuleGroup(RuleGroupInterface::MODE_OR))
+        $expectedOutputRuleGroup->addRuleGroup(
+            (new RuleGroup(RuleGroupInterface::MODE_OR, false))
                 ->addRule(
                     new Rule('category', 'category', 'integer', 'equal', 2)
                 )
@@ -77,17 +68,9 @@ class JsonDeserializerTest extends TestCase
                 )
         );
 
-        $this->expectedOutputRuleGroup = $ruleGroupA;
-    }
-
-    /**
-     * @test
-     */
-    public function testDeserialization()
-    {
         $jsonDeserializer = new JsonDeserializer();
-        $deserializedRuleGroup = $jsonDeserializer->deserialize($this->inputJsonString);
-        $this->assertRuleGroupsAreEqual($deserializedRuleGroup, $this->expectedOutputRuleGroup);
+        $deserializedRuleGroup = $jsonDeserializer->deserialize($inputJsonString);
+        $this->assertRuleGroupsAreEqual($deserializedRuleGroup, $expectedOutputRuleGroup);
     }
 
     /**
@@ -95,7 +78,7 @@ class JsonDeserializerTest extends TestCase
      */
     public function testParsing()
     {
-        $ruleGroupA = new RuleGroup(RuleGroupInterface::MODE_AND);
+        $ruleGroupA = new RuleGroup(RuleGroupInterface::MODE_AND, true);
         $ruleGroupA_RuleA = new Rule('price', 'price', 'double', 'less', 10.25);
         $ruleGroupA_RuleB = new Rule('date', 'date', 'datetime', 'in', [new \DateTimeImmutable('2017-08-03 14:12:12')]);
         $ruleGroupA_RuleC = new Rule('date', 'date', 'datetime', 'in', [new \DateTimeImmutable('2017-08-03 14:12:12')]);
@@ -108,6 +91,7 @@ class JsonDeserializerTest extends TestCase
         $jsonString =
             '{'.
                 '"condition":"AND",'.
+                '"not": true,'.
                 '"rules":['.
                     '{"id":"price","field":"price","type":"double","input":"text","operator":"less","value":"10.25"},'.
                     '{"id":"date","field":"date","type":"datetime","input":"text","operator":"in","value":["2017-08-03 14:12:12"]},'.
@@ -148,12 +132,16 @@ class JsonDeserializerTest extends TestCase
             if (!isset($ruleGroups_inRuleGroupB[$key])) {
                 self::fail('Number of RuleGroups not matching');
             }
+            $this->assertEquals($ruleGroup->getMode(), $ruleGroups_inRuleGroupB[$key]->getMode());
+            $this->assertEquals($ruleGroup->isNot(), $ruleGroups_inRuleGroupB[$key]->isNot());
             $this->assertRuleGroupsAreEqual($ruleGroup, $ruleGroups_inRuleGroupB[$key]);
         }
         foreach ($ruleGroups_inRuleGroupB as $key => $ruleGroup) { // do both, in case $ruleGroups_inRuleGroupB has more ruleGroups than $ruleGroups_inRuleGroupA
             if (!isset($ruleGroups_inRuleGroupA[$key])) {
                 self::fail('Number of RuleGroups not matching');
             }
+            $this->assertEquals($ruleGroup->getMode(), $ruleGroups_inRuleGroupA[$key]->getMode());
+            $this->assertEquals($ruleGroup->isNot(), $ruleGroups_inRuleGroupA[$key]->isNot());
             $this->assertRuleGroupsAreEqual($ruleGroup, $ruleGroups_inRuleGroupA[$key]);
         }
 

@@ -36,7 +36,15 @@ class JsonDeserializer implements DeserializerInterface
             throw new JsonDeserializerConditionException('Missing condition in RuleGroup');
         }
 
-        $deserializedRuleGroup = new RuleGroup($decodedRuleGroup['condition']);
+        $not = false;
+        if (
+            array_key_exists('not', $decodedRuleGroup) &&
+            true === $decodedRuleGroup['not']
+        ) {
+            $not = true;
+        }
+
+        $deserializedRuleGroup = new RuleGroup($decodedRuleGroup['condition'], $not);
 
         foreach ($decodedRuleGroup['rules'] as $ruleOrGroup) {
             if (array_key_exists('condition', $ruleOrGroup)) {
@@ -110,7 +118,7 @@ class JsonDeserializer implements DeserializerInterface
      */
     private function convertValueAccordingToType(string $type, $value)
     {
-        if (is_null($value) || $value === 'null' || $value === 'NULL') {
+        if (is_null($value) || 'null' === $value || 'NULL' === $value) {
             return; // nulls shouldn't be converted
         }
 

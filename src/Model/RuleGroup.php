@@ -22,9 +22,15 @@ class RuleGroup implements RuleGroupInterface
     private $mode;
 
     /**
-     * @param string $mode
+     * @var string
      */
-    public function __construct(string $mode)
+    private $not;
+
+    /**
+     * @param string $mode
+     * @param bool   $not
+     */
+    public function __construct(string $mode, bool $not = false)
     {
         $this->rules = new \SplObjectStorage();
         $this->ruleGroups = new \SplObjectStorage();
@@ -34,6 +40,7 @@ class RuleGroup implements RuleGroupInterface
         }
 
         $this->mode = $mode;
+        $this->not = $not;
     }
 
     /**
@@ -98,5 +105,13 @@ class RuleGroup implements RuleGroupInterface
     public function getMode(): string
     {
         return $this->mode;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isNot(): bool
+    {
+        return $this->not;
     }
 }

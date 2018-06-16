@@ -17,7 +17,7 @@ class RuleGroupTest extends TestCase
     public function setup()
     {
         // do both! neither of these should render an exception
-        $this->ruleGroup = new RuleGroup(RuleGroup::MODE_OR);
+
         $this->ruleGroup = new RuleGroup(RuleGroup::MODE_AND);
     }
 
@@ -26,7 +26,7 @@ class RuleGroupTest extends TestCase
      */
     public function testRuleGroupImplementsInterface()
     {
-        self::assertInstanceOf(RuleGroupInterface::class, $this->ruleGroup);
+        self::assertInstanceOf(RuleGroupInterface::class, new RuleGroup(RuleGroup::MODE_AND));
     }
 
     /**
@@ -37,5 +37,41 @@ class RuleGroupTest extends TestCase
         $this->expectException(RuleGroupConstructionException::class);
 
         new RuleGroup(1000);
+    }
+
+    /**
+     * @test
+     */
+    public function testConstructionWithDifferentModes()
+    {
+        $ruleGroup = new RuleGroup(RuleGroup::MODE_OR);
+        $this->assertEquals(RuleGroup::MODE_OR, $ruleGroup->getMode());
+        $this->assertEquals(false, $ruleGroup->isNot());
+
+        $ruleGroup = new RuleGroup(RuleGroup::MODE_AND);
+        $this->assertEquals(RuleGroup::MODE_AND, $ruleGroup->getMode());
+        $this->assertEquals(false, $ruleGroup->isNot());
+    }
+
+    /**
+     * @test
+     */
+    public function testConstructionWithNot()
+    {
+        $ruleGroup = new RuleGroup(RuleGroup::MODE_OR, true);
+        $this->assertEquals(RuleGroup::MODE_OR, $ruleGroup->getMode());
+        $this->assertEquals(true, $ruleGroup->isNot());
+
+        $ruleGroup = new RuleGroup(RuleGroup::MODE_AND, true);
+        $this->assertEquals(RuleGroup::MODE_AND, $ruleGroup->getMode());
+        $this->assertEquals(true, $ruleGroup->isNot());
+
+        $ruleGroup = new RuleGroup(RuleGroup::MODE_OR, false);
+        $this->assertEquals(RuleGroup::MODE_OR, $ruleGroup->getMode());
+        $this->assertEquals(false, $ruleGroup->isNot());
+
+        $ruleGroup = new RuleGroup(RuleGroup::MODE_AND, false);
+        $this->assertEquals(RuleGroup::MODE_AND, $ruleGroup->getMode());
+        $this->assertEquals(false, $ruleGroup->isNot());
     }
 }

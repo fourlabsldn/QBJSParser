@@ -60,8 +60,8 @@ abstract class WherePartialParser
 
         // populate static::$dqlPartialWhereString and static::$parameters
         if (
-            count($ruleGroup->getRuleGroups()) !== 0 ||
-            count($ruleGroup->getRules()) !== 0
+            0 !== count($ruleGroup->getRuleGroups()) ||
+            0 !== count($ruleGroup->getRules())
         ) {
             static::parseRuleGroup($ruleGroup, ' WHERE ( ', ' ) ');
         }
@@ -79,14 +79,18 @@ abstract class WherePartialParser
         static::$dqlPartialWhereString .= $prepend ?? '';
         $iteration = 0;
 
-        if ($ruleGroup->getMode() === RuleGroupInterface::MODE_AND) {
+        if (RuleGroupInterface::MODE_AND === $ruleGroup->getMode()) {
             $andOr = ' AND ';
         } else {
             $andOr = ' OR ';
         }
 
+        if ($ruleGroup->isNot()) {
+            static::$dqlPartialWhereString .= ' NOT (';
+        }
+
         foreach ($ruleGroup->getRules() as $rule) {
-            if ($iteration === 0) {
+            if (0 === $iteration) {
                 static::parseRule($rule, ' ', ' ');
             } else {
                 static::parseRule($rule, ' '.$andOr.' ', ' ');
@@ -95,12 +99,16 @@ abstract class WherePartialParser
         }
 
         foreach ($ruleGroup->getRuleGroups() as $ruleGroup) {
-            if ($iteration === 0) {
+            if (0 === $iteration) {
                 static::parseRuleGroup($ruleGroup, ' ( ', ' ) ');
             } else {
                 static::parseRuleGroup($ruleGroup, ' '.$andOr.' ( ', ' ) ');
             }
             ++$iteration;
+        }
+
+        if ($ruleGroup->isNot()) {
+            static::$dqlPartialWhereString .= ' ) ';
         }
 
         static::$dqlPartialWhereString .= $append ?? '';

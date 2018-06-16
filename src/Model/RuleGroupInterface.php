@@ -26,14 +26,14 @@ interface RuleGroupInterface
      *
      * @return RuleGroupInterface
      */
-    public function addRule(RuleInterface $rule): RuleGroupInterface;
+    public function addRule(RuleInterface $rule): self;
 
     /**
      * @param RuleInterface $rule
      *
      * @return RuleGroupInterface
      */
-    public function removeRule(RuleInterface $rule): RuleGroupInterface;
+    public function removeRule(RuleInterface $rule): self;
 
     /**
      * @return \SplObjectStorage|RuleGroupInterface[]
@@ -45,17 +45,22 @@ interface RuleGroupInterface
      *
      * @return RuleGroupInterface
      */
-    public function addRuleGroup(RuleGroupInterface $ruleGroup): RuleGroupInterface;
+    public function addRuleGroup(self $ruleGroup): self;
 
     /**
      * @param RuleGroupInterface $ruleGroup
      *
      * @return RuleGroupInterface
      */
-    public function removeRuleGroup(RuleGroupInterface $ruleGroup): RuleGroupInterface;
+    public function removeRuleGroup(self $ruleGroup): self;
 
     /**
      * @return string
      */
     public function getMode(): string;
+
+    /**
+     * @return bool
+     */
+    public function isNot(): bool;
 }
