@@ -89,20 +89,20 @@ abstract class WherePartialParser
             static::$dqlPartialWhereString .= ' NOT (';
         }
 
-        foreach ($ruleGroup->getRules() as $rule) {
+        foreach ($ruleGroup->getRules() as $childRule) {
             if (0 === $iteration) {
-                static::parseRule($rule, ' ', ' ');
+                static::parseRule($childRule, ' ', ' ');
             } else {
-                static::parseRule($rule, ' '.$andOr.' ', ' ');
+                static::parseRule($childRule, ' '.$andOr.' ', ' ');
             }
             ++$iteration;
         }
 
-        foreach ($ruleGroup->getRuleGroups() as $ruleGroup) {
+        foreach ($ruleGroup->getRuleGroups() as $childRuleGroup) {
             if (0 === $iteration) {
-                static::parseRuleGroup($ruleGroup, ' ( ', ' ) ');
+                static::parseRuleGroup($childRuleGroup, ' ( ', ' ) ');
             } else {
-                static::parseRuleGroup($ruleGroup, ' '.$andOr.' ( ', ' ) ');
+                static::parseRuleGroup($childRuleGroup, ' '.$andOr.' ( ', ' ) ');
             }
             ++$iteration;
         }

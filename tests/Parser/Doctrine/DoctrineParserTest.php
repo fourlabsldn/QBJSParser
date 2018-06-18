@@ -38,6 +38,7 @@ class DoctrineParserTest extends TestCase
         $this->setUpSecondMockEntityParseCases();
         $this->setUpThirdMockEntityParseCases();
         $this->setUpFourthMockEntityParseCases();
+        $this->setUpFifthMockEntityParseCases();
         $this->setUpMockAssociationParseCases();
         $this->setUpMockEmbeddableParseCases();
     }
@@ -193,6 +194,43 @@ class DoctrineParserTest extends TestCase
                 'SELECT object FROM %s object '.
                 'WHERE ( NOT ( object.price IS NOT NULL AND object.name = ?0 '.
                 'AND ( NOT ( object.price > ?1 OR object.price <= ?2 ) ) ) ) '.
+                'ORDER BY object.name DESC, object.price ASC ',
+                MockEntity::class
+            ),
+            ['hello', 0.3, 22.0]
+        );
+    }
+
+    private function setUpFifthMockEntityParseCases()
+    {
+        $ruleGroupA = new RuleGroup(RuleGroupInterface::MODE_AND, false);
+        $ruleGroupA_RuleA = new Rule('rule_id', 'price', 'double', 'is_not_null', null);
+        $ruleGroupA_RuleB = new Rule('rule_id', 'name', 'string', 'equal', 'hello');
+        $ruleGroupA
+            ->addRule($ruleGroupA_RuleA)
+            ->addRule($ruleGroupA_RuleB)
+        ;
+
+        $ruleGroupA_RuleGroup1 = new RuleGroup(RuleGroupInterface::MODE_OR, true);
+        $ruleGroupA_RuleGroup1_RuleA = new Rule('rule_id', 'price', 'double', 'greater', 0.3);
+        $ruleGroupA_RuleGroup1_RuleB = new Rule('rule_id', 'price', 'double', 'less_or_equal', 22.0);
+        $ruleGroupA->addRuleGroup($ruleGroupA_RuleGroup1);
+        $ruleGroupA_RuleGroup1
+            ->addRule($ruleGroupA_RuleGroup1_RuleA)
+            ->addRule($ruleGroupA_RuleGroup1_RuleB)
+        ;
+
+        $this->mockEntityParseCases[] = new DoctrineParserTestCase(
+            new MockEntityDoctrineParser(),
+            $ruleGroupA,
+            [
+                'name' => 'DESC',
+                'price' => 'ASC',
+            ],
+            sprintf(
+                'SELECT object FROM %s object '.
+                'WHERE ( object.price IS NOT NULL AND object.name = ?0 '.
+                'AND ( NOT ( object.price > ?1 OR object.price <= ?2 ) ) ) '.
                 'ORDER BY object.name DESC, object.price ASC ',
                 MockEntity::class
             ),
