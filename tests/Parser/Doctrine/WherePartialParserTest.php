@@ -11,6 +11,7 @@ class WherePartialParserTest extends TestCase
     {
         self::expectException(\Error::class);
 
-        new class extends WherePartialParser {};
+        new class() extends WherePartialParser {
+        };
     }
 }

@@ -27,6 +27,7 @@ class JoinPartialParserTest extends TestCase
     {
         self::expectException(\Error::class);
 
-        new class extends JoinPartialParser {};
+        new class() extends JoinPartialParser {
+        };
     }
 }
