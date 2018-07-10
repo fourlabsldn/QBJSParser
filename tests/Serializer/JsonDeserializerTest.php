@@ -68,6 +68,7 @@ class JsonDeserializerTest extends TestCase
     {
         $inputJsonString = '{
             "condition":"AND",
+            "not": true,
             "rules":[
                 {"id":"price","field":"price","type":"double","input":"text","operator":"less","value":["10.25"]}
             ]
@@ -87,7 +88,7 @@ class JsonDeserializerTest extends TestCase
     {
         $inputJsonString = '{
             "condition":"AND",
-            "not": true,
+            "not": false,
             "rules":[
                 {"id":"price","field":"price","type":"double","input":"text","operator":"in","value":"10.25"}
             ]
@@ -168,8 +169,8 @@ class JsonDeserializerTest extends TestCase
      */
     public static function assertRuleGroupsAreEqual(RuleGroupInterface $ruleGroupA, RuleGroupInterface $ruleGroupB)
     {
-        self::assertEquals($ruleGroupA->getMode(), $ruleGroupB->getMode());
-        self::assertEquals($ruleGroupA->isNot(), $ruleGroupB->isNot());
+        self::assertEquals($ruleGroupA->getMode(), $ruleGroupB->getMode(), 'Failed asserting rule group modes match');
+        self::assertEquals($ruleGroupA->isNot(), $ruleGroupB->isNot(), 'Failed asserting rule group not match');
 
         /*
          * Verify descendants are equal, recursively
