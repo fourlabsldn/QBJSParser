@@ -112,9 +112,9 @@ class RuleGroupParsedTest extends TestCase
             sprintf('SELECT object FROM %s object WHERE object.id != 3', MockEntity::class),
             $withoutGroupByWithoutOrderBy->getQueryString()
         );
-        $withoutGroupByWithoutOrderByWithExtraEnding = $withoutOrderBy->copyWithReplacedString('ORDER BY', 'GROUP BY object.id ORDER BY', ' _extra_ending_ ');
+        $withoutGroupByWithoutOrderByWithExtraEnding = $withoutOrderBy->copyWithReplacedString('ORDER BY', 'GROUP BY object.id ORDER BY', ' _extra_ending_');
         self::assertEquals(
-            sprintf('SELECT object FROM %s object WHERE object.id != 3 _extra_ending_ ', MockEntity::class),
+            sprintf('SELECT object FROM %s object WHERE object.id != 3 _extra_ending_', MockEntity::class),
             $withoutGroupByWithoutOrderByWithExtraEnding->getQueryString()
         );
     }
@@ -151,9 +151,9 @@ class RuleGroupParsedTest extends TestCase
             sprintf('SELECT object FROM %s object WHERE object.id != 3', MockEntity::class),
             $withoutGroupByWithoutOrderBy->getQueryString()
         );
-        $withoutGroupByWithoutOrderByWithExtraEnding = $withoutOrderBy->copyWithReplacedStringRegex('/ORDER BY/', 'GROUP BY object.id ORDER BY', ' _extra_ending_ ');
+        $withoutGroupByWithoutOrderByWithExtraEnding = $withoutOrderBy->copyWithReplacedStringRegex('/ORDER BY/', 'GROUP BY object.id ORDER BY', ' _extra_ending_');
         self::assertEquals(
-            sprintf('SELECT object FROM %s object WHERE object.id != 3 _extra_ending_ ', MockEntity::class),
+            sprintf('SELECT object FROM %s object WHERE object.id != 3 _extra_ending_', MockEntity::class),
             $withoutGroupByWithoutOrderByWithExtraEnding->getQueryString()
         );
     }

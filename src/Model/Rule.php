@@ -163,6 +163,7 @@ class Rule implements RuleInterface
         $this->operator = $operator;
         $this->value = $value;
 
+        $this->validate_Type();
         $this->validate_Type_Operator();
         $this->validate_Type_ValueType();
         $this->validate_Operator_ValueType();
@@ -174,13 +175,27 @@ class Rule implements RuleInterface
     /**
      * @throws RuleConstructionException
      */
+    private function validate_Type()
+    {
+        if (!array_key_exists($this->type, self::TYPES_OPERATORS)) {
+            throw new RuleConstructionException(sprintf(
+                'Invalid type %s',
+                $this->type,
+                $this->operator
+            ));
+        }
+    }
+
+    /**
+     * @throws RuleConstructionException
+     */
     private function validate_Type_Operator()
     {
         if (!in_array($this->operator, self::TYPES_OPERATORS[$this->type])) {
             throw new RuleConstructionException(sprintf(
-                "Invalid Type/Operator Combination\nType: %s\nOperator: %s",
-                $this->type,
-                $this->operator
+                'Invalid operator %s for type %s',
+                $this->operator,
+                $this->type
             ));
         }
     }

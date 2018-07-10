@@ -2,10 +2,16 @@
 
 namespace FL\QBJSParser\Tests\Parser\Doctrine;
 
-/*
- * These are covered in @see DoctrineParserTest
- */
+use FL\QBJSParser\Parser\Doctrine\WherePartialParser;
+use PHPUnit\Framework\TestCase;
 
-//class WherePartialParserTest extends \PHPUnit_Framework_TestCase
-//{
-//}
+class WherePartialParserTest extends TestCase
+{
+    public function testClassCantBeInstantiated()
+    {
+        self::expectException(\Error::class);
+
+        new class() extends WherePartialParser {
+        };
+    }
+}

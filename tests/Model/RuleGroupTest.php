@@ -45,12 +45,12 @@ class RuleGroupTest extends TestCase
     public function testConstructionWithDifferentModes()
     {
         $ruleGroup = new RuleGroup(RuleGroup::MODE_OR);
-        $this->assertEquals(RuleGroup::MODE_OR, $ruleGroup->getMode());
-        $this->assertEquals(false, $ruleGroup->isNot());
+        self::assertEquals(RuleGroup::MODE_OR, $ruleGroup->getMode());
+        self::assertEquals(false, $ruleGroup->isNot());
 
         $ruleGroup = new RuleGroup(RuleGroup::MODE_AND);
-        $this->assertEquals(RuleGroup::MODE_AND, $ruleGroup->getMode());
-        $this->assertEquals(false, $ruleGroup->isNot());
+        self::assertEquals(RuleGroup::MODE_AND, $ruleGroup->getMode());
+        self::assertEquals(false, $ruleGroup->isNot());
     }
 
     /**
@@ -59,19 +59,19 @@ class RuleGroupTest extends TestCase
     public function testConstructionWithNot()
     {
         $ruleGroup = new RuleGroup(RuleGroup::MODE_OR, true);
-        $this->assertEquals(RuleGroup::MODE_OR, $ruleGroup->getMode());
-        $this->assertEquals(true, $ruleGroup->isNot());
+        self::assertEquals(RuleGroup::MODE_OR, $ruleGroup->getMode());
+        self::assertEquals(true, $ruleGroup->isNot());
 
         $ruleGroup = new RuleGroup(RuleGroup::MODE_AND, true);
-        $this->assertEquals(RuleGroup::MODE_AND, $ruleGroup->getMode());
-        $this->assertEquals(true, $ruleGroup->isNot());
+        self::assertEquals(RuleGroup::MODE_AND, $ruleGroup->getMode());
+        self::assertEquals(true, $ruleGroup->isNot());
 
         $ruleGroup = new RuleGroup(RuleGroup::MODE_OR, false);
-        $this->assertEquals(RuleGroup::MODE_OR, $ruleGroup->getMode());
-        $this->assertEquals(false, $ruleGroup->isNot());
+        self::assertEquals(RuleGroup::MODE_OR, $ruleGroup->getMode());
+        self::assertEquals(false, $ruleGroup->isNot());
 
         $ruleGroup = new RuleGroup(RuleGroup::MODE_AND, false);
-        $this->assertEquals(RuleGroup::MODE_AND, $ruleGroup->getMode());
-        $this->assertEquals(false, $ruleGroup->isNot());
+        self::assertEquals(RuleGroup::MODE_AND, $ruleGroup->getMode());
+        self::assertEquals(false, $ruleGroup->isNot());
     }
 }

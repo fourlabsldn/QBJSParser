@@ -25,6 +25,9 @@ abstract class WherePartialParser
      */
     private static $queryBuilderFieldsToWhereAlias;
 
+    /**
+     * @codeCoverageIgnore
+     */
     final private function __construct()
     {
     }
@@ -59,10 +62,10 @@ abstract class WherePartialParser
         static::$dqlPartialWhereString = '';
 
         // populate static::$dqlPartialWhereString and static::$parameters
-        if (
-            0 !== count($ruleGroup->getRuleGroups()) ||
-            0 !== count($ruleGroup->getRules())
-        ) {
+        if (!(
+            0 === count($ruleGroup->getRuleGroups())
+            && 0 === count($ruleGroup->getRules())
+        )) {
             static::parseRuleGroup($ruleGroup, ' WHERE ( ', ' ) ');
         }
 
@@ -79,30 +82,26 @@ abstract class WherePartialParser
         static::$dqlPartialWhereString .= $prepend ?? '';
         $iteration = 0;
 
-        if (RuleGroupInterface::MODE_AND === $ruleGroup->getMode()) {
-            $andOr = ' AND ';
-        } else {
-            $andOr = ' OR ';
-        }
+        $andOr = RuleGroupInterface::MODE_AND === $ruleGroup->getMode() ? ' AND ' : ' OR ';
 
         if ($ruleGroup->isNot()) {
             static::$dqlPartialWhereString .= ' NOT (';
         }
 
-        foreach ($ruleGroup->getRules() as $childRule) {
+        foreach ($ruleGroup->getRules() as $rule) {
             if (0 === $iteration) {
-                static::parseRule($childRule, ' ', ' ');
+                static::parseRule($rule, ' ', ' ');
             } else {
-                static::parseRule($childRule, ' '.$andOr.' ', ' ');
+                static::parseRule($rule, ' '.$andOr.' ', ' ');
             }
             ++$iteration;
         }
 
-        foreach ($ruleGroup->getRuleGroups() as $childRuleGroup) {
+        foreach ($ruleGroup->getRuleGroups() as $ruleGroup) {
             if (0 === $iteration) {
-                static::parseRuleGroup($childRuleGroup, ' ( ', ' ) ');
+                static::parseRuleGroup($ruleGroup, ' ( ', ' ) ');
             } else {
-                static::parseRuleGroup($childRuleGroup, ' '.$andOr.' ( ', ' ) ');
+                static::parseRuleGroup($ruleGroup, ' '.$andOr.' ( ', ' ) ');
             }
             ++$iteration;
         }
@@ -225,7 +224,7 @@ abstract class WherePartialParser
             'is_not_null' => 'IS NOT NULL',
         ];
 
-        if (!isset($dictionary[$queryBuilderOperator])) {
+        if (!array_key_exists($queryBuilderOperator, $dictionary)) {
             throw new InvalidOperatorException();
         }
 
@@ -242,21 +241,23 @@ abstract class WherePartialParser
      */
     final private static function transformValueAccordingToQueryBuilderOperator(string $queryBuilderOperator, $value)
     {
-        if (is_string($value)) {
-            switch ($queryBuilderOperator) {
-                case 'begins_with':
-                case 'not_begins_with':
-                    return $value.'%';
-                case 'contains':
-                case 'not_contains':
-                    return '%'.$value.'%';
-                case 'ends_with':
-                case 'not_ends_with':
-                    return '%'.$value;
-            }
+        if (!is_string($value)) {
+            return $value;
         }
 
-        return $value;
+        switch ($queryBuilderOperator) {
+            case 'begins_with':
+            case 'not_begins_with':
+                return $value.'%';
+            case 'contains':
+            case 'not_contains':
+                return '%'.$value.'%';
+            case 'ends_with':
+            case 'not_ends_with':
+                return '%'.$value;
+            default:
+                return $value;
+        }
     }
 
     /**
