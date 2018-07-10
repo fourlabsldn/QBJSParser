@@ -20,6 +20,7 @@ class FromPartialParserTest extends TestCase
     {
         self::expectException(\Error::class);
 
-        new class extends FromPartialParser {};
+        new class() extends FromPartialParser {
+        };
     }
 }

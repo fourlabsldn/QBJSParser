@@ -179,7 +179,7 @@ class Rule implements RuleInterface
     {
         if (!array_key_exists($this->type, self::TYPES_OPERATORS)) {
             throw new RuleConstructionException(sprintf(
-                "Invalid type %s",
+                'Invalid type %s',
                 $this->type,
                 $this->operator
             ));
@@ -193,7 +193,7 @@ class Rule implements RuleInterface
     {
         if (!in_array($this->operator, self::TYPES_OPERATORS[$this->type])) {
             throw new RuleConstructionException(sprintf(
-                "Invalid operator %s for type %s",
+                'Invalid operator %s for type %s',
                 $this->operator,
                 $this->type
             ));

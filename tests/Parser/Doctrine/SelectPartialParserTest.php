@@ -27,6 +27,7 @@ class SelectPartialParserTest extends TestCase
     {
         self::expectException(\Error::class);
 
-        new class extends SelectPartialParser {};
+        new class() extends SelectPartialParser {
+        };
     }
 }

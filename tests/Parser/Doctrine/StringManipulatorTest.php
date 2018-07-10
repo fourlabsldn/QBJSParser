@@ -11,7 +11,8 @@ class StringManipulatorTest extends TestCase
     {
         self::expectException(\Error::class);
 
-        new class extends StringManipulator {};
+        new class() extends StringManipulator {
+        };
     }
 
     /**
