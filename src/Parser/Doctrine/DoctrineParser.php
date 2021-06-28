@@ -50,13 +50,20 @@ class DoctrineParser implements DoctrineParserInterface
     private $embeddableFieldPrefixesToEmbeddableClasses;
 
     /**
+     * @var array
+     */
+    private $fieldPrefixesJoinType;
+
+
+    /**
      * @param string $className
-     * @param array  $fieldsToProperties
-     * @param array  $fieldPrefixesToClasses
-     * @param array  $embeddableFieldsToProperties
-     * @param array  $embeddableInsideEmbeddableFieldsToProperties
-     * @param array  $embeddableFieldPrefixesToClasses
-     * @param array  $embeddableFieldPrefixesToEmbeddableClasses
+     * @param array $fieldsToProperties
+     * @param array $fieldPrefixesToClasses
+     * @param array $embeddableFieldsToProperties
+     * @param array $embeddableInsideEmbeddableFieldsToProperties
+     * @param array $embeddableFieldPrefixesToClasses
+     * @param array $embeddableFieldPrefixesToEmbeddableClasses
+     * @param array $fieldPrefixesJoinType
      *
      * @see MockEntityWithEmbeddableDoctrineParser for full example
      */
@@ -64,14 +71,17 @@ class DoctrineParser implements DoctrineParserInterface
         string $className,
         array $fieldsToProperties,
         array $fieldPrefixesToClasses = [],
+        array $fieldPrefixesJoinType = [],
         array $embeddableFieldsToProperties = [],
         array $embeddableInsideEmbeddableFieldsToProperties = [],
         array $embeddableFieldPrefixesToClasses = [],
         array $embeddableFieldPrefixesToEmbeddableClasses = []
+
     ) {
         $this->className = $className;
         $this->fieldsToProperties = $fieldsToProperties;
         $this->fieldPrefixesToClasses = $fieldPrefixesToClasses;
+        $this->fieldPrefixesJoinType = $fieldPrefixesJoinType;
         $this->embeddableFieldsToProperties = $embeddableFieldsToProperties;
         $this->embeddableInsideEmbeddableFieldsToProperties = $embeddableInsideEmbeddableFieldsToProperties;
         $this->embeddableFieldPrefixesToClasses = $embeddableFieldPrefixesToClasses;
@@ -88,7 +98,7 @@ class DoctrineParser implements DoctrineParserInterface
     {
         $selectString = SelectPartialParser::parse($this->fieldPrefixesToClasses);
         $fromString = FromPartialParser::parse($this->className);
-        $joinString = JoinPartialParser::parse($this->fieldPrefixesToClasses);
+        $joinString = JoinPartialParser::parse($this->fieldPrefixesToClasses, $this->fieldPrefixesJoinType);
 
         $whereParsedRuleGroup = WherePartialParser::parse(
             $this->fieldsToProperties,
@@ -107,7 +117,11 @@ class DoctrineParser implements DoctrineParserInterface
             $this->embeddableInsideEmbeddableFieldsToProperties
         );
 
-        $dqlString = preg_replace('/\s+/', ' ', $selectString.$fromString.$joinString.$whereString.$orderString);
+        $dqlString = preg_replace(
+            '/\s+/',
+            ' ',
+            $selectString . $fromString . $joinString . $whereString . $orderString
+        );
 
         return new ParsedRuleGroup($dqlString, $parameters, $this->className); // preg_replace -> no more than one space
     }
@@ -120,11 +134,21 @@ class DoctrineParser implements DoctrineParserInterface
         $this->validateClass($this->className);
         $this->validateFieldsToProperties($this->fieldsToProperties, $this->fieldPrefixesToClasses);
         $this->validateFieldPrefixesToClasses($this->fieldPrefixesToClasses);
-        $allEmbeddableFields = array_merge($this->embeddableFieldsToProperties, $this->embeddableInsideEmbeddableFieldsToProperties);
-        $allEmbeddablePrefixesToClasses = array_merge($this->embeddableFieldPrefixesToClasses, $this->embeddableFieldPrefixesToEmbeddableClasses);
+        $allEmbeddableFields = array_merge(
+            $this->embeddableFieldsToProperties,
+            $this->embeddableInsideEmbeddableFieldsToProperties
+        );
+        $allEmbeddablePrefixesToClasses = array_merge(
+            $this->embeddableFieldPrefixesToClasses,
+            $this->embeddableFieldPrefixesToEmbeddableClasses
+        );
         $this->validateFieldsToProperties($allEmbeddableFields, $allEmbeddablePrefixesToClasses);
         $this->validateFieldPrefixesToClasses($allEmbeddablePrefixesToClasses);
-        $this->validateEmbeddableFieldPrefixes($this->embeddableFieldPrefixesToClasses, $this->embeddableFieldPrefixesToEmbeddableClasses);
+        $this->validateEmbeddableFieldPrefixes(
+            $this->embeddableFieldPrefixesToClasses,
+            $this->embeddableFieldPrefixesToEmbeddableClasses
+        );
+        $this->validateJoinTypes($this->fieldPrefixesToClasses, $this->fieldPrefixesJoinType);
     }
 
     /**
@@ -169,12 +193,14 @@ class DoctrineParser implements DoctrineParserInterface
                 $fieldPrefixPrefix = preg_replace($suffixPattern, '', $fieldPrefix);
                 $fieldSuffix = str_replace('.', '', $suffixMatches[0]); // remove preceding dot
                 if (!array_key_exists($fieldPrefixPrefix, $fieldPrefixesToClasses)) {
-                    throw new MissingAssociationClassException(sprintf(
-                        'Missing association class for queryBuilderFieldPrefix %s, at class %s, for parser %s',
-                        $fieldPrefixPrefix,
-                        $this->className,
-                        static::class
-                    ));
+                    throw new MissingAssociationClassException(
+                        sprintf(
+                            'Missing association class for queryBuilderFieldPrefix %s, at class %s, for parser %s',
+                            $fieldPrefixPrefix,
+                            $this->className,
+                            static::class
+                        )
+                    );
                 }
                 $classForThisPrefix = $fieldPrefixesToClasses[$fieldPrefixPrefix];
                 $this->validateClassHasProperty($classForThisPrefix, $fieldSuffix);
@@ -190,18 +216,22 @@ class DoctrineParser implements DoctrineParserInterface
      * @param array $embeddableFieldPrefixesToClasses
      * @param array $embeddableFieldPrefixesToEmbeddableClasses
      */
-    final private function validateEmbeddableFieldPrefixes(array $embeddableFieldPrefixesToClasses, array $embeddableFieldPrefixesToEmbeddableClasses)
-    {
+    final private function validateEmbeddableFieldPrefixes(
+        array $embeddableFieldPrefixesToClasses,
+        array $embeddableFieldPrefixesToEmbeddableClasses
+    ) {
         $prefixes = array_keys($embeddableFieldPrefixesToClasses);
 
         foreach ($prefixes as $prefix) {
             if (array_key_exists($prefix, $embeddableFieldPrefixesToEmbeddableClasses)) {
-                throw new DuplicatePrefixException(sprintf(
-                    'Duplicate embeddable field prefix %s, at class %s, for parser %s',
-                    $prefix,
-                    $this->className,
-                    static::class
-                ));
+                throw new DuplicatePrefixException(
+                    sprintf(
+                        'Duplicate embeddable field prefix %s, at class %s, for parser %s',
+                        $prefix,
+                        $this->className,
+                        static::class
+                    )
+                );
             }
         }
     }
@@ -209,18 +239,20 @@ class DoctrineParser implements DoctrineParserInterface
     /**
      * @param string $className
      *
+     * @throws InvalidClassNameException
      * @see http://symfony.com/doc/current/components/property_info.html#components-property-info-extractors
      *
-     * @throws InvalidClassNameException
      */
     final private function validateClass(string $className)
     {
         if (!class_exists($className)) {
-            throw new InvalidClassNameException(sprintf(
-                'Expected valid class name in %s. %s was given, and it is not a valid class name.',
-                static::class,
-                $className
-            ));
+            throw new InvalidClassNameException(
+                sprintf(
+                    'Expected valid class name in %s. %s was given, and it is not a valid class name.',
+                    static::class,
+                    $className
+                )
+            );
         }
     }
 
@@ -228,9 +260,9 @@ class DoctrineParser implements DoctrineParserInterface
      * @param string $className
      * @param string $classProperty
      *
+     * @throws FieldMappingException
      * @see http://symfony.com/doc/current/components/property_info.html#components-property-info-extractors
      *
-     * @throws FieldMappingException
      */
     final private function validateClassHasProperty(string $className, string $classProperty)
     {
@@ -238,29 +270,49 @@ class DoctrineParser implements DoctrineParserInterface
         $properties = $propertyInfo->getProperties($className);
 
         if (!in_array($classProperty, $properties)) {
-            throw new FieldMappingException(sprintf(
-                'Property %s is not accessible in %s.',
-                $classProperty,
-                $className
-            ));
+            throw new FieldMappingException(
+                sprintf(
+                    'Property %s is not accessible in %s.',
+                    $classProperty,
+                    $className
+                )
+            );
         }
     }
 
     /**
      * @param string $fieldPrefix
-     * @param array  $fieldPrefixesToClasses
+     * @param array $fieldPrefixesToClasses
      *
      * @throws MissingAssociationClassException
      */
     final private function validateFieldPrefixIsInAssociations(string $fieldPrefix, array $fieldPrefixesToClasses)
     {
         if (!array_key_exists($fieldPrefix, $fieldPrefixesToClasses)) {
-            throw new MissingAssociationClassException(sprintf(
-                'Missing class for fieldPrefix %s, at class %s, for parser %s',
-                $fieldPrefix,
-                $this->className,
-                static::class
-            ));
+            throw new MissingAssociationClassException(
+                sprintf(
+                    'Missing class for fieldPrefix %s, at class %s, for parser %s',
+                    $fieldPrefix,
+                    $this->className,
+                    static::class
+                )
+            );
+        }
+    }
+
+    final private function validateJoinTypes(array $fieldPrefixesToClasses, array $fieldPrefixesJoinType)
+    {
+        foreach ($fieldPrefixesToClasses as $prefix => $class) {
+            if (!array_key_exists($prefix, $fieldPrefixesJoinType)) {
+                throw new MissingAssociationClassException(
+                    sprintf(
+                        'Missing Join Type for fieldPrefix %s, at class %s, for parser %s',
+                        $prefix,
+                        $this->className,
+                        static::class
+                    )
+                );
+            }
         }
     }
 }

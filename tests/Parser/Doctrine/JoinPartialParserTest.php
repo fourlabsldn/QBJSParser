@@ -17,7 +17,8 @@ class JoinPartialParserTest extends TestCase
             'specification' => 'Valid_Class_Is_Not_Checked',
             'labels.specification' => 'Valid_Class_Is_Not_Checked',
         ];
-        $parsed = JoinPartialParser::parse($queryBuilderFieldPrefixesToAssociationClasses);
+        $joinPrefixes = ['labels' => 'left', 'specification' => 'left', 'labels.specification' => 'left'];
+        $parsed = JoinPartialParser::parse($queryBuilderFieldPrefixesToAssociationClasses, $joinPrefixes);
         $expected = ' LEFT JOIN  object.labels   object_labels   LEFT JOIN  object.specification   object_specification   LEFT JOIN  object_labels.specification   object_labels_specification  ';
 
         self::assertEquals($expected, $parsed);

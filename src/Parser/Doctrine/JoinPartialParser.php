@@ -13,8 +13,8 @@ abstract class JoinPartialParser
      *
      * @return string
      */
-    final public static function parse(array $queryBuilderFieldPrefixesToAssociationClasses): string
-    {
+    final public static function parse(array $queryBuilderFieldPrefixesToAssociationClasses, array $prefixJoinType):
+    string {
         $joinString = '';
         foreach ($queryBuilderFieldPrefixesToAssociationClasses as $queryBuilderPrefix => $associationClass) {
             $joinPart = sprintf(
@@ -23,7 +23,8 @@ abstract class JoinPartialParser
                 $queryBuilderPrefix
             );
             $joinString .= sprintf(
-                ' LEFT JOIN %s %s ',
+                ' %s JOIN %s %s ',
+                strtoupper($prefixJoinType[$queryBuilderPrefix]),
                 StringManipulator::replaceAllDotsExceptLast($joinPart),
                 StringManipulator::replaceAllDots($joinPart)
             );

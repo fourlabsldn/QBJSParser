@@ -14,7 +14,7 @@ class RuleGroupTest extends TestCase
      */
     private $ruleGroup;
 
-    public function setup()
+    public function setup(): void
     {
         // do both! neither of these should render an exception
 
