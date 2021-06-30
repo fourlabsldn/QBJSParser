@@ -7,7 +7,8 @@
 
 #### Usage
 - When you are parsing a `$jsonString` for a particular Doctrine Entity, create an instance of `DoctrineParser`.
-- Don't forget to construct this instance with the `$classname` of the Doctrine Entity, the `$queryBuilderFieldsToEntityProperties`, and `$queryBuilderFieldPrefixesToAssociationClasses`.
+- Don't forget to construct this instance with the `$classname` of the Doctrine Entity, the 
+  `$queryBuilderFieldsToEntityProperties`, `$queryBuilderFieldPrefixesToAssociationClasses` and `$fieldPrefixesJoinType`.
 
 ## Example
 
@@ -110,6 +111,9 @@ use YourNamespace\YourApp\Entity\Label;
         ],
         [
             'labels'=>Label::class,
+        ],
+        [
+            'labels' => 'left',
         ]
     );
     
@@ -143,6 +147,10 @@ Now supporting Doctrine embeddables. For example:
             // $fieldPrefixesToClasses
             [
                 'associationEntity' => AssociationEntity::class,
+            ],
+            // $fieldPrefixesJoinType
+            [
+                'associationEntity' => 'left',
             ],
             // $embeddableFieldsToProperties
             [

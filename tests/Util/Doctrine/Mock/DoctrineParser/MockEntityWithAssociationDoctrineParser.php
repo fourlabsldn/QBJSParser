@@ -10,16 +10,20 @@ class MockEntityWithAssociationDoctrineParser extends DoctrineParser
 {
     public function __construct()
     {
-        parent::__construct(MockEntity::class,
+        parent::__construct(
+            MockEntity::class,
             [
-            'id' => 'id',
-            'price' => 'price',
-            'name' => 'name',
-            'date' => 'date',
-            'associationEntity.id' => 'associationEntity.id',
+                'id' => 'id',
+                'price' => 'price',
+                'name' => 'name',
+                'date' => 'date',
+                'associationEntity.id' => 'associationEntity.id',
             ],
             [
                 'associationEntity' => MockEntityAssociation::class,
+            ],
+            [
+                'associationEntity' => 'left',
             ]
         );
     }

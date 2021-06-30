@@ -25,6 +25,9 @@ class MockEntityWithEmbeddableDoctrineParser extends DoctrineParser
                 'associationEntity' => MockEntityAssociation::class,
             ],
             [
+                'associationEntity' => 'left',
+            ],
+            [
                 'embeddable.startDate' => 'embeddable.startDate',
                 'embeddable.endDate' => 'embeddable.endDate',
                 'associationEntity.embeddable.startDate' => 'associationEntity.embeddable.startDate',
